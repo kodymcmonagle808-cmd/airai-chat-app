@@ -1373,7 +1373,7 @@ function handleGuest() {
       
       // Set iframe source with member key
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'https://script.google.com/macros/s/AKfycbwASoycOBwGRnXqXPZyvKJBE29JydxmJqgO24TE2BgVHBPasTMlCK00DawWi7t4OpUZDw/exec?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = 'chat-interface.html?memberKey=' + encodeURIComponent(currentSessionCode);
       
       iframeContainer.style.display = 'flex';
     }
@@ -1408,4 +1408,5 @@ function handleGuest() {
     }
   </script>
 </body>
+
 </html>
