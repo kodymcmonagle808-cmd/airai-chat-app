@@ -1,0 +1,35 @@
+{
+  "name": "airai-chat-app",
+  "version": "1.0.0",
+  "description": "A modern AI chat application with authentication and multiple AI model support",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve . --listen 8000",
+    "format": "prettier --write \"**/*.{html,css,js,json,md}\"",
+    "lint": "eslint \"**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/airai-chat-app.git"
+  },
+  "keywords": [
+    "ai",
+    "chat",
+    "chatbot",
+    "authentication",
+    "webapp",
+    "google-apps-script"
+  ],
+  "author": "AirAI Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/airai-chat-app/issues"
+  },
+  "homepage": "https://github.com/yourusername/airai-chat-app#readme",
+  "devDependencies": {
+    "serve": "^14.2.1",
+    "prettier": "^3.1.1",
+    "eslint": "^8.56.0"
+  }
+}

@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in to AirAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a1f0a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #e8f5e9;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .background-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-gradient {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .bg-gradient-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #2e7d32, #1b5e20);
+      top: -10%;
+      left: -10%;
+      animation-delay: 0s;
+    }
+
+    .bg-gradient-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #1b5e20, #0d2818);
+      top: 50%;
+      right: -5%;
+      animation-delay: 7s;
+    }
+
+    .bg-gradient-3 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, #2e7d32, #0a1f0a);
+      bottom: -15%;
+      left: 30%;
+      animation-delay: 14s;
+    }
+
+    .grid-pattern {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(46, 125, 50, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(46, 125, 50, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 30s linear infinite;
+    }
+
+    /* Bubbles */
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: rgba(46, 125, 50, 0.15);
+      border: 2px solid rgba(129, 199, 132, 0.3);
+      border-radius: 50%;
+      animation: rise linear infinite;
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.2);
+    }
+
+    .bubble::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 15%;
+      width: 30%;
+      height: 30%;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+
+    @keyframes rise {
+      to {
+        bottom: 110%;
+        transform: translateX(var(--drift)) rotate(360deg);
+      }
+    }
+
+    /* Fish */
+    .fish {
+      position: absolute;
+      animation: swim linear infinite;
+      opacity: 0.6;
+    }
+
+    .fish svg {
+      filter: drop-shadow(0 0 10px rgba(46, 125, 50, 0.4));
+    }
+
+    @keyframes swim {
+      0% {
+        left: -100px;
+        transform: translateY(0) scaleX(1);
+      }
+      48% {
+        transform: translateY(var(--wave)) scaleX(1);
+      }
+      50% {
+        transform: translateY(var(--wave)) scaleX(-1);
+      }
+      98% {
+        transform: translateY(0) scaleX(-1);
+      }
+      100% {
+        left: calc(100% + 100px);
+        transform: translateY(0) scaleX(-1);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(30px, -30px) scale(1.1);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+    }
+
+    @keyframes gridMove {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(50px, 50px);
+      }
+    }
+
+    /* Ensure content is above background */
+    .header,
+    .main-content,
+    .page-footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      background: #0d2818;
+      border-bottom: 1px solid #1a3d2e;
+      padding: 16px 0;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.4);
+    }
+
+    .logo-icon svg {
+      width: 18px;
+      height: 18px;
+      color: #c8e6c9;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: #c8e6c9;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .header-link {
+      color: #81c784;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .header-link:hover {
+      color: #c8e6c9;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #c8e6c9;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      font-size: 15px;
+      color: #81c784;
+    }
+
+    .login-subtitle a {
+      color: #66bb6a;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-subtitle a:hover {
+      text-decoration: underline;
+    }
+
+    /* Card */
+    .card {
+      background: #0d2818;
+      border-radius: 12px;
+      border: 1px solid #1a3d2e;
+      padding: 32px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Form */
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: #0a1f0a;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 10px 16px;
+      background: transparent;
+      color: #66bb6a;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .auth-tab.active {
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: #c8e6c9;
+      box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+    }
+
+    .auth-tab:hover:not(.active) {
+      color: #81c784;
+    }
+
+    .form-container {
+      display: none;
+    }
+
+    .form-container.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #c8e6c9;
+      margin-bottom: 6px;
+    }
+
+ .form-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #1a3d2e;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #c8e6c9;
+  background: #0a1f0a;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+    .form-input:focus {
+      outline: none;
+      border-color: #2e7d32;
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+    }
+
+    .form-input::placeholder {
+      color: #4a6b4a;
+    }
+
+    /* Checkbox */
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: #2e7d32;
+    }
+
+    .checkbox-label {
+      font-size: 14px;
+      color: #81c784;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .forgot-link {
+      font-size: 14px;
+      color: #66bb6a;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Button */
+    .btn-primary {
+      width: 100%;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: #c8e6c9;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #388e3c, #1b5e20);
+      box-shadow: 0 6px 16px rgba(46, 125, 50, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-guest {
+      width: 100%;
+      padding: 12px 16px;
+      background: transparent;
+      color: #81c784;
+      border: 1px solid #1a3d2e;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 12px;
+    }
+
+    .btn-guest:hover {
+      background: #1a3d2e;
+      color: #c8e6c9;
+      border-color: #2e7d32;
+    }
+
+    .btn-guest:active {
+      transform: scale(0.98);
+    }
+
+    /* Footer */
+    .card-footer {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #1a3d2e;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      font-size: 13px;
+      color: #66bb6a;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .footer-link:hover {
+      color: #c8e6c9;
+    }
+
+    /* Page Footer */
+    .page-footer {
+      background: #0d2818;
+      border-top: 1px solid #1a3d2e;
+      padding: 24px 0;
+      margin-top: auto;
+    }
+
+    .page-footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: #66bb6a;
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-nav a {
+      font-size: 13px;
+      color: #66bb6a;
+      text-decoration: none;
+    }
+
+    .footer-nav a:hover {
+      color: #c8e6c9;
+    }
+
+    /* Alert */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-error {
+      background: #1a0f0f;
+      color: #ef9a9a;
+      border: 1px solid #4a2626;
+    }
+
+    .alert-success {
+      background: #0f1a0f;
+      color: #a5d6a7;
+      border: 1px solid #2e4a2e;
+    }
+
+    .alert-info {
+      background: #0f1a1a;
+      color: #81c784;
+      border: 1px solid #2e4a4a;
+    }
+
+    /* Terms Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: #0d2818;
+      border: 1px solid #1a3d2e;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid #1a3d2e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #c8e6c9;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #81c784;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: #1a3d2e;
+      color: #c8e6c9;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+      background: #0a1f0a;
+      border-radius: 4px;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+      background: #2e7d32;
+      border-radius: 4px;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb:hover {
+      background: #388e3c;
+    }
+
+    /* Iframe Modal */
+    .iframe-modal {
+      background: #0d2818;
+      border: 1px solid #1a3d2e;
+      border-radius: 12px;
+      width: 95%;
+      max-width: 1400px;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .iframe-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #1a3d2e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0d2818;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .iframe-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #c8e6c9;
+    }
+
+    .iframe-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #0a1f0a;
+    }
+
+    .terms-content {
+      color: #81c784;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .terms-content h2 {
+      color: #c8e6c9;
+      font-size: 20px;
+      margin-top: 32px;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    .terms-content h3 {
+      color: #a5d6a7;
+      font-size: 16px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .terms-content p {
+      margin-bottom: 16px;
+    }
+
+    .terms-content ul, .terms-content ol {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+
+    .terms-content li {
+      margin-bottom: 8px;
+    }
+
+    .terms-content strong {
+      color: #c8e6c9;
+      font-weight: 600;
+    }
+
+    .terms-content em {
+      color: #a5d6a7;
+      font-style: italic;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .header-links {
+        display: none;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .login-title {
+        font-size: 24px;
+      }
+
+      .page-footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .modal {
+        max-height: 95vh;
+      }
+
+      .modal-header {
+        padding: 20px;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .iframe-modal {
+        width: 100%;
+        height: 95vh;
+        border-radius: 0;
+      }
+
+      .iframe-header {
+        padding: 16px 20px;
+      }
+
+      .iframe-title {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="background-animation">
+    <div class="grid-pattern"></div>
+    <div class="bg-gradient bg-gradient-1"></div>
+    <div class="bg-gradient bg-gradient-2"></div>
+    <div class="bg-gradient bg-gradient-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <span class="logo-text">AirAI</span>
+      </a>
+      <nav class="header-links">
+        <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbygrMyurinopWmJbWlYWvVQxVYhWJT13pTTPwUKJTLjdK6msvc65U-lgK9VW46Hzc2-MA/exec', 'Status Tracker'); return false;">Status Tracker</a>
+        <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbwmxrri842YO6SRozjZzMB4iGgRQCOpF75OS27Mk92ut-6b5Vq8MIcDwnePV4XiDcH8/exec', 'Current Models'); return false;">Current Models</a>
+        <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbxrY9Ibvsl5Nk6-v9ADiR5JNlyWb2Maw-H6Z_ocRMgxtSV9zv7ZKK2xFfEPfEGxsvkE/exec', 'Credits'); return false;">Credits</a>
+        <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbyhPQkCpZemA307jkAwm7zDArprxyYUcR-C_RsQ72MAuc4fknKVw1usGAupOGLMgdXB/exec', 'Support'); return false;">Support</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="login-container">
+      <div class="login-header">
+        <h1 class="login-title">Welcome back</h1>
+        <p class="login-subtitle">
+          Don't have an account? <a href="#">Sign up</a>
+        </p>
+      </div>
+
+      <div class="card">
+        <!-- Alert Messages -->
+        <div id="alertError" class="alert alert-error"></div>
+        <div id="alertSuccess" class="alert alert-success"></div>
+        <div id="alertInfo" class="alert alert-info"></div>
+
+        <!-- Auth Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchTab('login')">Login</button>
+          <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="form-container active">
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label class="form-label" for="username">Username</label>
+              <input 
+                type="text" 
+                id="username" 
+                class="form-input" 
+                placeholder="Enter your username"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="password">Password</label>
+              <input 
+                type="password" 
+                id="password" 
+                class="form-input" 
+                placeholder="********"
+                required
+              >
+            </div>
+
+            <div class="checkbox-group">
+              <div class="checkbox-wrapper">
+                <input type="checkbox" id="remember" class="checkbox">
+                <label for="remember" class="checkbox-label">Remember me</label>
+              </div>
+              <a class="forgot-link" onclick="showForgotPassword(event)">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn-primary">Sign in</button>
+            <button type="button" class="btn-guest" onclick="handleGuest()">Continue as Guest</button>
+          </form>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="signupForm" class="form-container">
+          <form onsubmit="handleSignup(event)">
+            <div class="form-group">
+              <label class="form-label" for="signup-username">Username</label>
+              <input 
+                type="text" 
+                id="signup-username" 
+                class="form-input" 
+                placeholder="Choose a username"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="signup-email">Email</label>
+              <input 
+                type="email" 
+                id="signup-email" 
+                class="form-input" 
+                placeholder="you@example.com"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="signup-password">Password</label>
+              <input 
+                type="password" 
+                id="signup-password" 
+                class="form-input" 
+                placeholder="********"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="signup-confirm">Confirm Password</label>
+              <input 
+                type="password" 
+                id="signup-confirm" 
+                class="form-input" 
+                placeholder="********"
+              >
+            </div>
+
+            <button type="submit" class="btn-primary">Create Account</button>
+          </form>
+        </div>
+
+        <div class="card-footer">
+          <div class="footer-links">
+            <a class="footer-link" onclick="showTerms(event)">Terms of Service</a>
+            <a href="#" class="footer-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbyqevUlStP4jikBzWP3L31MKiG-jxDg-gsZpTmgr9KYmPyW0jxb3Xk9Br3Pj0INHumz/exec', 'Privacy Policy'); return false;">Privacy Policy</a>
+            <a href="#" class="footer-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbyhPQkCpZemA307jkAwm7zDArprxyYUcR-C_RsQ72MAuc4fknKVw1usGAupOGLMgdXB/exec', 'Contact Support'); return false;">Contact Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <div class="page-footer-content">
+      <p class="footer-text">© 2026 AirAI, Inc. All rights reserved.</p>
+      <nav class="footer-nav">
+        <a href="#" onclick="openInIframe('https://script.google.com/macros/s/AKfycbyqevUlStP4jikBzWP3L31MKiG-jxDg-gsZpTmgr9KYmPyW0jxb3Xk9Br3Pj0INHumz/exec', 'About'); return false;">About</a>
+        <a href="#" onclick="openInIframe('https://script.google.com/macros/s/AKfycbyqevUlStP4jikBzWP3L31MKiG-jxDg-gsZpTmgr9KYmPyW0jxb3Xk9Br3Pj0INHumz/exec', 'Blog'); return false;">Blog</a>
+        <a href="#" onclick="openInIframe('https://script.google.com/macros/s/AKfycbyqevUlStP4jikBzWP3L31MKiG-jxDg-gsZpTmgr9KYmPyW0jxb3Xk9Br3Pj0INHumz/exec', 'Careers'); return false;">Careers</a>
+        <a href="#" onclick="openInIframe('https://script.google.com/macros/s/AKfycbyqevUlStP4jikBzWP3L31MKiG-jxDg-gsZpTmgr9KYmPyW0jxb3Xk9Br3Pj0INHumz/exec', 'Press'); return false;">Press</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Terms Modal -->
+  <div class="modal-overlay" id="termsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Terms of Service</h2>
+        <button class="modal-close" onclick="closeModal('termsModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="terms-content" id="termsContent">
+          <!-- Terms content will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Iframe Modal for Pages -->
+  <div class="modal-overlay" id="iframeModal">
+    <div class="iframe-modal">
+      <div class="iframe-header">
+        <h2 class="iframe-title" id="iframeTitle">Loading...</h2>
+        <button class="modal-close" onclick="closeIframe()">&times;</button>
+      </div>
+      <div class="iframe-container">
+        <iframe id="contentFrame" src="" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Generate bubbles
+    function createBubbles() {
+      const bgAnimation = document.querySelector('.background-animation');
+      const bubbleCount = 15;
+      
+      for (let i = 0; i < bubbleCount; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        
+        const size = Math.random() * 60 + 20; // 20-80px
+        const startPos = Math.random() * 100; // 0-100%
+        const drift = (Math.random() - 0.5) * 200; // -100 to 100px
+        const duration = Math.random() * 10 + 10; // 10-20s
+        const delay = Math.random() * 5; // 0-5s
+        
+        bubble.style.width = size + 'px';
+        bubble.style.height = size + 'px';
+        bubble.style.left = startPos + '%';
+        bubble.style.animationDuration = duration + 's';
+        bubble.style.animationDelay = delay + 's';
+        bubble.style.setProperty('--drift', drift + 'px');
+        
+        bgAnimation.appendChild(bubble);
+      }
+    }
+
+    // Generate fish
+    function createFish() {
+      const bgAnimation = document.querySelector('.background-animation');
+      const fishCount = 8;
+      
+      const fishSVG = '\n        <svg width="60" height="30" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">\n          <path d="M5 15C5 15 10 5 25 5C35 5 45 10 55 15C45 20 35 25 25 25C10 25 5 15 5 15Z" \n                fill="rgba(46, 125, 50, 0.4)" stroke="rgba(129, 199, 132, 0.6)" stroke-width="1.5"/>\n          <circle cx="35" cy="15" r="2" fill="rgba(200, 230, 201, 0.8)"/>\n          <path d="M5 15L0 10L0 20L5 15Z" fill="rgba(46, 125, 50, 0.4)" stroke="rgba(129, 199, 132, 0.6)" stroke-width="1.5"/>\n        </svg>\n      ';
+      
+      for (let i = 0; i < fishCount; i++) {
+        const fish = document.createElement('div');
+        fish.className = 'fish';
+        fish.innerHTML = fishSVG;
+        
+        const yPos = Math.random() * 80 + 10; // 10-90%
+        const wave = (Math.random() - 0.5) * 100; // -50 to 50px wave
+        const duration = Math.random() * 8 + 8; // 8-16s (much faster!)
+        const delay = Math.random() * 3; // 0-3s (shorter delays)
+        const scale = Math.random() * 0.5 + 0.7; // 0.7-1.2x
+        
+        fish.style.top = yPos + '%';
+        fish.style.animationDuration = duration + 's';
+        fish.style.animationDelay = delay + 's';
+        fish.style.setProperty('--wave', wave + 'px');
+        fish.style.transform = 'scale(' + scale + ')';
+        
+        bgAnimation.appendChild(fish);
+      }
+    }
+
+    // Initialize animations
+    createBubbles();
+    createFish();
+
+    // Terms of Service Content (Comprehensive AI-focused)
+    const TERMS_OF_SERVICE = '\n<h2>AirAI Terms of Service and Acceptable Use Policy</h2>\n\n<p><strong>Last Updated:</strong> January 13, 2025</p>\n\n<p><strong>IMPORTANT NOTICE:</strong> By accessing, using, or registering for AirAI services, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree to these terms, you must immediately cease all use of AirAI services.</p>\n\n<h2>1. INTRODUCTION AND SCOPE</h2>\n\n<h3>1.1 About These Terms</h3>\n<p>These Terms of Service ("Terms") constitute a legally binding agreement between you ("User," "you," or "your") and AirAI, Inc. ("AirAI," "we," "us," or "our") governing your access to and use of all AirAI artificial intelligence services, including but not limited to our web interface, API services, mobile applications, and any related services (collectively, the "Services").</p>\n\n<h3>1.2 Private Service Notice</h3>\n<p><strong>CRITICAL:</strong> AirAI is a PRIVATE service. Access is granted only to authorized users who have received explicit permission from AirAI administration. This is NOT a public platform. All access links, credentials, and service endpoints are confidential and proprietary. Unauthorized access, sharing of access credentials, or distribution of service links constitutes a severe violation of these Terms and applicable law.</p>\n\n<h3>1.3 Agreement to Terms</h3>\n<p>By creating an account, logging in, or using any AirAI service, you represent and warrant that:</p>\n<ul>\n  <li>You are at least 13 years of age (or the minimum age required in your jurisdiction)</li>\n  <li>You have the legal capacity to enter into this binding agreement</li>\n  <li>You have received explicit authorization from AirAI to access the Services</li>\n  <li>All registration information you submit is accurate, current, and complete</li>\n  <li>You will maintain the accuracy of such information</li>\n  <li>You will review these Terms regularly for updates</li>\n</ul>\n\n<h3>1.4 Changes to Terms</h3>\n<p><strong>YOU ARE REQUIRED TO CHECK THESE TERMS DAILY.</strong> We reserve the right to modify these Terms at any time without individual notice to users. Changes become effective immediately upon posting. Continued use of the Services after changes constitutes acceptance of the modified Terms. We strongly advise checking these Terms before each use session. Failure to review updated Terms does not excuse violations and may result in account restrictions or termination.</p>\n\n<h2>2. ACCESS AND ACCOUNT SECURITY</h2>\n\n<h3>2.1 Authorization and Access Control</h3>\n<p>Access to AirAI is strictly controlled and granted only through our authorization system. You acknowledge and agree that:</p>\n<ul>\n  <li>You must access the Services ONLY through the designated home page entry point</li>\n  <li>Direct navigation to internal pages without proper authentication is prohibited</li>\n  <li>Bypassing authentication mechanisms is strictly forbidden and will result in immediate account termination</li>\n  <li>Automated access tools, scripts, or bots are prohibited unless explicitly authorized</li>\n  <li>Access must be through approved devices and networks only</li>\n</ul>\n\n<h3>2.2 Account Credentials</h3>\n<p><strong>YOUR LOGIN CREDENTIALS ARE STRICTLY CONFIDENTIAL AND NON-TRANSFERABLE.</strong> You agree to:</p>\n<ul>\n  <li>Maintain the absolute confidentiality of your username and password</li>\n  <li>Never share, sell, rent, or transfer your account credentials to any other person</li>\n  <li>Never allow another person to use your account or credentials</li>\n  <li>Immediately notify administration if you suspect unauthorized access to your account</li>\n  <li>Accept full responsibility for all activities conducted under your account</li>\n  <li>Use strong, unique passwords that are not used elsewhere</li>\n  <li>Change your password if you suspect it may have been compromised</li>\n</ul>\n\n<p><strong>VIOLATION OF CREDENTIAL SECURITY WILL RESULT IN IMMEDIATE AND PERMANENT ACCOUNT TERMINATION.</strong> Sharing credentials is considered one of the most serious violations of these Terms.</p>\n\n<h3>2.3 Privacy and Observation</h3>\n<p>You are responsible for maintaining visual privacy when using AirAI services. This policy requires that:</p>\n<ul>\n  <li>You have "two eyes" viewing your screen - meaning ONLY your own eyes</li>\n  <li>"Mr. Peeker" (anyone looking over your shoulder) does NOT constitute your "two eyes"</li>\n  <li>If someone is observing your screen without authorization, you must immediately close the application or browser tab</li>\n  <li>You may not display AirAI services on shared screens, projectors, or public displays without authorization</li>\n  <li>Screen recording or screenshot capture of AI interactions may be restricted or monitored</li>\n  <li>You are responsible for ensuring your physical environment maintains service privacy</li>\n</ul>\n\n<h3>2.4 No Bookmarking Policy</h3>\n<p><strong>YOU ARE EXPRESSLY PROHIBITED FROM BOOKMARKING ANY AIRAI URLS OR SERVICE ENDPOINTS.</strong> This includes:</p>\n<ul>\n  <li>Browser bookmarks or favorites</li>\n  <li>Password manager URL storage</li>\n  <li>Quick access shortcuts</li>\n  <li>Home screen or desktop shortcuts</li>\n  <li>Any automated URL storage mechanism</li>\n</ul>\n\n<p>Rationale: Educational and organizational systems may monitor bookmarks. Additionally, if your device is lost, stolen, or accessed by unauthorized parties, bookmarked URLs present a significant security risk. Violation of this policy may result in access restrictions.</p>\n\n<h3>2.5 Search Bar Prohibition</h3>\n<p><strong>USE OF ANY SEARCH FUNCTIONALITY WITHIN AIRAI SERVICES IS STRICTLY PROHIBITED.</strong> Search features, if present, are disabled for security and content control purposes. Attempting to use search functions, whether through the interface or through browser manipulation, will result in immediate account suspension or termination. This policy exists to prevent unauthorized content discovery and maintain service security.</p>\n\n<h2>3. AI MODEL ACCESS AND USAGE</h2>\n\n<h3>3.1 Available AI Models</h3>\n<p>AirAI provides access to multiple artificial intelligence models from various providers. The specific models available to you depend on your account tier, authorization level, and current service availability. Models include but are not limited to:</p>\n<ul>\n  <li>General conversation and text generation models</li>\n  <li>Specialized task-specific models</li>\n  <li>Code generation and analysis models</li>\n  <li>Image generation and analysis models</li>\n  <li>Document processing models</li>\n  <li>Research and analysis models</li>\n  <li>Staff-only restricted models</li>\n</ul>\n\n<h3>3.2 Model Availability and Changes</h3>\n<p>You acknowledge and agree that:</p>\n<ul>\n  <li>AI model availability may change without notice</li>\n  <li>Models may be added, removed, updated, or temporarily unavailable</li>\n  <li>Performance characteristics of models may vary and are not guaranteed</li>\n  <li>Response times, quality, and capabilities may differ between models and over time</li>\n  <li>We reserve the right to restrict access to specific models based on usage patterns, account status, or other factors</li>\n  <li>New models may be added to your available roster without notice</li>\n  <li>Model deprecation may occur with minimal advance warning</li>\n</ul>\n\n<h3>3.3 Usage Limitations and Fair Use</h3>\n<p><strong>CRITICAL USAGE LIMITS:</strong> To maintain service quality and availability for all authorized users, you agree to the following usage restrictions:</p>\n\n<p><strong>Daily Link/Resource Limits:</strong></p>\n<ul>\n  <li>You are strongly advised to use no more than 2 AI model interactions or resource links per day</li>\n  <li>Excessive usage beyond recommended limits may result in automatic rate limiting</li>\n  <li>Suspicious usage patterns that exceed normal user behavior will be investigated</li>\n  <li>Bulk or automated queries are strictly prohibited without explicit authorization</li>\n</ul>\n\n<p><strong>Session Management:</strong></p>\n<ul>\n  <li>You must close browser tabs/windows when you have completed your AI interaction</li>\n  <li>Leaving sessions open unnecessarily consumes shared resources</li>\n  <li>Extended idle sessions may be automatically terminated</li>\n  <li>Multiple simultaneous sessions may be restricted or monitored</li>\n</ul>\n\n<p><strong>Rationale:</strong> System monitoring tools can track the number of views/accesses to AirAI resources. Abnormally high access counts raise red flags with network security systems and could result in the entire service being blocked. Your responsible usage protects access for all authorized users.</p>\n\n<h3>3.4 Proper Link Handling Protocol</h3>\n<p><strong>MANDATORY PROCEDURE FOR OPENING AI MODEL LINKS:</strong></p>\n<p>When accessing external AI resources or proxied services, you MUST follow this exact procedure:</p>\n<ol>\n  <li>Open the provided link in your browser</li>\n  <li>Copy the complete URL from the address bar</li>\n  <li><strong>IMMEDIATELY CLOSE THE TAB</strong></li>\n  <li>Scroll down to the "https:// Checker" section on the main proxy page</li>\n  <li>Paste the copied URL into the checker</li>\n  <li><strong>REMOVE THE "https://" PREFIX</strong> from the URL</li>\n  <li>Click the "Check" button</li>\n  <li>This process converts the URL to an about:blank page, concealing the actual destination</li>\n</ol>\n\n<p><strong>YOU CANNOT USE LINKS IN THE NORMAL/DEFAULT MANNER.</strong> Failure to follow this procedure exactly may expose the service to detection and blocking. This is a mandatory security protocol, not optional guidance.</p>\n\n<h3>3.5 Staff-Only AI Models</h3>\n<p><strong>UNAUTHORIZED ACCESS TO STAFF-ONLY AI MODELS IS PROHIBITED.</strong></p>\n<ul>\n  <li>Certain AI models are designated as "Staff Only" and require specific role authorization</li>\n  <li>Attempting to access Staff-Only models without the appropriate role is a severe violation</li>\n  <li>We can detect and track who accesses Staff-Only models through our monitoring systems</li>\n  <li>We maintain comprehensive logs of all Staff-Only model usage</li>\n  <li>Unauthorized access will result in immediate removal of ALL AI access privileges</li>\n  <li>Repeated violations may result in permanent account termination</li>\n</ul>\n\n<h3>3.6 Model Response Tracking and Monitoring</h3>\n<p><strong>ALL AI INTERACTIONS ARE LOGGED AND MONITORED.</strong> You acknowledge and consent to the following:</p>\n<ul>\n  <li>We track all prompts submitted to AI models</li>\n  <li>We log all AI responses generated for users</li>\n  <li>We monitor usage patterns and access frequencies</li>\n  <li>We can identify which user generated which AI response</li>\n  <li>We review AI interactions for inappropriate content, policy violations, and security concerns</li>\n  <li>Monitoring data may be retained indefinitely for security and compliance purposes</li>\n  <li>Data may be reviewed by authorized staff at any time without notice</li>\n</ul>\n\n<p><strong>DO NOT BE INAPPROPRIATE WITH AI MODELS.</strong> All content standards and acceptable use policies apply to your interactions with AI systems. Inappropriate, offensive, illegal, or policy-violating prompts and responses will be detected and may result in disciplinary action.</p>\n\n<h2>4. PROHIBITED USES - ACADEMIC AND EDUCATIONAL RESTRICTIONS</h2>\n\n<h3>4.1 Absolute Ban on Academic Use</h3>\n<p><strong>YOU ARE EXPRESSLY PROHIBITED FROM USING AIRAI AI MODELS FOR ANY SCHOOL-RELATED PURPOSE.</strong> This prohibition includes but is not limited to:</p>\n<ul>\n  <li>Homework assignments of any kind</li>\n  <li>Essay writing, editing, or assistance</li>\n  <li>Test or quiz preparation</li>\n  <li>Project research or development</li>\n  <li>Lab report generation or assistance</li>\n  <li>Problem set solutions</li>\n  <li>Study guides or notes generation</li>\n  <li>Presentation content creation</li>\n  <li>Academic paper writing or editing</li>\n  <li>Citation generation or formatting</li>\n  <li>Translation of academic materials</li>\n  <li>Code for programming assignments</li>\n  <li>Mathematical problem solving for coursework</li>\n  <li>Any other academic or educational task assigned by an educational institution</li>\n</ul>\n\n<p><strong>This prohibition applies to ALL educational levels:</strong> elementary, middle school, high school, undergraduate, graduate, professional programs, and continuing education.</p>\n\n<h3>4.2 Detection and Enforcement</h3>\n<p>We employ multiple methods to detect academic misuse:</p>\n<ul>\n  <li>Content analysis of AI prompts and responses</li>\n  <li>Pattern detection of assignment-related queries</li>\n  <li>Temporal correlation with academic calendars and deadlines</li>\n  <li>User reporting and peer monitoring systems</li>\n  <li>Keyword and topic analysis</li>\n  <li>Usage pattern analysis during academic hours</li>\n</ul>\n\n<p><strong>Penalties for academic use violations:</strong></p>\n<ul>\n  <li>First offense: Warning and temporary AI access suspension (minimum 7 days)</li>\n  <li>Second offense: Extended AI access suspension (minimum 30 days)</li>\n  <li>Third offense: Permanent removal of all AI model access privileges</li>\n  <li>Severe cases: Immediate permanent account termination</li>\n  <li>In educational contexts: Potential reporting to academic institutions</li>\n</ul>\n\n<h3>4.3 Acceptable Non-Academic Uses</h3>\n<p>Permitted uses of AI models include:</p>\n<ul>\n  <li>Personal creative writing (not for submission)</li>\n  <li>Casual conversation and entertainment</li>\n  <li>General knowledge questions for personal interest</li>\n  <li>Hobby or personal project assistance (non-academic)</li>\n  <li>Entertainment purposes (games, stories, etc.)</li>\n  <li>Personal productivity tools (non-academic)</li>\n  <li>Language practice for personal development (not coursework)</li>\n</ul>\n\n<h2>5. CONTENT STANDARDS AND ACCEPTABLE USE</h2>\n\n<h3>5.1 Prohibited Content</h3>\n<p>You may not use AirAI to generate, request, or disseminate content that:</p>\n<ul>\n  <li>Is illegal under federal, state, local, or international law</li>\n  <li>Contains hate speech, harassment, or promotes discrimination</li>\n  <li>Is sexually explicit, pornographic, or inappropriate for minors</li>\n  <li>Promotes violence, self-harm, or harm to others</li>\n  <li>Infringes on intellectual property rights</li>\n  <li>Contains malware, viruses, or malicious code</li>\n  <li>Facilitates illegal activities or fraud</li>\n  <li>Violates privacy rights or contains unauthorized personal information</li>\n  <li>Is defamatory, libelous, or intentionally misleading</li>\n  <li>Promotes dangerous or illegal substances</li>\n  <li>Contains graphic violence or gore</li>\n  <li>Exploits or endangers minors in any way</li>\n  <li>Impersonates another person or entity</li>\n  <li>Attempts to manipulate, deceive, or exploit AI systems</li>\n</ul>\n\n<h3>5.2 AI Model Interaction Standards</h3>\n<p>When interacting with AI models, you must:</p>\n<ul>\n  <li>Treat AI systems respectfully and appropriately</li>\n  <li>Not attempt to "jailbreak," manipulate, or circumvent content filters</li>\n  <li>Not use prompt injection or other adversarial techniques</li>\n  <li>Not attempt to extract training data or model weights</li>\n  <li>Not use AI to generate spam or mass automated content</li>\n  <li>Not attempt to overload or disrupt AI services</li>\n  <li>Report bugs or vulnerabilities responsibly</li>\n  <li>Follow all model-specific usage guidelines</li>\n</ul>\n\n<h3>5.3 Monitoring and Content Review</h3>\n<p>As stated in Section 3.6, all AI interactions are monitored. Inappropriate content will be detected through:</p>\n<ul>\n  <li>Automated content filtering systems</li>\n  <li>Pattern recognition algorithms</li>\n  <li>Manual review by authorized staff</li>\n  <li>User reporting mechanisms</li>\n  <li>Third-party content moderation tools</li>\n</ul>\n\n<h2>6. LINK SAFETY AND RESOURCE VERIFICATION</h2>\n\n<h3>6.1 Link Safety Disclaimer</h3>\n<p><strong>IMPORTANT SAFETY NOTICE:</strong> When using AirAI, you may encounter links to external resources and AI services. You acknowledge and accept that:</p>\n<ul>\n  <li>We cannot test and verify every submitted link for safety</li>\n  <li>External links may lead to unsafe, malicious, or inappropriate content</li>\n  <li>You access external links at your own risk</li>\n  <li>We are not responsible for content hosted on external sites</li>\n  <li>Clicking unknown links may expose you to security risks</li>\n</ul>\n\n<h3>6.2 Link Color Coding System</h3>\n<p>AirAI uses a color-coding system to indicate link safety and origin:</p>\n<ul>\n  <li><strong>GREEN links:</strong> Verified and maintained by AirAI staff. These are our responsibility. If a green link is blocked, unsafe, or problematic, we take full accountability.</li>\n  <li><strong>OTHER COLORS (Yellow, Blue, etc.):</strong> User-submitted or unverified links. These have NOT been tested by staff. Use at your own risk. We are NOT responsible for issues with non-green links.</li>\n</ul>\n\n<h3>6.3 Reporting Blocked or Unsafe Links</h3>\n<p><strong>MANDATORY REPORTING REQUIREMENT:</strong> If you discover that a link is blocked, unsafe, malicious, or otherwise problematic, you MUST report it. The reporting process is:</p>\n<ol>\n  <li>Identify that a link is blocked or unsafe</li>\n  <li>Submit a report to a staff member immediately</li>\n  <li>Staff members are then responsible for escalating to developers</li>\n  <li>If you report through the official form system, you are protected from any liability</li>\n  <li>Failure to report known issues may result in shared responsibility for problems</li>\n</ol>\n\n<h3>6.4 Link Verification Limitations</h3>\n<p>You understand and accept that:</p>\n<ul>\n  <li>We can only verify links against Lightspeed filtering systems</li>\n  <li>If you attend a different school or institution with different filtering, we cannot guarantee link accessibility</li>\n  <li>Link status may vary between network environments</li>\n  <li>A link that works in one location may be blocked in another</li>\n  <li>We cannot provide support for institution-specific blocking issues</li>\n</ul>\n\n<h3>6.5 Link Acquisition and Availability</h3>\n<p>Regarding AI resource links and service endpoints:</p>\n<ul>\n  <li>Links to AI services are difficult to acquire and maintain</li>\n  <li>Availability of new links varies significantly by week</li>\n  <li>Some weeks may provide 20+ new resources, other weeks may provide 0-1</li>\n  <li>We cannot control the rate of new link acquisition</li>\n  <li>Service availability is subject to change without notice</li>\n  <li>We make no guarantees about link quantity or quality</li>\n</ul>\n\n<h2>7. COPYRIGHT, INTELLECTUAL PROPERTY, AND ATTRIBUTION</h2>\n\n<h3>7.1 User-Submitted Links and Copyright Concerns</h3>\n<p><strong>CRITICAL COPYRIGHT NOTICE:</strong> Links submitted to AirAI through user submission forms may contain copyrighted or proprietary content. You acknowledge that:</p>\n<ul>\n  <li>User-submitted links may violate copyright, terms of service, or other legal restrictions</li>\n  <li>Links may be copied from other services or platforms</li>\n  <li>We cannot verify the legal status of every submitted link</li>\n  <li>Submission of copyrighted links without authorization may be illegal</li>\n  <li>We do NOT support or condone copyright infringement</li>\n  <li>Staff members do not create all links available in the service</li>\n</ul>\n\n<h3>7.2 Staff Accountability for Links</h3>\n<p><strong>Staff-submitted links:</strong> If a link was submitted by an AirAI staff member and violates copyright or other legal restrictions, the staff member and AirAI bear responsibility. However, the vast majority of links are user-submitted or sourced from public repositories.</p>\n\n<p><strong>User-submitted links:</strong> If a user submits a copyrighted, proprietary, or otherwise legally problematic link, the submitting user bears full responsibility. AirAI and its staff are not liable for user-submitted content.</p>\n\n<h3>7.3 Copyright Infringement Reporting</h3>\n<p>If you believe a link or resource infringes on copyright or intellectual property rights, you may submit a report. However, please note our evidence requirements:</p>\n\n<p><strong>ACCEPTABLE EVIDENCE:</strong></p>\n<ul>\n  <li>Screenshot showing the user\'s email/account information</li>\n  <li>Screenshot or screen recording showing the user actively copying and pasting the link from another source</li>\n  <li>Direct proof that the user created the original link and it was stolen</li>\n  <li>Verifiable documentation of intellectual property ownership</li>\n</ul>\n\n<p><strong>INSUFFICIENT EVIDENCE:</strong></p>\n<ul>\n  <li>Claims that a link "looks similar" to another source</li>\n  <li>Allegations without proof of copying</li>\n  <li>Screenshots of the link itself without proof of copying behavior</li>\n  <li>References to other services that "might" have similar links</li>\n</ul>\n\n<p><strong>Geographic and Access Limitations:</strong> Our administration may be unable to access certain platforms or services for verification purposes. For example, certain services may be regionally restricted or inaccessible from our location. This limits our ability to verify copyright claims against those platforms.</p>\n\n<h3>7.4 Third-Party Service Attribution</h3>\n<p>We have added certain third-party services to our credits page as a precautionary measure. However, this does NOT constitute admission of copyright infringement. We include these attributions because:</p>\n<ul>\n  <li>We cannot verify with 100% certainty whether links originated from these sources</li>\n  <li>We want to acknowledge potential sources as a matter of good practice</li>\n  <li>We are committed to transparency even in uncertain situations</li>\n  <li>Attribution does not equal admission of wrongdoing</li>\n</ul>\n\n<h3>7.5 Scope of Accountability</h3>\n<p>With over 1.1 billion websites on the internet, it is impossible to verify the origin of every link. We cannot narrow down sources without concrete evidence. Therefore:</p>\n<ul>\n  <li>We rely on user reports with valid evidence</li>\n  <li>We cannot investigate vague or unsupported claims</li>\n  <li>We will take action only when presented with acceptable proof</li>\n  <li>Copyright complaints must be specific and documented</li>\n</ul>\n\n<h3>7.6 Staff Use of External Resources</h3>\n<p>We acknowledge that staff members may reference tips, guides, or resources from other services when configuring or maintaining AirAI. This does not constitute copyright infringement as long as:</p>\n<ul>\n  <li>Information is used for configuration purposes, not content copying</li>\n  <li>General technical knowledge is being applied, not proprietary systems</li>\n  <li>Proper attribution is given when appropriate</li>\n  <li>Fair use principles are respected</li>\n</ul>\n\n<h2>8. ENFORCEMENT AND DISCIPLINARY ACTIONS</h2>\n\n<h3>8.1 Violation Investigation</h3>\n<p>When a potential Terms violation is reported or detected, we will:</p>\n<ul>\n  <li>Review all relevant usage logs and AI interaction records</li>\n  <li>Examine the specific circumstances of the alleged violation</li>\n  <li>Consider the user\'s history and prior violations</li>\n  <li>Determine appropriate disciplinary action</li>\n  <li>Notify the user of findings and consequences</li>\n</ul>\n\n<h3>8.2 Graduated Enforcement System</h3>\n<p>Unlike other services that immediately revoke all access, AirAI employs a graduated enforcement approach. Our disciplinary actions may include:</p>\n\n<p><strong>Level 1 - Warnings:</strong></p>\n<ul>\n  <li>Formal written warning</li>\n  <li>Educational materials about the specific violation</li>\n  <li>Notation in user account records</li>\n  <li>No immediate access restrictions</li>\n</ul>\n\n<p><strong>Level 2 - Limited Restrictions:</strong></p>\n<ul>\n  <li>Removal of access to specific AI model categories (e.g., image generation, code models)</li>\n  <li>Reduction in daily usage limits</li>\n  <li>Temporary suspension from certain features</li>\n  <li>Enhanced monitoring of account activity</li>\n</ul>\n\n<p><strong>Level 3 - Significant Restrictions:</strong></p>\n<ul>\n  <li>Removal of access to multiple AI model categories</li>\n  <li>Severely reduced usage allowances</li>\n  <li>Prohibition from accessing premium or advanced features</li>\n  <li>Mandatory review period before access restoration</li>\n</ul>\n\n<p><strong>Level 4 - Major Restrictions:</strong></p>\n<ul>\n  <li>Removal of access to nearly all AI models</li>\n  <li>Retention of basic account access only</li>\n  <li>Prohibition from most features and capabilities</li>\n  <li>Extended probationary period</li>\n</ul>\n\n<p><strong>Level 5 - Account Termination:</strong></p>\n<ul>\n  <li>Permanent and irrevocable ban from all AirAI services</li>\n  <li>Deletion of user account and associated data</li>\n  <li>IP address and device blacklisting</li>\n  <li>No possibility of account reinstatement</li>\n</ul>\n\n<h3>8.3 Customized Access Links</h3>\n<p>When restrictions are applied at Levels 2-4, users receive a customized access link that reflects their restricted privileges. For example:</p>\n<ul>\n  <li>A user restricted from Games and Movies categories receives a link that excludes those sections</li>\n  <li>A user with AI model restrictions receives access only to approved models</li>\n  <li>Technical limitations are enforced through backend access controls</li>\n  <li>Users cannot circumvent restrictions through normal use</li>\n</ul>\n\n<p>Note: Due to technical limitations, we cannot remove single pages from individual users\' access. Restrictions are applied at the category/section level.</p>\n\n<h3>8.4 Immediate Termination Offenses</h3>\n<p>Certain violations result in immediate account termination without warning or graduated enforcement:</p>\n<ul>\n  <li>Sharing or selling account credentials</li>\n  <li>Bypassing authentication or security systems</li>\n  <li>Using search functionality</li>\n  <li>Attempting to hack, exploit, or compromise the service</li>\n  <li>Distributing malware or malicious code</li>\n  <li>Engaging in illegal activities through the service</li>\n  <li>Severe harassment or threats against other users or staff</li>\n  <li>Repeated violations after Level 4 restrictions</li>\n  <li>Egregious content violations (illegal content, extreme violence, etc.)</li>\n</ul>\n\n<h3>8.5 Appeals Process</h3>\n<p>Users may appeal disciplinary actions by:</p>\n<ul>\n  <li>Submitting a formal appeal through the support system</li>\n  <li>Providing evidence or context for the alleged violation</li>\n  <li>Explaining any extenuating circumstances</li>\n  <li>Demonstrating understanding of the violation and commitment to compliance</li>\n</ul>\n\n<p>Appeal decisions are final and made at the sole discretion of AirAI administration.</p>\n\n<h2>9. PROMOTION AND PUBLICITY RESTRICTIONS</h2>\n\n<h3>9.1 Absolute Ban on Unauthorized Promotion</h3>\n<p><strong>YOU ARE STRICTLY PROHIBITED FROM PROMOTING, ADVERTISING, OR PUBLICIZING AIRAI TO UNAUTHORIZED INDIVIDUALS.</strong></p>\n\n<p>The following behavior is explicitly forbidden:</p>\n<ul>\n  <li>Telling other people about AirAI who are not already authorized users</li>\n  <li>Comparing AirAI to other services in front of unauthorized individuals</li>\n  <li>Showing AirAI features or capabilities to non-users</li>\n  <li>Describing AirAI\'s advantages or features to potential users</li>\n  <li>Suggesting others should use AirAI</li>\n  <li>Displaying AirAI on your screen in public or semi-public settings</li>\n  <li>Creating public posts, videos, or content about AirAI</li>\n  <li>Discussing AirAI on social media platforms</li>\n  <li>Including AirAI in screenshots or recordings shared publicly</li>\n</ul>\n\n<h3>9.2 Prohibited Statements - Specific Examples</h3>\n<p><strong>DO NOT MAKE STATEMENTS LIKE:</strong></p>\n<ul>\n  <li>"Hey, you still use [other service]? That\'s crazy because they don\'t have any links."</li>\n  <li>"This website is so much better than [competitor]."</li>\n  <li>"You should try this AI service I found."</li>\n  <li>"Look at what this site can do!" [while showing AirAI]</li>\n  <li>"Why are you using [other service] when this exists?"</li>\n</ul>\n\n<p>These are examples of prohibited promotional behavior. <strong>WE DO NOT WANT GLAZERS AND SHOW-OFFS.</strong></p>\n\n<h3>9.3 Rationale for Publicity Ban</h3>\n<p>This strict anti-promotion policy exists for critical reasons:</p>\n<ul>\n  <li><strong>We do not want unnecessary attention:</strong> Increased visibility increases security risks and potential service disruption</li>\n  <li><strong>Capacity limitations:</strong> Service resources are finite and reserved for authorized users</li>\n  <li><strong>Security through obscurity:</strong> Lower profile reduces likelihood of blocking or shutdown</li>\n  <li><strong>Quality control:</strong> Selective authorization ensures responsible user base</li>\n  <li><strong>We have nothing against competitors:</strong> This is not about superiority, it\'s about privacy and security</li>\n</ul>\n\n<h3>9.4 Authorized Sharing</h3>\n<p>Only staff members with the specific "Sharer" role are authorized to recruit new users or discuss AirAI with unauthorized individuals. These staff members have received specific training on:</p>\n<ul>\n  <li>How to identify appropriate potential users</li>\n  <li>What information can and cannot be disclosed</li>\n  <li>Security protocols for authorization</li>\n  <li>Vetting procedures for new user applications</li>\n</ul>\n\n<p>If you are not a staff member with the Sharer role, you have NO AUTHORITY to share information about AirAI.</p>\n\n<h3>9.5 Penalties for Unauthorized Promotion</h3>\n<p>Violations of the publicity ban will result in:</p>\n<ul>\n  <li>Immediate restriction from specific service categories</li>\n  <li>Temporary suspension of account privileges</li>\n  <li>Enhanced monitoring of all account activity</li>\n  <li>Potential permanent termination for severe or repeated violations</li>\n  <li>Revocation of authorization for all promoted individuals</li>\n</ul>\n\n<h2>10. TECHNICAL INFRASTRUCTURE AND LIMITATIONS</h2>\n\n<h3>10.1 Service Architecture</h3>\n<p>AirAI is built on specific technical infrastructure with inherent limitations. You acknowledge that:</p>\n<ul>\n  <li>The AI interface is built using Google Sites platform</li>\n  <li>The codebase exceeds 800+ lines of code</li>\n  <li>Google Sites experiences performance degradation beyond approximately 1,800 lines of code</li>\n  <li>We are operating near platform limits ("holding on for dear life")</li>\n  <li>This technical constraint prevents certain UI updates and improvements</li>\n  <li>Feature requests that require significant code additions may not be feasible</li>\n  <li>Service stability depends on maintaining current code size</li>\n</ul>\n\n<h3>10.2 Service Availability</h3>\n<p>AirAI does not guarantee uninterrupted service availability. You acknowledge that:</p>\n<ul>\n  <li>Services may experience downtime for maintenance, updates, or technical issues</li>\n  <li>AI models may be temporarily unavailable</li>\n  <li>Response times may vary based on server load</li>\n  <li>External dependencies (AI providers, network infrastructure) may cause service disruptions</li>\n  <li>We reserve the right to perform maintenance without advance notice in emergency situations</li>\n  <li>Scheduled maintenance will be announced when possible</li>\n</ul>\n\n<h3>10.3 Browser and Device Compatibility</h3>\n<p>For optimal service functionality:</p>\n<ul>\n  <li>Use modern, updated web browsers (Chrome, Firefox, Safari, Edge)</li>\n  <li>Enable JavaScript and cookies</li>\n  <li>Disable browser extensions that may interfere with service functionality</li>\n  <li>Maintain up-to-date operating systems and security patches</li>\n  <li>Use supported devices (desktop computers, laptops, tablets)</li>\n  <li>Mobile device functionality may be limited</li>\n</ul>\n\n<h3>10.4 Data Storage and Retention</h3>\n<p>Regarding your data and AI interactions:</p>\n<ul>\n  <li>Conversation history may be stored indefinitely for security and quality purposes</li>\n  <li>AI prompts and responses are logged for monitoring and improvement</li>\n  <li>Account information is retained as long as your account is active</li>\n  <li>Deleted accounts may have data retained for legal or security purposes</li>\n  <li>We cannot guarantee data recovery if information is lost due to technical failures</li>\n  <li>Regular backups are performed but are not guaranteed to be comprehensive or current</li>\n</ul>\n\n<h2>11. USER CONDUCT AND COMMUNITY STANDARDS</h2>\n\n<h3>11.1 General Conduct Expectations</h3>\n<p>All users must:</p>\n<ul>\n  <li>Treat other users, staff, and administrators with respect</li>\n  <li>Communicate professionally and appropriately</li>\n  <li>Report violations and security concerns promptly</li>\n  <li>Follow all posted rules and guidelines</li>\n  <li>Respect the privacy and security of other users</li>\n  <li>Not interfere with other users\' access to or enjoyment of the service</li>\n  <li>Not impersonate other users, staff, or administrators</li>\n</ul>\n\n<h3>11.2 Reporting Requirements</h3>\n<p>Users are required to report:</p>\n<ul>\n  <li>Security vulnerabilities or exploits</li>\n  <li>Inappropriate behavior by other users</li>\n  <li>Blocked, unsafe, or malicious links</li>\n  <li>Technical issues affecting service functionality</li>\n  <li>Suspected Terms violations by other users</li>\n  <li>Unauthorized access attempts</li>\n</ul>\n\n<p>Reports should be submitted through official channels (support forms, staff contact, etc.) and should include:</p>\n<ul>\n  <li>Detailed description of the issue</li>\n  <li>Supporting evidence (screenshots, logs, etc.)</li>\n  <li>Date and time of occurrence</li>\n  <li>Any relevant context or circumstances</li>\n</ul>\n\n<h3>11.3 False Reporting</h3>\n<p>Submitting false or malicious reports is a serious violation. You may not:</p>\n<ul>\n  <li>File knowingly false reports against other users</li>\n  <li>Fabricate evidence of violations</li>\n  <li>Use the reporting system to harass other users</li>\n  <li>Submit spam or frivolous reports</li>\n  <li>Abuse reporting mechanisms for personal gain or revenge</li>\n</ul>\n\n<p>False reporting will result in disciplinary action up to and including account termination.</p>\n\n<h2>12. PRIVACY AND DATA PROTECTION</h2>\n\n<h3>12.1 Information Collection</h3>\n<p>AirAI collects and processes the following information:</p>\n<ul>\n  <li>Account information (username, email if provided, registration date)</li>\n  <li>AI interaction data (prompts, responses, timestamps)</li>\n  <li>Usage patterns and statistics</li>\n  <li>Technical information (IP address, browser type, device information)</li>\n  <li>Access logs and session data</li>\n  <li>Violation reports and disciplinary records</li>\n</ul>\n\n<h3>12.2 Use of Information</h3>\n<p>Collected information is used for:</p>\n<ul>\n  <li>Service provision and functionality</li>\n  <li>Security monitoring and threat detection</li>\n  <li>Terms enforcement and violation investigation</li>\n  <li>Service improvement and optimization</li>\n  <li>Statistical analysis and reporting</li>\n  <li>Communication with users regarding service matters</li>\n  <li>Legal compliance and protection of rights</li>\n</ul>\n\n<h3>12.3 Information Sharing</h3>\n<p>We do not sell or rent user information to third parties. However, we may share information:</p>\n<ul>\n  <li>With law enforcement when required by legal process</li>\n  <li>To protect our rights, property, or safety</li>\n  <li>To prevent fraud or abuse of the service</li>\n  <li>In connection with educational institutions regarding academic violations (in limited circumstances)</li>\n  <li>With service providers who assist in operating the platform (under strict confidentiality)</li>\n</ul>\n\n<h3>12.4 Data Security</h3>\n<p>While we implement reasonable security measures, you acknowledge that:</p>\n<ul>\n  <li>No internet-based service is 100% secure</li>\n  <li>You use the service at your own risk</li>\n  <li>We cannot guarantee absolute protection against unauthorized access</li>\n  <li>You are responsible for maintaining the security of your credentials</li>\n  <li>Data breaches may occur despite our best efforts</li>\n</ul>\n\n<h2>13. INTELLECTUAL PROPERTY RIGHTS</h2>\n\n<h3>13.1 AirAI Intellectual Property</h3>\n<p>All AirAI branding, interface designs, code, documentation, and materials are the exclusive property of AirAI, Inc. You may not:</p>\n<ul>\n  <li>Copy, modify, or distribute AirAI code or designs</li>\n  <li>Create derivative works based on AirAI</li>\n  <li>Reverse engineer or decompile service components</li>\n  <li>Use AirAI branding or logos without authorization</li>\n  <li>Claim ownership of AirAI materials or concepts</li>\n</ul>\n\n<h3>13.2 User-Generated Content</h3>\n<p>Regarding content you create using AirAI:</p>\n<ul>\n  <li>You retain ownership of your AI prompts</li>\n  <li>AI-generated content may not be exclusively owned by you (subject to AI provider terms)</li>\n  <li>You grant AirAI a license to store, process, and analyze your interactions</li>\n  <li>You represent that you have rights to any content you upload or input</li>\n  <li>You are responsible for ensuring your use of AI-generated content complies with copyright law</li>\n</ul>\n\n<h3>13.3 Third-Party AI Models</h3>\n<p>AI models accessed through AirAI are provided by third-party companies. You acknowledge that:</p>\n<ul>\n  <li>Third-party AI providers have their own terms of service</li>\n  <li>You are subject to those third-party terms when using their models</li>\n  <li>AirAI acts as an intermediary and is not liable for third-party AI behavior</li>\n  <li>Intellectual property in AI-generated content may be governed by third-party terms</li>\n</ul>\n\n<h2>14. DISCLAIMERS AND LIMITATIONS OF LIABILITY</h2>\n\n<h3>14.1 Service Disclaimer</h3>\n<p><strong>AIRAI SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED.</strong> We disclaim all warranties including but not limited to:</p>\n<ul>\n  <li>Warranties of merchantability</li>\n  <li>Fitness for a particular purpose</li>\n  <li>Non-infringement</li>\n  <li>Accuracy or reliability of AI outputs</li>\n  <li>Uninterrupted or error-free service</li>\n  <li>Security of data transmission or storage</li>\n</ul>\n\n<h3>14.2 AI Output Disclaimer</h3>\n<p>You acknowledge and agree that:</p>\n<ul>\n  <li>AI-generated content may be inaccurate, incomplete, or misleading</li>\n  <li>You are solely responsible for evaluating and verifying AI outputs</li>\n  <li>We make no representations about the quality, accuracy, or reliability of AI responses</li>\n  <li>AI models may produce biased, offensive, or inappropriate content despite our safeguards</li>\n  <li>You should not rely on AI outputs for critical decisions without independent verification</li>\n  <li>Medical, legal, financial, or safety-critical information from AI should not be acted upon without professional consultation</li>\n</ul>\n\n<h3>14.3 Limitation of Liability</h3>\n<p><strong>TO THE MAXIMUM EXTENT PERMITTED BY LAW, AIRAI SHALL NOT BE LIABLE FOR:</strong></p>\n<ul>\n  <li>Indirect, incidental, special, consequential, or punitive damages</li>\n  <li>Loss of profits, data, use, or goodwill</li>\n  <li>Service interruptions or unavailability</li>\n  <li>Unauthorized access to or alteration of your data</li>\n  <li>Statements or conduct of third parties using the service</li>\n  <li>Damages arising from your use or inability to use the service</li>\n  <li>Damages arising from AI-generated content or outputs</li>\n  <li>Any damages exceeding the amount you paid to AirAI in the preceding 12 months (or $100 if no fees were paid)</li>\n</ul>\n\n<h3>14.4 External Links Disclaimer</h3>\n<p>As detailed in Section 6, you access external links at your own risk. We are not responsible for:</p>\n<ul>\n  <li>Content on external websites</li>\n  <li>Security risks from external links</li>\n  <li>Malware or malicious code from external sources</li>\n  <li>Blocked or inaccessible links</li>\n  <li>Copyright or legal issues with linked content</li>\n</ul>\n\n<h2>15. INDEMNIFICATION</h2>\n\n<p>You agree to indemnify, defend, and hold harmless AirAI, Inc., its officers, directors, employees, agents, and affiliates from and against any claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys\' fees) arising from:</p>\n<ul>\n  <li>Your use or misuse of AirAI services</li>\n  <li>Your violation of these Terms of Service</li>\n  <li>Your violation of any law or regulation</li>\n  <li>Your violation of any rights of another person or entity</li>\n  <li>Content you submit, post, or transmit through the service</li>\n  <li>Your breach of any representation or warranty made herein</li>\n  <li>Academic misconduct involving AirAI</li>\n  <li>Unauthorized sharing or distribution of access credentials</li>\n</ul>\n\n<h2>16. TERMINATION</h2>\n\n<h3>16.1 Termination by User</h3>\n<p>You may terminate your account at any time by:</p>\n<ul>\n  <li>Submitting a termination request through support channels</li>\n  <li>Ceasing all use of the service</li>\n  <li>Requesting account deletion</li>\n</ul>\n\n<p>Upon termination, you must immediately cease all use of AirAI services and destroy any downloaded materials.</p>\n\n<h3>16.2 Termination by AirAI</h3>\n<p>We reserve the right to suspend or terminate your account at any time, with or without notice, for:</p>\n<ul>\n  <li>Violation of these Terms</li>\n  <li>Suspected fraudulent, abusive, or illegal activity</li>\n  <li>Extended periods of inactivity</li>\n  <li>Technical or security reasons</li>\n  <li>At our sole discretion for any reason or no reason</li>\n</ul>\n\n<h3>16.3 Effects of Termination</h3>\n<p>Upon account termination:</p>\n<ul>\n  <li>Your access to all AirAI services will be immediately revoked</li>\n  <li>Your account data may be deleted or retained at our discretion</li>\n  <li>You remain liable for any obligations incurred prior to termination</li>\n  <li>Sections of these Terms that by their nature should survive termination shall continue to apply</li>\n  <li>You may not create a new account without explicit authorization</li>\n</ul>\n\n<h2>17. GEOGRAPHIC RESTRICTIONS AND JURISDICTION</h2>\n\n<h3>17.1 Service Location</h3>\n<p>AirAI services are operated from the western United States. Certain features, content verification, or third-party services may be unavailable in our geographic region. You acknowledge that:</p>\n<ul>\n  <li>We cannot access or verify content from certain international platforms</li>\n  <li>Geographic restrictions may limit our ability to investigate certain reports</li>\n  <li>Service availability and performance may vary by user location</li>\n  <li>We make no representations that services are available or appropriate for use in all locations</li>\n</ul>\n\n<h3>17.2 Governing Law</h3>\n<p>These Terms shall be governed by and construed in accordance with the laws of the United States and the State of [State], without regard to conflict of law provisions.</p>\n\n<h3>17.3 Dispute Resolution</h3>\n<p>Any disputes arising from these Terms or use of AirAI services shall be resolved through:</p>\n<ul>\n  <li>Initial informal negotiation between parties</li>\n  <li>Binding arbitration if informal resolution fails</li>\n  <li>Courts located in [Jurisdiction] if arbitration is unavailable or inappropriate</li>\n</ul>\n\n<h2>18. MODIFICATIONS TO SERVICE AND TERMS</h2>\n\n<h3>18.1 Service Modifications</h3>\n<p>We reserve the right to:</p>\n<ul>\n  <li>Modify, suspend, or discontinue any aspect of the service at any time</li>\n  <li>Add or remove features without notice</li>\n  <li>Change pricing or introduce fees for currently free services</li>\n  <li>Impose new usage limitations or restrictions</li>\n  <li>Update AI models or change model availability</li>\n</ul>\n\n<h3>18.2 Terms Modifications</h3>\n<p>As stated in Section 1.4, we may modify these Terms at any time. <strong>YOU MUST CHECK THESE TERMS DAILY.</strong> Modifications take effect immediately upon posting. Your continued use constitutes acceptance of modified Terms.</p>\n\n<h3>18.3 Notice of Material Changes</h3>\n<p>For material changes affecting user rights or obligations, we will attempt to provide notice through:</p>\n<ul>\n  <li>In-app notifications or banners</li>\n  <li>Email to registered addresses (if provided)</li>\n  <li>Announcements on the service homepage</li>\n  <li>Updated "Last Modified" date on Terms document</li>\n</ul>\n\n<p>However, <strong>YOU REMAIN RESPONSIBLE FOR REVIEWING TERMS REGULARLY</strong> regardless of whether notice is provided.</p>\n\n<h2>19. SPECIAL PROVISIONS FOR EDUCATIONAL CONTEXTS</h2>\n\n<h3>19.1 Institutional Restrictions</h3>\n<p>If you access AirAI from an educational institution, you must comply with all institutional policies regarding:</p>\n<ul>\n  <li>Acceptable use of technology resources</li>\n  <li>Academic integrity and honor codes</li>\n  <li>Network usage policies</li>\n  <li>Device management requirements</li>\n</ul>\n\n<h3>19.2 Monitoring and Filtering</h3>\n<p>You acknowledge that educational institutions may:</p>\n<ul>\n  <li>Monitor network traffic and application usage</li>\n  <li>Block access to certain services or websites</li>\n  <li>Track device activity on institutional networks</li>\n  <li>Review browsing history and bookmarks</li>\n  <li>Enforce content filtering systems</li>\n</ul>\n\n<p>Your use of AirAI must comply with all institutional monitoring and filtering policies. We cannot guarantee service availability on institution-managed networks.</p>\n\n<h3>19.3 Academic Integrity</h3>\n<p>As reinforced throughout these Terms, using AirAI for academic work is strictly prohibited. If you are caught using AirAI for academic purposes:</p>\n<ul>\n  <li>You face AirAI account termination under these Terms</li>\n  <li>You may face academic consequences from your educational institution</li>\n  <li>We reserve the right to cooperate with institutional investigations</li>\n  <li>We may report academic integrity violations to institutions in severe cases</li>\n</ul>\n\n<h2>20. ACCESSIBILITY</h2>\n\n<p>While we strive to make AirAI accessible to users with disabilities, we acknowledge that:</p>\n<ul>\n  <li>Not all features may be fully accessible</li>\n  <li>Third-party AI interfaces may have varying accessibility support</li>\n  <li>Technical limitations may prevent implementation of certain accessibility features</li>\n  <li>We welcome feedback and reports regarding accessibility issues</li>\n  <li>We will make reasonable efforts to improve accessibility over time</li>\n</ul>\n\n<h2>21. FORCE MAJEURE</h2>\n\n<p>AirAI shall not be liable for any failure or delay in performance due to circumstances beyond our reasonable control, including:</p>\n<ul>\n  <li>Natural disasters</li>\n  <li>Acts of war or terrorism</li>\n  <li>Government actions or regulations</li>\n  <li>Internet or telecommunications failures</li>\n  <li>Power outages</li>\n  <li>Third-party service provider failures</li>\n  <li>Pandemics or public health emergencies</li>\n  <li>Labor disputes or strikes</li>\n</ul>\n\n<h2>22. SEVERABILITY</h2>\n\n<p>If any provision of these Terms is found to be invalid, illegal, or unenforceable, the remaining provisions shall continue in full force and effect. Invalid provisions shall be modified to the minimum extent necessary to make them valid and enforceable while preserving their original intent.</p>\n\n<h2>23. WAIVER</h2>\n\n<p>Our failure to enforce any right or provision of these Terms shall not constitute a waiver of such right or provision. No waiver of any term shall be deemed a further or continuing waiver of such term or any other term.</p>\n\n<h2>24. ENTIRE AGREEMENT</h2>\n\n<p>These Terms, together with our Privacy Policy and any other legal notices or agreements posted on AirAI, constitute the entire agreement between you and AirAI regarding use of the services and supersede all prior agreements and understandings, whether written or oral.</p>\n\n<h2>25. ASSIGNMENT</h2>\n\n<p>You may not assign or transfer these Terms or your account rights without our prior written consent. We may assign our rights and obligations under these Terms without restriction.</p>\n\n<h2>26. CONTACT INFORMATION</h2>\n\n<p>For questions about these Terms of Service, please contact:</p>\n<ul>\n  <li>Support portal: [Available through authenticated service interface]</li>\n  <li>Staff contact: Through official service channels only</li>\n  <li>Email: [If provided through service interface]</li>\n</ul>\n\n<p><strong>DO NOT contact staff or administrators through unofficial channels.</strong> All inquiries must go through official support systems.</p>\n\n<h2>27. ACKNOWLEDGMENT AND ACCEPTANCE</h2>\n\n<p><strong>BY USING AIRAI SERVICES, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS OF SERVICE IN THEIR ENTIRETY, UNDERSTAND THEM, AND AGREE TO BE BOUND BY THEM.</strong></p>\n\n<p>You specifically acknowledge and accept:</p>\n<ul>\n  <li>The private nature of this service and confidentiality requirements</li>\n  <li>The absolute prohibition on academic use of AI models</li>\n  <li>The requirement to check these Terms daily</li>\n  <li>The monitoring and logging of all AI interactions</li>\n  <li>The graduated enforcement system and potential for account termination</li>\n  <li>The restrictions on sharing, promotion, and publicity</li>\n  <li>Your responsibility for link safety and proper usage protocols</li>\n  <li>The limitations and disclaimers regarding AI outputs and service availability</li>\n  <li>Your obligation to maintain credential security and follow access protocols</li>\n</ul>\n\n<p><strong>IF YOU DO NOT AGREE TO THESE TERMS, YOU MUST IMMEDIATELY CEASE ALL USE OF AIRAI SERVICES.</strong></p>\n\n<hr>\n\n<p><em>These Terms of Service are effective as of the "Last Updated" date shown above and remain in effect until superseded by a newer version.</em></p>\n\n<p><strong>Remember: You must review these Terms regularly. Changes may be made at any time without individual notice to users. Ignorance of updated Terms is not a defense against violations.</strong></p>\n';
+
+    // Tab switching
+    function switchTab(tab) {
+      const tabs = document.querySelectorAll('.auth-tab');
+      const forms = document.querySelectorAll('.form-container');
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      forms.forEach(f => f.classList.remove('active'));
+      
+      if (tab === 'login') {
+        tabs[0].classList.add('active');
+        document.getElementById('loginForm').classList.add('active');
+      } else {
+        tabs[1].classList.add('active');
+        document.getElementById('signupForm').classList.add('active');
+      }
+      
+      // Clear alerts
+      document.getElementById('alertError').classList.remove('show');
+      document.getElementById('alertSuccess').classList.remove('show');
+      document.getElementById('alertInfo').classList.remove('show');
+    }
+
+    // Form submission handlers
+// Form submission handlers
+    function handleLogin(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      
+      // Hide any existing alerts
+      document.getElementById('alertError').classList.remove('show');
+      document.getElementById('alertSuccess').classList.remove('show');
+      document.getElementById('alertInfo').classList.remove('show');
+      
+      if (!username || !password) {
+        const errorAlert = document.getElementById('alertError');
+        errorAlert.textContent = 'Please enter both username and password.';
+        errorAlert.classList.add('show');
+        return;
+      }
+      
+      // Show loading state
+      const loginBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = loginBtn.textContent;
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing in...';
+      
+      // Call authentication API
+      const callbackName = 'loginCallback' + Date.now();
+      window[callbackName] = function(data) {
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalText;
+        
+        if (data.success) {
+          const successAlert = document.getElementById('alertSuccess');
+          successAlert.textContent = 'Authentication successful! Generating access code...';
+          successAlert.classList.add('show');
+          
+          // Generate session code
+          generateSessionCode(data.username, data.role || 'user');
+        } else {
+          const errorAlert = document.getElementById('alertError');
+          errorAlert.textContent = data.error || 'Login failed. Please check your credentials.';
+          errorAlert.classList.add('show');
+        }
+        
+        delete window[callbackName];
+      };
+      
+      const script = document.createElement('script');
+      script.src = 'https://script.google.com/macros/s/AKfycbwz3uoKX7uwm0KpOmq2bAWbk4zZ3JhlIXOEi5hSEs9A2HNs5M_N0rWD83Pd4ciz1KV9/exec?callback=' + callbackName + 
+                   '&action=login&username=' + encodeURIComponent(username) + 
+                   '&password=' + encodeURIComponent(password);
+      script.onerror = function() {
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalText;
+        const errorAlert = document.getElementById('alertError');
+        errorAlert.textContent = 'Connection failed. Please try again.';
+        errorAlert.classList.add('show');
+        delete window[callbackName];
+      };
+      document.body.appendChild(script);
+    }
+
+  function handleSignup(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('signup-username').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm').value;
+      
+      // Hide any existing alerts
+      document.getElementById('alertError').classList.remove('show');
+      document.getElementById('alertSuccess').classList.remove('show');
+      document.getElementById('alertInfo').classList.remove('show');
+      
+      // Validation
+      if (!username || !email || !password || !confirmPassword) {
+        const errorAlert = document.getElementById('alertError');
+        errorAlert.textContent = 'Please fill in all fields.';
+        errorAlert.classList.add('show');
+        return;
+      }
+      
+      if (username.length < 3) {
+        const errorAlert = document.getElementById('alertError');
+        errorAlert.textContent = 'Username must be at least 3 characters.';
+        errorAlert.classList.add('show');
+        return;
+      }
+      
+      if (password.length < 6) {
+        const errorAlert = document.getElementById('alertError');
+        errorAlert.textContent = 'Password must be at least 6 characters.';
+        errorAlert.classList.add('show');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        const errorAlert = document.getElementById('alertError');
+        errorAlert.textContent = 'Passwords do not match.';
+        errorAlert.classList.add('show');
+        return;
+      }
+      
+      // Show loading state
+      const signupBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = signupBtn.textContent;
+      signupBtn.disabled = true;
+      signupBtn.textContent = 'Creating account...';
+      
+      // Call registration API
+      const callbackName = 'registerCallback' + Date.now();
+      window[callbackName] = function(data) {
+        signupBtn.disabled = false;
+        signupBtn.textContent = originalText;
+        
+        if (data.success) {
+          const successAlert = document.getElementById('alertSuccess');
+          successAlert.textContent = 'Account created! Please login with your credentials.';
+          successAlert.classList.add('show');
+          
+          // Switch to login tab after 2 seconds
+          setTimeout(() => {
+            switchTab('login');
+            document.getElementById('username').value = username;
+          }, 2000);
+        } else {
+          const errorAlert = document.getElementById('alertError');
+          errorAlert.textContent = data.error || 'Registration failed. Please try again.';
+          errorAlert.classList.add('show');
+        }
+        
+        delete window[callbackName];
+      };
+      
+      const script = document.createElement('script');
+      script.src = 'https://script.google.com/macros/s/AKfycbwz3uoKX7uwm0KpOmq2bAWbk4zZ3JhlIXOEi5hSEs9A2HNs5M_N0rWD83Pd4ciz1KV9/exec?callback=' + callbackName + 
+                   '&action=register&username=' + encodeURIComponent(username) + 
+                   '&password=' + encodeURIComponent(password);
+      script.onerror = function() {
+        signupBtn.disabled = false;
+        signupBtn.textContent = originalText;
+        const errorAlert = document.getElementById('alertError');
+        errorAlert.textContent = 'Connection failed. Please try again.';
+        errorAlert.classList.add('show');
+        delete window[callbackName];
+      };
+      document.body.appendChild(script);
+    }
+
+function handleGuest() {
+      const successAlert = document.getElementById('alertSuccess');
+      successAlert.textContent = 'Generating guest access code...';
+      successAlert.classList.add('show');
+      
+      // Guest always gets code 000000
+      setTimeout(() => {
+        showCodeModal('000000', null, 'Guest', true);
+      }, 800);
+    }
+
+    // Forgot password handler
+    function showForgotPassword(e) {
+      e.preventDefault();
+      const infoAlert = document.getElementById('alertInfo');
+      infoAlert.textContent = 'Please contact an administrator to reset your password.';
+      infoAlert.classList.add('show');
+      setTimeout(() => infoAlert.classList.remove('show'), 5000);
+    }
+
+    // Iframe modal functions
+    function openInIframe(url, title) {
+      document.getElementById('iframeTitle').textContent = title;
+      document.getElementById('contentFrame').src = url;
+      document.getElementById('iframeModal').classList.add('show');
+    }
+
+    function closeIframe() {
+      document.getElementById('iframeModal').classList.remove('show');
+      document.getElementById('contentFrame').src = '';
+    }
+
+    // Terms modal handler
+    function showTerms(e) {
+      if (e) e.preventDefault();
+      document.getElementById('termsContent').innerHTML = TERMS_OF_SERVICE;
+      document.getElementById('termsModal').classList.add('show');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+    }
+
+    // Close modals when clicking outside
+    document.getElementById('termsModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal('termsModal');
+      }
+    });
+
+    document.getElementById('iframeModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeIframe();
+      }
+    });
+    // ============================================
+    // SESSION CODE MANAGEMENT
+    // ============================================
+    
+    let currentSessionCode = null;
+    let currentUsername = null;
+    let countdownInterval = null;
+    
+    function generateSessionCode(username, role) {
+      const callbackName = 'sessionCallback' + Date.now();
+      
+      window[callbackName] = function(data) {
+        if (data.success) {
+          currentSessionCode = data.code;
+          currentUsername = username;
+          showCodeModal(data.code, data.expiresIn, username, data.isGuest);
+        } else {
+          const errorAlert = document.getElementById('alertError');
+          errorAlert.textContent = 'Failed to generate access code: ' + (data.error || 'Unknown error');
+          errorAlert.classList.add('show');
+        }
+        delete window[callbackName];
+      };
+      
+      const script = document.createElement('script');
+      script.src = 'https://script.google.com/macros/s/AKfycbzHDXl45MX96gaOlKPeqD4Q75nNeDm1cMUvQpc0GWVXHSE8ErnMbkZ6GSMnO9zTbFO_Bg/exec?action=generateCode&username=' + 
+                   encodeURIComponent(username) + 
+                   '&role=' + encodeURIComponent(role) + 
+                   '&callback=' + callbackName;
+      script.onerror = function() {
+        const errorAlert = document.getElementById('alertError');
+        errorAlert.textContent = 'Failed to connect to session service.';
+        errorAlert.classList.add('show');
+        delete window[callbackName];
+      };
+      document.body.appendChild(script);
+    }
+    
+    function showCodeModal(code, expiresIn, username, isGuest) {
+      // Create modal if it doesn't exist
+      let modal = document.getElementById('codeModal');
+      if (!modal) {
+        modal = createCodeModal();
+      }
+      
+      // Populate modal
+      document.getElementById('sessionCode').textContent = code;
+      document.getElementById('codeUsername').textContent = username;
+      
+      // Handle countdown
+      if (expiresIn && !isGuest) {
+        startCountdown(expiresIn);
+      } else {
+        document.getElementById('countdown').innerHTML = '<span style="color: #a5d6a7;">No Expiration</span>';
+      }
+      
+      // Show modal
+      modal.style.display = 'flex';
+    }
+    
+    function createCodeModal() {
+      const modal = document.createElement('div');
+      modal.id = 'codeModal';
+      modal.style.cssText = '\n        display: none;\n        position: fixed;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n        background: rgba(0, 0, 0, 0.85);\n        backdrop-filter: blur(8px);\n        z-index: 10000;\n        align-items: center;\n        justify-content: center;\n      ';
+      
+      modal.innerHTML = '\n        <div style="\n          background: linear-gradient(135deg, #0d2818 0%, #0a1f0a 100%);\n          border: 2px solid #2e7d32;\n          border-radius: 16px;\n          padding: 40px;\n          max-width: 500px;\n          width: 90%;\n          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);\n          text-align: center;\n        ">\n          <div style="margin-bottom: 24px;">\n            <div style="\n              width: 80px;\n              height: 80px;\n              background: linear-gradient(135deg, #2e7d32, #1b5e20);\n              border-radius: 50%;\n              margin: 0 auto 20px;\n              display: flex;\n              align-items: center;\n              justify-content: center;\n              box-shadow: 0 0 30px rgba(46, 125, 50, 0.6);\n            ">\n              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c8e6c9" stroke-width="2">\n                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>\n                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>\n              </svg>\n            </div>\n            <h2 style="color: #c8e6c9; font-size: 28px; margin: 0 0 8px 0; font-weight: 700;">Access Code Generated</h2>\n            <p style="color: #81c784; font-size: 14px; margin: 0;">For: <strong id="codeUsername" style="color: #a5d6a7;"></strong></p>\n          </div>\n          \n          <div style="\n            background: #0a1f0a;\n            border: 2px solid #2e7d32;\n            border-radius: 12px;\n            padding: 24px;\n            margin-bottom: 24px;\n          ">\n            <div style="color: #66bb6a; font-size: 13px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Your Member Key</div>\n            <div id="sessionCode" style="\n              font-size: 48px;\n              font-weight: 700;\n              color: #c8e6c9;\n              letter-spacing: 8px;\n              font-family: \'Courier New\', monospace;\n              margin-bottom: 16px;\n            ">000000</div>\n            <div id="countdown" style="\n              color: #81c784;\n              font-size: 14px;\n              font-weight: 500;\n            ">Expires in: <span id="timeRemaining">15:00</span></div>\n          </div>\n          \n          <div style="\n            background: rgba(46, 125, 50, 0.1);\n            border: 1px solid #2e7d32;\n            border-radius: 8px;\n            padding: 16px;\n            margin-bottom: 24px;\n            text-align: left;\n          ">\n            <div style="color: #a5d6a7; font-size: 13px; margin-bottom: 8px; font-weight: 600;">⚠️ Important:</div>\n            <ul style="color: #81c784; font-size: 12px; margin: 0; padding-left: 20px; line-height: 1.6;">\n              <li>Save this code - you\'ll need it to access the chat interface</li>\n              <li>Code expires in 15 minutes (or never for guests)</li>\n              <li>Do not share this code with anyone</li>\n              <li>Enter this code when prompted in the next screen</li>\n            </ul>\n          </div>\n          \n          <button onclick="openChatInterface()" style="\n            width: 100%;\n            padding: 14px;\n            background: linear-gradient(135deg, #2e7d32, #1b5e20);\n            border: none;\n            border-radius: 10px;\n            color: #c8e6c9;\n            font-size: 16px;\n            font-weight: 700;\n            cursor: pointer;\n            box-shadow: 0 4px 16px rgba(46, 125, 50, 0.4);\n            transition: all 0.2s;\n          " onmouseover="this.style.transform=\'translateY(-2px)\'; this.style.boxShadow=\'0 6px 20px rgba(46, 125, 50, 0.6)\';" \n             onmouseout="this.style.transform=\'translateY(0)\'; this.style.boxShadow=\'0 4px 16px rgba(46, 125, 50, 0.4)\';">\n            Next: Open Chat Interface →\n          </button>\n        </div>\n      ';
+      
+      document.body.appendChild(modal);
+      return modal;
+    }
+    
+    function startCountdown(seconds) {
+      let remaining = seconds;
+      
+      // Clear any existing interval
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+      
+      function updateDisplay() {
+        const minutes = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        const display = minutes + ':' + (secs < 10 ? '0' : '') + secs;
+        
+        const timeElement = document.getElementById('timeRemaining');
+        if (timeElement) {
+          timeElement.textContent = display;
+          
+          if (remaining < 60) {
+            timeElement.style.color = '#ffaa44'; // Warning color
+          }
+          if (remaining < 30) {
+            timeElement.style.color = '#ff6666'; // Critical color
+          }
+        }
+        
+        if (remaining <= 0) {
+          clearInterval(countdownInterval);
+          if (timeElement) {
+            timeElement.textContent = 'EXPIRED';
+            timeElement.style.color = '#ff6666';
+          }
+        }
+        
+        remaining--;
+      }
+      
+      updateDisplay(); // Initial display
+      countdownInterval = setInterval(updateDisplay, 1000);
+    }
+    
+    function openChatInterface() {
+      // Hide code modal
+      const modal = document.getElementById('codeModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+      
+      // Show iframe container
+      let iframeContainer = document.getElementById('chatIframeContainer');
+      if (!iframeContainer) {
+        iframeContainer = createIframeContainer();
+      }
+      
+      // Set iframe source with member key
+      const iframe = document.getElementById('chatIframe');
+      iframe.src = 'https://script.google.com/macros/s/AKfycbwASoycOBwGRnXqXPZyvKJBE29JydxmJqgO24TE2BgVHBPasTMlCK00DawWi7t4OpUZDw/exec?memberKey=' + encodeURIComponent(currentSessionCode);
+      
+      iframeContainer.style.display = 'flex';
+    }
+    
+    function createIframeContainer() {
+      const container = document.createElement('div');
+      container.id = 'chatIframeContainer';
+      container.style.cssText = '\n        display: none;\n        position: fixed;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n        background: #0a1f0a;\n        z-index: 9999;\n      ';
+      
+      container.innerHTML = '\n        <button onclick="closeChatInterface()" style="\n          position: absolute;\n          top: 10px;\n          left: 50%;\n          transform: translateX(-50%);\n          background: rgba(13, 40, 24, 0.9);\n          border: 1px solid #2e7d32;\n          color: #81c784;\n          padding: 6px 12px;\n          border-radius: 6px;\n          cursor: pointer;\n          font-size: 12px;\n          font-weight: 600;\n          z-index: 10000;\n          transition: all 0.2s;\n        " onmouseover="this.style.background=\'#1a3d2e\'; this.style.color=\'#c8e6c9\';" \n           onmouseout="this.style.background=\'rgba(13, 40, 24, 0.9)\'; this.style.color=\'#81c784\';">\n          ← Back\n        </button>\n        <iframe id="chatIframe" style="\n          width: 100%;\n          height: 100%;\n          border: none;\n          background: #0a1f0a;\n        "></iframe>\n      ';
+      
+      document.body.appendChild(container);
+      return container;
+    }
+    
+    function closeChatInterface() {
+      const container = document.getElementById('chatIframeContainer');
+      if (container) {
+        container.style.display = 'none';
+      }
+      
+      // Clear iframe
+      const iframe = document.getElementById('chatIframe');
+      if (iframe) {
+        iframe.src = '';
+      }
+      
+      // Show login screen again
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+    }
+  </script>
+</body>
+</html>

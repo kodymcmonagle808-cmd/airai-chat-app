@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url=login.html">
+  <title>AirAI - Redirecting...</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a1f0a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #c8e6c9;
+    }
+    .redirect-message {
+      text-align: center;
+      padding: 40px;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(46, 125, 50, 0.3);
+      border-top-color: #2e7d32;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    a {
+      color: #81c784;
+      text-decoration: none;
+    }
+    a:hover {
+      color: #a5d6a7;
+    }
+  </style>
+</head>
+<body>
+  <div class="redirect-message">
+    <div class="spinner"></div>
+    <h2>Redirecting to AirAI Login...</h2>
+    <p>If you're not redirected automatically, <a href="login.html">click here</a>.</p>
+  </div>
+  <script>
+    // Fallback redirect after 1 second if meta refresh fails
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 1000);
+  </script>
+</body>
+</html>
