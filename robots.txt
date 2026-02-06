@@ -1,0 +1,11 @@
+# AirAI Chat Application
+# https://github.com/kodymcmonagle808-cmd/airai-chat-app
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://kodymcmonagle808-cmd.github.io/airai-chat-app/sitemap.xml
+
+# Disallow sensitive paths
+Disallow: /icons/
