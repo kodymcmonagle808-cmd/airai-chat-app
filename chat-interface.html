@@ -2818,6 +2818,7 @@ body.light-theme .ai-select option.model-disabled {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   line-height: 1.4;
 }
@@ -3756,6 +3757,7 @@ code {
   background: var(--bg-tertiary);
   outline: none;
   -webkit-appearance: none;
+  appearance: none;
 }
 
 .range-slider::-webkit-slider-thumb {
@@ -9115,24 +9117,96 @@ function loadChat(chatId) {
       delete window[callbackName];
     };
 
-    const chatDataObj = {
-      messages: conversationHistory,
-      model: currentModel,
-      modelName: currentModelName,
-      timestamp: Date.now()
-    };
+    function truncateText(text, maxLen) {
+      if (typeof text !== 'string') return '';
+      if (text.length <= maxLen) return text;
+      return text.slice(0, maxLen) + '…';
+    }
+
+    function buildChatDataForJsonp() {
+      // JSONP uses GET query params, so the URL can become too large.
+      // Most common offender: large chats + any attached file data.
+      const steps = [
+        { maxMessages: 50, maxChars: 6000 },
+        { maxMessages: 30, maxChars: 4000 },
+        { maxMessages: 20, maxChars: 2500 },
+        { maxMessages: 12, maxChars: 1500 },
+        { maxMessages: 8, maxChars: 1000 }
+      ];
+
+      const fullHistory = Array.isArray(conversationHistory) ? conversationHistory : [];
+
+      for (const step of steps) {
+        const sliced = fullHistory.slice(-step.maxMessages);
+        const sanitizedMessages = sliced.map(m => {
+          const msg = {
+            role: m?.role,
+            content: truncateText(m?.content || '', step.maxChars)
+          };
+          // Never try to save file blobs/base64/etc via JSONP URL.
+          // (Keeps saves reliable and prevents oversized URLs.)
+          return msg;
+        });
+
+        const chatDataObj = {
+          messages: sanitizedMessages,
+          model: currentModel,
+          modelName: currentModelName,
+          timestamp: Date.now()
+        };
+
+        const json = JSON.stringify(chatDataObj);
+        const encoded = encodeURIComponent(json);
+        // Conservative guard: keep encoded payload small enough for common URL limits.
+        if (encoded.length <= 6000) return encoded;
+      }
+      return null;
+    }
+
+    const encodedChatData = buildChatDataForJsonp();
+    if (!encodedChatData) {
+      hideLoading();
+      showError('Chat is too large to save via JSONP. Try a shorter chat (or save without file attachments).');
+      debugConsole.log('Failed to save chat: payload too large for JSONP', 'error');
+      delete window[callbackName];
+      return;
+    }
 
     const script = document.createElement('script');
-    const params = 'callback=' + callbackName + '&action=saveChat&username=' + encodeURIComponent(currentUser) + 
-                   '&chatTitle=' + encodeURIComponent(chatName) + 
-                   '&chatData=' + encodeURIComponent(JSON.stringify(chatDataObj));
+    const params = 'callback=' + callbackName + '&action=saveChat&username=' + encodeURIComponent(currentUser) +
+                   '&chatTitle=' + encodeURIComponent(chatName) +
+                   '&chatData=' + encodedChatData +
+                   '&_t=' + Date.now();
     script.src = HISTORY_API + '?' + params;
+
+    const timeoutMs = 15000;
+    const timeoutId = setTimeout(() => {
+      hideLoading();
+      showError('Save timed out. Please try again.');
+      debugConsole.log('Failed to save chat: timeout', 'error');
+      try { script.remove(); } catch (e) {}
+      delete window[callbackName];
+    }, timeoutMs);
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      try { script.remove(); } catch (e) {}
+    };
+
+    const originalCallback = window[callbackName];
+    window[callbackName] = function(data) {
+      cleanup();
+      originalCallback(data);
+    };
+
     script.onerror = function() {
+      cleanup();
       hideLoading();
       showError('Failed to connect to server');
       debugConsole.log('Failed to save chat: connection error', 'error');
       delete window[callbackName];
     };
+
     document.body.appendChild(script);
   }
   
