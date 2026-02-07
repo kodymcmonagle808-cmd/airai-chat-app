@@ -3,20 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proxys - AirAI</title>
+  <title>Math Notes - Search</title>
   <meta name="theme-color" content="#040d01">
-  <meta name="description" content="Proxys - AirAI Platform">
+  <meta name="description" content="Web Proxy - AirAI Platform">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -32,967 +28,521 @@
     /* Animated Background */
     .background-animation {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0; overflow: hidden; pointer-events: none;
     }
 
     .bg-gradient {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.3;
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); opacity: 0.3;
       animation: float 20s infinite ease-in-out;
     }
-
-    .bg-gradient-1 {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, #2e7d32, #1b5e20);
-      top: -10%;
-      left: -10%;
-      animation-delay: 0s;
-    }
-
-    .bg-gradient-2 {
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, #1b5e20, #0d2818);
-      top: 50%;
-      right: -5%;
-      animation-delay: 7s;
-    }
-
-    .bg-gradient-3 {
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, #2e7d32, #0a1f0a);
-      bottom: -15%;
-      left: 30%;
-      animation-delay: 14s;
-    }
+    .bg-gradient-1 { width: 500px; height: 500px; background: radial-gradient(circle, #2e7d32, #1b5e20); top: -10%; left: -10%; }
+    .bg-gradient-2 { width: 400px; height: 400px; background: radial-gradient(circle, #1b5e20, #0d2818); top: 50%; right: -5%; animation-delay: 7s; }
+    .bg-gradient-3 { width: 600px; height: 600px; background: radial-gradient(circle, #2e7d32, #0a1f0a); bottom: -15%; left: 30%; animation-delay: 14s; }
 
     .grid-pattern {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        linear-gradient(rgba(46, 125, 50, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(46, 125, 50, 0.03) 1px, transparent 1px);
+      position: absolute; width: 100%; height: 100%;
+      background-image:
+        linear-gradient(rgba(46,125,50,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(46,125,50,0.03) 1px, transparent 1px);
       background-size: 50px 50px;
       animation: gridMove 30s linear infinite;
     }
 
-    /* Bubbles */
-    .bubble {
-      position: absolute;
-      bottom: -100px;
-      background: rgba(46, 125, 50, 0.15);
-      border: 2px solid rgba(129, 199, 132, 0.3);
-      border-radius: 50%;
-      animation: rise linear infinite;
-      box-shadow: 0 0 20px rgba(46, 125, 50, 0.2);
-    }
+    @keyframes float { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-30px) scale(1.1)} 66%{transform:translate(-20px,20px) scale(0.9)} }
+    @keyframes gridMove { 0%{transform:translate(0,0)} 100%{transform:translate(50px,50px)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes glow { 0%,100%{box-shadow:0 0 20px rgba(46,125,50,0.4)} 50%{box-shadow:0 0 40px rgba(46,125,50,0.6)} }
+    @keyframes spin { to{transform:rotate(360deg)} }
 
-    .bubble::before {
-      content: '';
-      position: absolute;
-      top: 10%;
-      left: 15%;
-      width: 30%;
-      height: 30%;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-    }
-
-    @keyframes rise {
-      to {
-        bottom: 110%;
-        transform: translateX(var(--drift)) rotate(360deg);
-      }
-    }
-
-    /* Fish */
-    .fish {
-      position: absolute;
-      animation: swim linear infinite;
-      opacity: 0.6;
-    }
-
-    .fish svg {
-      filter: drop-shadow(0 0 10px rgba(46, 125, 50, 0.4));
-    }
-
-    @keyframes swim {
-      0% {
-        left: -100px;
-        transform: translateY(0) scaleX(1);
-      }
-      48% {
-        transform: translateY(var(--wave)) scaleX(1);
-      }
-      50% {
-        transform: translateY(var(--wave)) scaleX(-1);
-      }
-      98% {
-        transform: translateY(0) scaleX(-1);
-      }
-      100% {
-        left: calc(100% + 100px);
-        transform: translateY(0) scaleX(-1);
-      }
-    }
-
-    @keyframes float {
-      0%, 100% {
-        transform: translate(0, 0) scale(1);
-      }
-      33% {
-        transform: translate(30px, -30px) scale(1.1);
-      }
-      66% {
-        transform: translate(-20px, 20px) scale(0.9);
-      }
-    }
-
-    @keyframes gridMove {
-      0% {
-        transform: translate(0, 0);
-      }
-      100% {
-        transform: translate(50px, 50px);
-      }
-    }
-
-    /* Ensure content is above background */
-    .header,
-    .main-content,
-    .page-footer {
-      position: relative;
-      z-index: 1;
-    }
+    .header, .main-content, .page-footer { position: relative; z-index: 1; }
 
     /* Header */
     .header {
-      background: #0d2818;
-      border-bottom: 1px solid #1a3d2e;
-      padding: 16px 0;
+      background: #0d2818; border-bottom: 1px solid #1a3d2e; padding: 16px 0;
     }
-
     .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      max-width: 1200px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
     .logo-icon {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       background: linear-gradient(135deg, #2e7d32, #1b5e20);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px rgba(46, 125, 50, 0.4);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px rgba(46,125,50,0.4);
     }
+    .logo-icon svg { width: 18px; height: 18px; color: #c8e6c9; }
+    .logo-text { font-size: 20px; font-weight: 700; color: #c8e6c9; }
 
-    .logo-icon svg {
-      width: 18px;
-      height: 18px;
-      color: #c8e6c9;
+    .header-links { display: flex; gap: 16px; align-items: center; }
+    .header-btn {
+      background: none; border: 1px solid #2e7d32; color: #81c784;
+      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
     }
+    .header-btn:hover { background: rgba(46,125,50,0.15); color: #c8e6c9; }
+    .header-btn.active { background: #2e7d32; color: #c8e6c9; }
 
-    .logo-text {
-      font-size: 20px;
-      font-weight: 700;
-      color: #c8e6c9;
-    }
-
-    .header-links {
-      display: flex;
-      gap: 32px;
-      align-items: center;
-    }
-
-    .header-link {
-      color: #81c784;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-
-    .header-link:hover {
-      color: #c8e6c9;
-    }
-
-    /* Main Content */
+    /* Main */
     .main-content {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 48px 24px;
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: flex-start; padding: 60px 24px 48px;
     }
 
-    .login-container {
-      width: 100%;
-      max-width: 440px;
+    /* Search Hero */
+    .search-hero {
+      text-align: center; margin-bottom: 40px; animation: fadeUp 0.5s ease;
     }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .login-title {
-      font-size: 28px;
-      font-weight: 700;
-      color: #c8e6c9;
-      margin-bottom: 8px;
-    }
-
-    .login-subtitle {
-      font-size: 15px;
-      color: #81c784;
-    }
-
-    /* Card */
-    .card {
-      background: #0d2818;
-      border-radius: 12px;
-      border: 1px solid #1a3d2e;
-      padding: 32px;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Form */
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 14px;
-      font-weight: 500;
-      color: #c8e6c9;
-      margin-bottom: 6px;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1px solid #1a3d2e;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #c8e6c9;
-      background: #0a1f0a;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: #2e7d32;
-      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
-    }
-
-    .form-input::placeholder {
-      color: #4a6b4a;
-    }
-
-    /* Button */
-    .btn-primary {
-      width: 100%;
-      padding: 12px 16px;
+    .search-hero-icon {
+      width: 72px; height: 72px;
       background: linear-gradient(135deg, #2e7d32, #1b5e20);
-      color: #c8e6c9;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+      border-radius: 18px; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px; animation: glow 3s infinite;
     }
-
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #388e3c, #1b5e20);
-      box-shadow: 0 6px 16px rgba(46, 125, 50, 0.4);
-      transform: translateY(-1px);
+    .search-hero-icon svg { width: 36px; height: 36px; color: #c8e6c9; }
+    .search-hero h1 {
+      font-size: 32px; font-weight: 800; color: #c8e6c9; margin-bottom: 8px;
     }
+    .search-hero p { font-size: 15px; color: #6b9b6b; max-width: 480px; line-height: 1.6; }
 
-    .btn-primary:active {
-      transform: scale(0.98);
+    /* Search Box */
+    .search-container {
+      width: 100%; max-width: 640px; margin-bottom: 32px; animation: fadeUp 0.5s ease 0.1s both;
     }
-
-    /* Alert */
-    .alert {
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      display: none;
+    .search-wrapper {
+      display: flex; gap: 0;
+      background: #0d2818; border: 2px solid #1a3d2e; border-radius: 14px;
+      overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
     }
-
-    .alert.show {
-      display: block;
+    .search-wrapper:focus-within {
+      border-color: #2e7d32; box-shadow: 0 0 0 3px rgba(46,125,50,0.25);
     }
-
-    .alert-error {
-      background: #1a0f0f;
-      color: #ef9a9a;
-      border: 1px solid #4a2626;
-    }
-
-    .alert-success {
-      background: #0f1a0f;
-      color: #a5d6a7;
-      border: 1px solid #2e4a2e;
-    }
-
-    /* Category Menu */
-    .category-menu {
-      display: none;
-    }
-
-    .category-menu.active {
-      display: block;
-    }
-
-    .category-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .category-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 24px 16px;
-      background: #0a1f0a;
-      border: 2px solid #1a3d2e;
-      border-radius: 12px;
-      color: #c8e6c9;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .category-btn:hover {
-      border-color: #2e7d32;
-      background: #122a12;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
-    }
-
-    .category-btn.selected {
-      border-color: #2e7d32;
-      background: linear-gradient(135deg, rgba(46, 125, 50, 0.2), rgba(27, 94, 32, 0.1));
-      box-shadow: 0 0 20px rgba(46, 125, 50, 0.2);
-    }
-
-    .category-icon {
-      font-size: 32px;
-      line-height: 1;
-    }
-
-    /* Dropdown Panel */
-    .dropdown-panel {
-      display: none;
-      margin-top: 16px;
-    }
-
-    .dropdown-panel.active {
-      display: block;
-    }
-
-    .dropdown-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .dropdown-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #c8e6c9;
-    }
-
-    .dropdown-back {
-      background: none;
-      border: 1px solid #1a3d2e;
-      color: #81c784;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .dropdown-back:hover {
-      background: #1a3d2e;
-      color: #c8e6c9;
-      border-color: #2e7d32;
-    }
-
-    .dropdown-select {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1px solid #1a3d2e;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #c8e6c9;
-      background: #0a1f0a;
-      transition: all 0.2s;
-      font-family: inherit;
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2381c784' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-    }
-
-    .dropdown-select:focus {
+    .search-input {
+      flex: 1; border: none; background: transparent; color: #e8f5e9;
+      font-size: 15px; font-family: inherit; padding: 16px 20px;
       outline: none;
-      border-color: #2e7d32;
-      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+    }
+    .search-input::placeholder { color: #4a7a4a; }
+    .search-btn {
+      background: linear-gradient(135deg, #2e7d32, #1b5e20); border: none;
+      color: #c8e6c9; padding: 16px 24px; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .search-btn:hover { background: linear-gradient(135deg, #388e3c, #2e7d32); }
+    .search-btn svg { width: 18px; height: 18px; }
+
+    /* Mode Tabs */
+    .mode-tabs {
+      display: flex; gap: 8px; margin-bottom: 24px; animation: fadeUp 0.5s ease 0.15s both;
+    }
+    .mode-tab {
+      background: rgba(13,40,24,0.6); border: 1px solid #1a3d2e;
+      color: #6b9b6b; padding: 10px 20px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    }
+    .mode-tab:hover { border-color: #2e7d32; color: #81c784; }
+    .mode-tab.active { background: rgba(46,125,50,0.15); border-color: #2e7d32; color: #c8e6c9; }
+    .mode-tab svg { width: 14px; height: 14px; }
+
+    /* Results Area */
+    .results-area {
+      width: 100%; max-width: 640px; animation: fadeUp 0.5s ease 0.2s both;
+    }
+    .results-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px; padding: 0 4px;
+    }
+    .results-title { font-size: 14px; font-weight: 600; color: #81c784; }
+    .results-count { font-size: 12px; color: #4a7a4a; }
+
+    .result-card {
+      background: rgba(13,40,24,0.5); border: 1px solid #1a3d2e;
+      border-radius: 12px; padding: 16px 20px; margin-bottom: 10px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .result-card:hover {
+      border-color: #2e7d32; background: rgba(13,40,24,0.8);
+      transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .result-url { font-size: 12px; color: #4a7a4a; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .result-title { font-size: 15px; font-weight: 600; color: #81c784; margin-bottom: 6px; }
+    .result-snippet { font-size: 13px; color: #6b9b6b; line-height: 1.5; }
+
+    /* Direct URL input */
+    .url-section {
+      width: 100%; max-width: 640px; margin-top: 8px;
+      animation: fadeUp 0.5s ease 0.25s both;
+    }
+    .url-hint {
+      font-size: 12px; color: #4a7a4a; text-align: center;
+      margin-top: 16px; line-height: 1.5;
     }
 
-    .dropdown-select option {
-      background: #0a1f0a;
-      color: #c8e6c9;
+    /* Loading */
+    .loading {
+      display: none; text-align: center; padding: 40px;
     }
+    .loading.show { display: block; }
+    .loading-spinner {
+      width: 32px; height: 32px; border: 3px solid #1a3d2e;
+      border-top-color: #2e7d32; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+    }
+    .loading-text { font-size: 13px; color: #6b9b6b; }
 
-    .item-preview {
-      margin-top: 16px;
-      padding: 16px;
-      background: rgba(46, 125, 50, 0.08);
-      border: 1px solid #1a3d2e;
-      border-radius: 8px;
-      display: none;
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 48px 24px; color: #4a7a4a;
     }
+    .empty-state svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.4; }
+    .empty-state p { font-size: 14px; line-height: 1.6; }
 
-    .item-preview.active {
-      display: block;
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #0d2818; border: 1px solid #2e7d32; border-radius: 10px;
+      padding: 12px 20px; color: #c8e6c9; font-size: 13px; font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 500;
+      transition: transform 0.3s ease; display: flex; align-items: center; gap: 8px;
     }
-
-    .item-preview-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #c8e6c9;
-      margin-bottom: 8px;
-    }
-
-    .item-preview-desc {
-      font-size: 13px;
-      color: #81c784;
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
-
-    .btn-launch {
-      width: 100%;
-      padding: 12px 16px;
-      background: linear-gradient(135deg, #2e7d32, #1b5e20);
-      color: #c8e6c9;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
-    }
-
-    .btn-launch:hover {
-      background: linear-gradient(135deg, #388e3c, #1b5e20);
-      box-shadow: 0 6px 16px rgba(46, 125, 50, 0.4);
-      transform: translateY(-1px);
-    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
 
     /* Footer */
     .page-footer {
+      text-align: center; padding: 24px; border-top: 1px solid #1a3d2e;
       background: #0d2818;
-      border-top: 1px solid #1a3d2e;
-      padding: 24px 0;
-      margin-top: auto;
+    }
+    .page-footer p { font-size: 12px; color: #4a7a4a; }
+
+    /* Iframe overlay for browsing */
+    .browse-overlay {
+      display: none; position: fixed; inset: 0;
+      background: #0a1f0a; z-index: 9999;
+      flex-direction: column;
+    }
+    .browse-overlay.show { display: flex; }
+
+    .browse-toolbar {
+      display: flex; align-items: center; gap: 8px;
+      background: #0d2818; border-bottom: 1px solid #1a3d2e;
+      padding: 8px 16px; flex-shrink: 0;
+    }
+    .browse-back-btn {
+      background: rgba(46,125,50,0.15); border: 1px solid #2e7d32; color: #81c784;
+      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .browse-back-btn:hover { background: #2e7d32; color: #c8e6c9; }
+    .browse-back-btn svg { width: 14px; height: 14px; }
+    .browse-url-bar {
+      flex: 1; background: #0a1f0a; border: 1px solid #1a3d2e; border-radius: 8px;
+      padding: 8px 14px; color: #6b9b6b; font-size: 13px; font-family: inherit;
+      outline: none; transition: border-color 0.2s;
+    }
+    .browse-url-bar:focus { border-color: #2e7d32; color: #c8e6c9; }
+    .browse-go-btn {
+      background: linear-gradient(135deg, #2e7d32, #1b5e20); border: none;
+      color: #c8e6c9; padding: 8px 16px; border-radius: 8px; font-size: 13px;
+      font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s;
+    }
+    .browse-go-btn:hover { background: linear-gradient(135deg, #388e3c, #2e7d32); }
+    .browse-cloak-btn {
+      background: none; border: 1px solid #1a3d2e; color: #6b9b6b;
+      padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .browse-cloak-btn:hover { border-color: #2e7d32; color: #81c784; }
+
+    .browse-frame {
+      flex: 1; border: none; width: 100%; background: #fff;
     }
 
-    .page-footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .footer-text {
-      font-size: 13px;
-      color: #66bb6a;
-    }
-
-    .footer-nav {
-      display: flex;
-      gap: 24px;
-    }
-
-    .footer-nav a {
-      font-size: 13px;
-      color: #66bb6a;
-      text-decoration: none;
-    }
-
-    .footer-nav a:hover {
-      color: #c8e6c9;
-    }
-
-    /* Responsive */
     @media (max-width: 640px) {
-      .header-links {
-        display: none;
-      }
-
-      .card {
-        padding: 24px;
-      }
-
-      .login-title {
-        font-size: 24px;
-      }
-
-      .category-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .page-footer-content {
-        flex-direction: column;
-        text-align: center;
-      }
+      .search-hero h1 { font-size: 24px; }
+      .header-links { gap: 8px; }
+      .header-btn { padding: 6px 10px; font-size: 12px; }
+      .mode-tabs { flex-wrap: wrap; justify-content: center; }
+      .browse-toolbar { flex-wrap: wrap; }
     }
   </style>
 </head>
 <body>
-  <!-- Animated Background -->
-  <div class="background-animation">
-    <div class="grid-pattern"></div>
-    <div class="bg-gradient bg-gradient-1"></div>
-    <div class="bg-gradient bg-gradient-2"></div>
-    <div class="bg-gradient bg-gradient-3"></div>
+
+<div class="background-animation">
+  <div class="bg-gradient bg-gradient-1"></div>
+  <div class="bg-gradient bg-gradient-2"></div>
+  <div class="bg-gradient bg-gradient-3"></div>
+  <div class="grid-pattern"></div>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-content">
+    <a href="#" class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <span class="logo-text">AirAI · Proxy</span>
+    </a>
+    <div class="header-links">
+      <button class="header-btn" onclick="openAboutBlank()" title="Open this page in about:blank">
+        🛡️ Cloak
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+  <div class="search-hero">
+    <div class="search-hero-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </div>
+    <h1>Web Proxy</h1>
+    <p>Search Google or enter a URL directly. Results open in a cloaked browser so nothing shows in your history.</p>
   </div>
 
-  <!-- Header -->
-  <header class="header">
-    <div class="header-content">
-      <a href="login.html" class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
-          </svg>
-        </div>
-        <span class="logo-text">AirAI · Proxys</span>
-      </a>
-      <nav class="header-links">
-        <a href="login.html" class="header-link">← Back to Login</a>
-      </nav>
+  <!-- Search Box -->
+  <div class="search-container">
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search Google or enter a URL..." autocomplete="off" autofocus>
+      <button class="search-btn" onclick="performSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Search
+      </button>
     </div>
-  </header>
+  </div>
 
-  <!-- Main Content -->
-  <main class="main-content">
-    <div class="login-container">
-      <!-- Auth Code Screen -->
-      <div id="authScreen">
-        <div class="login-header">
-          <h1 class="login-title">🌐 Proxys</h1>
-          <p class="login-subtitle">Enter your auth code to continue</p>
-        </div>
+  <!-- Mode Tabs -->
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="search" onclick="switchMode('search')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Search
+    </button>
+    <button class="mode-tab" data-mode="url" onclick="switchMode('url')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Direct URL
+    </button>
+  </div>
 
-        <div class="card">
-          <div id="alertError" class="alert alert-error"></div>
-          <div id="alertSuccess" class="alert alert-success"></div>
-
-          <form onsubmit="handleAuthCode(event)">
-            <div class="form-group">
-              <label class="form-label" for="authCode">Member Key</label>
-              <input 
-                type="text" 
-                id="authCode" 
-                class="form-input" 
-                placeholder="Enter your 6-digit code"
-                maxlength="6"
-                autocomplete="off"
-                required
-                style="text-align: center; font-size: 24px; letter-spacing: 8px; font-family: 'Courier New', monospace;"
-              >
-            </div>
-
-            <button type="submit" id="authBtn" class="btn-primary">Verify & Enter</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Category Menu Screen -->
-      <div id="menuScreen" class="category-menu">
-        <div class="login-header">
-          <h1 class="login-title">🌐 Proxys</h1>
-          <p class="login-subtitle">Welcome, <strong id="menuUsername">User</strong> — pick a category</p>
-        </div>
-
-        <div class="card">
-          <!-- Category Grid -->
-          <div id="categoryGrid" class="category-grid">
-            <button class="category-btn" onclick="selectCategory('proxys')">
-              <span class="category-icon">🔗</span>
-              Proxys
-            </button>
-            <button class="category-btn" onclick="selectCategory('games')">
-              <span class="category-icon">🎮</span>
-              Games
-            </button>
-            <button class="category-btn" onclick="selectCategory('movies')">
-              <span class="category-icon">🎬</span>
-              Movies
-            </button>
-            <button class="category-btn" onclick="selectCategory('other')">
-              <span class="category-icon">📦</span>
-              Other
-            </button>
-          </div>
-
-          <!-- Dropdown Panel (shown after picking a category) -->
-          <div id="dropdownPanel" class="dropdown-panel">
-            <div class="dropdown-header">
-              <span class="dropdown-title" id="dropdownTitle">Proxys</span>
-              <button class="dropdown-back" onclick="goBackToCategories()">← Back</button>
-            </div>
-
-            <select id="itemDropdown" class="dropdown-select" onchange="selectItem()">
-              <option value="">-- Select an option --</option>
-            </select>
-
-            <div id="itemPreview" class="item-preview">
-              <div class="item-preview-title" id="previewTitle"></div>
-              <div class="item-preview-desc" id="previewDesc"></div>
-              <button class="btn-launch" id="launchBtn" onclick="launchItem()">Open →</button>
-            </div>
-          </div>
-        </div>
-      </div>
+  <!-- Results Area -->
+  <div class="results-area" id="resultsArea">
+    <div class="empty-state" id="emptyState">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <p>Type a search query and press Enter to search Google.<br>Or switch to <strong>Direct URL</strong> mode to open any site.</p>
     </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="page-footer">
-    <div class="page-footer-content">
-      <p class="footer-text">© 2026 AirAI, Inc. All rights reserved. · <span style="color: #4a6b4a;">v1.3</span></p>
-      <nav class="footer-nav">
-        <a href="login.html">Login</a>
-      </nav>
+    <div class="loading" id="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Searching Google...</div>
     </div>
-  </footer>
+    <div id="resultsList"></div>
+  </div>
 
-  <script>
-    // ============================================
-    // BACKGROUND ANIMATIONS (same as login.html)
-    // ============================================
-    function createBubbles() {
-      const bgAnimation = document.querySelector('.background-animation');
-      const bubbleCount = 15;
-      for (let i = 0; i < bubbleCount; i++) {
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        const size = Math.random() * 60 + 20;
-        const startPos = Math.random() * 100;
-        const drift = (Math.random() - 0.5) * 200;
-        const duration = Math.random() * 10 + 10;
-        const delay = Math.random() * 5;
-        bubble.style.width = size + 'px';
-        bubble.style.height = size + 'px';
-        bubble.style.left = startPos + '%';
-        bubble.style.animationDuration = duration + 's';
-        bubble.style.animationDelay = delay + 's';
-        bubble.style.setProperty('--drift', drift + 'px');
-        bgAnimation.appendChild(bubble);
-      }
+  <div class="url-hint">
+    All results open in an embedded browser. Click "Cloak" to pop out to an about:blank tab.
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="page-footer">
+  <p>&copy; 2025 AirAI Platform</p>
+</footer>
+
+<!-- Browse Overlay (embedded browser) -->
+<div class="browse-overlay" id="browseOverlay">
+  <div class="browse-toolbar">
+    <button class="browse-back-btn" onclick="closeBrowse()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <input type="text" class="browse-url-bar" id="browseUrlBar" placeholder="URL" readonly>
+    <button class="browse-go-btn" onclick="navigateBrowse()">Go</button>
+    <button class="browse-cloak-btn" onclick="cloakCurrent()">🛡️ Pop to about:blank</button>
+  </div>
+  <iframe class="browse-frame" id="browseFrame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" allowfullscreen></iframe>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ==========================
+  // STATE
+  // ==========================
+  let currentMode = 'search';
+  let currentBrowseUrl = '';
+
+  // ==========================
+  // SEARCH INPUT HANDLING
+  // ==========================
+  document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') performSearch();
+  });
+
+  function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('[data-mode="' + mode + '"]').classList.add('active');
+
+    const input = document.getElementById('searchInput');
+    if (mode === 'search') {
+      input.placeholder = 'Search Google or enter a URL...';
+    } else {
+      input.placeholder = 'Enter a URL (e.g. example.com)...';
     }
+    input.focus();
+  }
 
-    function createFish() {
-      const bgAnimation = document.querySelector('.background-animation');
-      const fishCount = 8;
-      const fishSVG = '<svg width="60" height="30" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 15C5 15 10 5 25 5C35 5 45 10 55 15C45 20 35 25 25 25C10 25 5 15 5 15Z" fill="rgba(46, 125, 50, 0.4)" stroke="rgba(129, 199, 132, 0.6)" stroke-width="1.5"/><circle cx="35" cy="15" r="2" fill="rgba(200, 230, 201, 0.8)"/><path d="M5 15L0 10L0 20L5 15Z" fill="rgba(46, 125, 50, 0.4)" stroke="rgba(129, 199, 132, 0.6)" stroke-width="1.5"/></svg>';
-      for (let i = 0; i < fishCount; i++) {
-        const fish = document.createElement('div');
-        fish.className = 'fish';
-        fish.innerHTML = fishSVG;
-        const yPos = Math.random() * 80 + 10;
-        const wave = (Math.random() - 0.5) * 100;
-        const duration = Math.random() * 8 + 8;
-        const delay = Math.random() * 3;
-        const scale = Math.random() * 0.5 + 0.7;
-        fish.style.top = yPos + '%';
-        fish.style.animationDuration = duration + 's';
-        fish.style.animationDelay = delay + 's';
-        fish.style.setProperty('--wave', wave + 'px');
-        fish.style.transform = 'scale(' + scale + ')';
-        bgAnimation.appendChild(fish);
-      }
+  // ==========================
+  // DETECT IF INPUT IS A URL
+  // ==========================
+  function looksLikeUrl(str) {
+    return /^(https?:\/\/)/i.test(str) ||
+           /^[a-zA-Z0-9]([a-zA-Z0-9-]*\.)+[a-zA-Z]{2,}(\/.*)?$/.test(str);
+  }
+
+  function ensureProtocol(url) {
+    if (!/^https?:\/\//i.test(url)) return 'https://' + url;
+    return url;
+  }
+
+  // ==========================
+  // PERFORM SEARCH / OPEN URL
+  // ==========================
+  function performSearch() {
+    var query = document.getElementById('searchInput').value.trim();
+    if (!query) return;
+
+    if (currentMode === 'url' || looksLikeUrl(query)) {
+      openInBrowse(ensureProtocol(query));
+    } else {
+      doGoogleSearch(query);
     }
+  }
 
-    createBubbles();
-    createFish();
+  // ==========================
+  // GOOGLE SEARCH via scraping
+  // ==========================
+  function doGoogleSearch(query) {
+    var resultsList = document.getElementById('resultsList');
+    var emptyState = document.getElementById('emptyState');
+    var loading = document.getElementById('loading');
 
-    // ============================================
-    // CATEGORY DATA (placeholder — fill in later)
-    // ============================================
-    const categoryData = {
-      proxys: {
-        title: 'Proxys',
-        icon: '🔗',
-        items: [
-          { name: 'Utopia', description: 'Web proxy service', url: 'https://study.chayden.fays.nettelcorp.net/', iframe: true },
-          { name: 'Utopia 2.0 ⚠️', description: 'Alternate Utopia proxy', url: 'https://ererreererer.salavat.ru/', iframe: true },
-          { name: 'PeteZah ⚠️', description: 'Web proxy service', url: 'https://petezahplsmakemeadmin.klinikkenoj.dk/', iframe: true },
-          { name: 'Truffled ⚠️', description: 'Web proxy service', url: 'https://qwqwqwqwqw.salavat.ru/', iframe: true },
-          { name: 'Interstellar ⚠️', description: 'Web proxy service', url: 'https://ytytytytytyty.gixiqpyp.top/', iframe: true },
-          { name: 'EDUrocks 3.0 ⚠️', description: 'Web proxy service', url: 'https://cdn-core-docs.s3.us-east-2.amazonaws.com/index.html', iframe: true },
-          { name: 'Shadow V3 ⚠️', description: 'Web proxy service', url: 'https://opopoppopo.redijav.de/', iframe: true },
-          { name: 'Latte ⚠️', description: 'Web proxy service', url: 'https://lunar.molkify.gay/', iframe: true },
-          { name: 'Rammerhead ⚠️', description: 'Session-based web proxy', url: 'https://browser1.rbkmath.eu.org/', iframe: true },
-          { name: 'Valera', description: 'Web proxy service', url: 'https://cfisd.mathforkids.buzz.cdn.cloudflare.net/', iframe: true },
-          { name: 'Dogeub ⚠️', description: 'Web proxy service', url: 'https://tyytyttyty.salavat.ru/', iframe: true },
-          { name: 'Rosin ⚠️', description: 'Web proxy service', url: 'https://jewsofisrael.halfwaythere.ca/', iframe: true }
-        ]
-      },
-      games: {
-        title: 'Games',
-        icon: '🎮',
-        items: [
-          { name: 'Tiny Exams', description: 'Browser games collection', url: 'https://duck.tinyexams.com/', iframe: true },
-          { name: 'MSN', description: 'MSN browser games', url: 'https://www.msn.com/en-us/play', iframe: false },
-          { name: 'MSN #2', description: 'MSN browser games (alt)', url: 'https://www.msn.com/en-us/play?c', iframe: false },
-          { name: 'Unblocked Games Google Doc', description: 'Google Doc with game links', url: 'https://docs.google.com/document/d/1_heBrHyf0uybE4EyUxAgu2HCDU1FnnDn9oRALwgKQnw/edit?tab=t.0', iframe: false },
-          { name: 'gn-math', description: 'Browser games', url: 'https://namerecord.con.tc/', iframe: true },
-          { name: 'Unblocked Games G+', description: 'Google Sites games collection', url: 'https://sites.google.com/classroom.center/view/', iframe: false },
-          { name: 'Unblocked Games 76', description: 'Classic unblocked games', url: 'https://sites.google.com/view/unblocked-game76', iframe: false },
-          { name: 'Unblocked Games 66', description: 'Classic unblocked games', url: 'https://sites.google.com/site/unblockedgames4me/', iframe: false },
-          { name: 'Unblocked Games 6x', description: 'Classroom 6x game portal', url: 'https://sites.google.com/view/classroom6x/', iframe: false },
-          { name: 'Unblocked Games 77 Premium', description: 'Premium unblocked games', url: 'https://sites.google.com/site/unblockedgames77/', iframe: false },
-          { name: 'Unblocked Games WTF', description: 'Unblocked games collection', url: 'https://sites.google.com/site/unblockedwtf/games', iframe: false }
-        ]
-      },
-      movies: {
-        title: 'Movies',
-        icon: '🎬',
-        items: [
-          { name: 'Broflix', description: 'Free movie streaming', url: 'https://broflix.io/', iframe: false },
-          { name: 'Plex TV', description: 'Free streaming from Plex', url: 'https://watch.plex.tv/m', iframe: false },
-          { name: 'Plex TV #2', description: 'Plex free streaming (alt)', url: 'https://www.plex.tv/watch-free/', iframe: false },
-          { name: 'X Prime TV', description: 'Free movie streaming', url: 'https://xprime.tv/', iframe: false },
-          { name: 'Movies HD', description: 'HD movie streaming', url: 'https://movieshdwatch.to/', iframe: false },
-          { name: 'Bitcine', description: 'Free movie streaming', url: 'https://www.bitcine.app/', iframe: false },
-          { name: 'MoviesNChill', description: 'Free movie streaming', url: 'https://moviesnchill.net/', iframe: false },
-          { name: 'Wordlys Films', description: 'Free movie streaming', url: 'https://wordlys.com/#google_vignette', iframe: false },
-          { name: 'Cineby', description: 'Free movie streaming', url: 'https://www.cineby.gd/', iframe: false },
-          { name: 'VeloraTV', description: 'Free movie streaming', url: 'https://veloratv.ru/', iframe: false },
-          { name: 'Flixer Movies', description: 'Free movie streaming', url: 'https://flixer.sh/', iframe: false },
-          { name: 'Aether TV', description: 'Free movie streaming', url: 'https://aether.mom/', iframe: false },
-          { name: 'FlickyStream', description: 'Free movie streaming', url: 'https://flickystream.ru/', iframe: false }
-        ]
-      },
-      other: {
-        title: 'Other',
-        icon: '📦',
-        items: [
-          { name: 'ChatGPT', description: 'Free ChatGPT access', url: 'https://free.xyhelper.cn/list', iframe: false },
-          { name: 'ERNIE', description: 'Baidu AI assistant', url: 'https://ernie.baidu.com/', iframe: false },
-          { name: 'Solar Pro 2', description: 'Upstage AI playground', url: 'https://console.upstage.ai/playground/chat', iframe: false },
-          { name: 'Gradient', description: 'Gradient AI chat', url: 'https://chat.gradient.network/', iframe: false },
-          { name: 'Flexi', description: 'CK12 student tools', url: 'https://www.ck12.org/student/', iframe: false },
-          { name: 'WolframAlpha', description: 'Computational knowledge engine', url: 'https://www.wolframalpha.com/', iframe: false },
-          { name: 'Math Bot', description: 'AI math solver', url: 'https://math.bot/', iframe: false },
-          { name: 'MathGPT', description: 'AI math assistant', url: 'https://math.now/', iframe: false },
-          { name: 'Lightspeed AI', description: 'Lightspeed Systems AI', url: 'https://www.lightspeedsystems.com/', iframe: false }
-        ]
-      }
-    };
+    emptyState.style.display = 'none';
+    resultsList.innerHTML = '';
+    loading.classList.add('show');
 
-    let currentCategory = null;
-    let verifiedMemberKey = null;
+    // Use Google search URL directly in the embedded browser
+    var googleUrl = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
+    loading.classList.remove('show');
+    openInBrowse(googleUrl);
+  }
 
-    // ============================================
-    // AUTO-FILL FROM URL PARAM
-    // ============================================
-    (function() {
-      const params = new URLSearchParams(window.location.search);
-      const memberKey = params.get('memberKey');
-      if (memberKey) {
-        document.getElementById('authCode').value = memberKey;
-        // Auto-submit if key was passed
-        setTimeout(() => {
-          document.querySelector('#authScreen form').dispatchEvent(new Event('submit'));
-        }, 300);
-      }
-    })();
+  // ==========================
+  // EMBEDDED BROWSER
+  // ==========================
+  function openInBrowse(url) {
+    currentBrowseUrl = url;
+    document.getElementById('browseUrlBar').value = url;
+    document.getElementById('browseFrame').src = url;
+    document.getElementById('browseOverlay').classList.add('show');
+  }
 
-    // ============================================
-    // AUTH CODE VERIFICATION (same API as login)
-    // ============================================
-    function handleAuthCode(e) {
-      e.preventDefault();
+  function closeBrowse() {
+    document.getElementById('browseOverlay').classList.remove('show');
+    document.getElementById('browseFrame').src = '';
+    currentBrowseUrl = '';
+  }
 
-      const code = document.getElementById('authCode').value.trim();
+  function navigateBrowse() {
+    var url = document.getElementById('browseUrlBar').value.trim();
+    if (!url) return;
+    url = ensureProtocol(url);
+    openInBrowse(url);
+  }
 
-      document.getElementById('alertError').classList.remove('show');
-      document.getElementById('alertSuccess').classList.remove('show');
+  document.getElementById('browseUrlBar').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') navigateBrowse();
+  });
+  // Make URL bar editable when clicked
+  document.getElementById('browseUrlBar').addEventListener('focus', function() {
+    this.removeAttribute('readonly');
+  });
+  document.getElementById('browseUrlBar').addEventListener('blur', function() {
+    this.setAttribute('readonly', '');
+  });
 
-      if (!code) {
-        showAlert('error', 'Please enter your member key.');
-        return;
-      }
+  // ==========================
+  // CLOAK TO ABOUT:BLANK
+  // ==========================
+  function cloakCurrent() {
+    var url = currentBrowseUrl || document.getElementById('browseUrlBar').value.trim();
+    if (!url) { showToast('No URL to cloak'); return; }
+    url = ensureProtocol(url);
+    openCloaked(url);
+    closeBrowse();
+    showToast('Opened in about:blank tab');
+  }
 
-      const btn = document.getElementById('authBtn');
-      const originalText = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = 'Verifying...';
+  function openAboutBlank() {
+    openCloaked(window.location.href);
+    window.location.replace('https://google.com');
+  }
 
-      const callbackName = 'verifyCallback' + Date.now();
-      window[callbackName] = function(data) {
-        btn.disabled = false;
-        btn.textContent = originalText;
+  function openCloaked(url) {
+    var win = window.open('about:blank', '_blank');
+    if (win) {
+      win.document.title = 'Math Notes';
+      var link = win.document.createElement('link');
+      link.rel = 'icon';
+      link.type = 'image/svg+xml';
+      link.href = new URL('favicon.svg', window.location.href).href;
+      win.document.head.appendChild(link);
 
-        if (data.success) {
-          verifiedMemberKey = code;
-          showAlert('success', 'Access granted!');
-          setTimeout(() => {
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('menuScreen').classList.add('active');
-            document.getElementById('menuUsername').textContent = data.username || 'User';
-          }, 600);
-        } else {
-          showAlert('error', data.error || 'Invalid or expired code. Please try again.');
-        }
-
-        delete window[callbackName];
-      };
-
-      const script = document.createElement('script');
-      script.src = 'https://script.google.com/macros/s/AKfycbzHDXl45MX96gaOlKPeqD4Q75nNeDm1cMUvQpc0GWVXHSE8ErnMbkZ6GSMnO9zTbFO_Bg/exec?action=validateCode&code=' +
-                   encodeURIComponent(code) + '&callback=' + callbackName;
-      script.onerror = function() {
-        btn.disabled = false;
-        btn.textContent = originalText;
-        showAlert('error', 'Connection failed. Please try again.');
-        delete window[callbackName];
-      };
-      document.body.appendChild(script);
+      win.document.body.style.margin = '0';
+      win.document.body.style.height = '100vh';
+      win.document.body.style.overflow = 'hidden';
+      var iframe = win.document.createElement('iframe');
+      iframe.style.border = 'none';
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      iframe.style.margin = '0';
+      iframe.style.position = 'fixed';
+      iframe.style.top = '0';
+      iframe.style.left = '0';
+      iframe.src = url;
+      win.document.body.appendChild(iframe);
     }
+  }
 
-    function showAlert(type, message) {
-      const id = type === 'error' ? 'alertError' : 'alertSuccess';
-      const el = document.getElementById(id);
-      el.textContent = message;
-      el.classList.add('show');
-    }
+  // ==========================
+  // TOAST
+  // ==========================
+  function showToast(msg) {
+    var toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 2500);
+  }
+</script>
 
-    // ============================================
-    // CATEGORY SELECTION
-    // ============================================
-    function selectCategory(category) {
-      currentCategory = category;
-      const data = categoryData[category];
-
-      // Highlight selected button
-      document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('selected'));
-      event.currentTarget.classList.add('selected');
-
-      // Update dropdown
-      document.getElementById('dropdownTitle').textContent = data.icon + ' ' + data.title;
-      const dropdown = document.getElementById('itemDropdown');
-      dropdown.innerHTML = '<option value="">-- Select an option --</option>';
-      data.items.forEach(function(item, index) {
-        const opt = document.createElement('option');
-        opt.value = index;
-        opt.textContent = item.name;
-        dropdown.appendChild(opt);
-      });
-
-      // Hide category grid, show dropdown
-      document.getElementById('categoryGrid').style.display = 'none';
-      document.getElementById('dropdownPanel').classList.add('active');
-      document.getElementById('itemPreview').classList.remove('active');
-    }
-
-    function goBackToCategories() {
-      currentCategory = null;
-      document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('selected'));
-      document.getElementById('categoryGrid').style.display = 'grid';
-      document.getElementById('dropdownPanel').classList.remove('active');
-      document.getElementById('itemPreview').classList.remove('active');
-    }
-
-    function selectItem() {
-      const dropdown = document.getElementById('itemDropdown');
-      const idx = dropdown.value;
-
-      if (idx === '' || !currentCategory) {
-        document.getElementById('itemPreview').classList.remove('active');
-        return;
-      }
-
-      const item = categoryData[currentCategory].items[idx];
-      document.getElementById('previewTitle').textContent = item.name;
-      document.getElementById('previewDesc').textContent = item.description;
-      document.getElementById('launchBtn').setAttribute('data-url', item.url);
-      document.getElementById('launchBtn').setAttribute('data-iframe', item.iframe ? 'true' : 'false');
-      document.getElementById('itemPreview').classList.add('active');
-    }
-
-    function launchItem() {
-      const url = document.getElementById('launchBtn').getAttribute('data-url');
-      const useIframe = document.getElementById('launchBtn').getAttribute('data-iframe') === 'true';
-      if (url && url !== '#') {
-        if (useIframe) {
-          // Open in about:blank iframe to hide URL
-          var win = window.open();
-          win.document.body.style.margin = '0';
-          win.document.body.style.height = '100vh';
-          var iframe = win.document.createElement('iframe');
-          iframe.style.border = 'none';
-          iframe.style.width = '100%';
-          iframe.style.height = '100%';
-          iframe.style.margin = '0';
-          iframe.src = url;
-          win.document.body.appendChild(iframe);
-        } else {
-          window.open(url, '_blank');
-        }
-      }
-    }
-  </script>
 </body>
 </html>
