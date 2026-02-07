@@ -21,7 +21,8 @@ var GITHUB_PAGES = 'https://kodymcmonagle808-cmd.github.io/airai-chat-app/';
 var JSDELIVR_CDN = 'https://cdn.jsdelivr.net/gh/kodymcmonagle808-cmd/airai-chat-app@main/';
 
 function doGet(e) {
-  var page = e.parameter.p || 'index.html';
+  // Default straight to login.html (skip index.html — it's just the cloaking launcher)
+  var page = e.parameter.p || 'login.html';
 
   // External fetch for proxy page
   if (e.parameter.fetch) {
@@ -60,12 +61,21 @@ function getPage(page) {
   var resp = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
   var html = resp.getContentText();
 
-  // Inject <base href> for CSS / images / fonts from jsDelivr
-  html = html.replace('<head>', '<head><base href="' + JSDELIVR_CDN + '">');
+  // Inject PROXY_BASE variable FIRST (other code checks for it)
+  var proxyScript = '<script>var PROXY_BASE = "' + scriptUrl + '";</script>';
+  html = html.replace('<head>', '<head>' + proxyScript);
 
-  // Disable about:blank cloaking redirect (we're already proxied)
-  html = html.replace(/window\.open\s*\(\s*['"]about:blank['"]/g,
-    '/* cloaking disabled */ void(0 && window.open("about:blank"');
+  // Inject <base href> for CSS / images / fonts from jsDelivr
+  html = html.replace('<head>' + proxyScript, '<head>' + proxyScript + '<base href="' + JSDELIVR_CDN + '">');
+
+  // Disable the fish-movement about:blank cloaking in login.html
+  // (We're already proxied through Google, no need to cloak)
+  // This injects an early-return so the fishCloakDetector no-ops.
+  // Does NOT affect about:blank in proxys.html, links.html, unblocked-games.html
+  html = html.replace(
+    '(function fishCloakDetector() {',
+    '(function fishCloakDetector() { if(typeof PROXY_BASE!=="undefined") return;'
+  );
 
   // Rewrite iframe.src = 'page.html' → window.location.href = 'SCRIPT?p=page.html'
   html = html.replace(
@@ -144,10 +154,6 @@ function getPage(page) {
       }
     }
   );
-
-  // Inject PROXY_BASE variable so proxy page can use it
-  var proxyScript = '<script>var PROXY_BASE = "' + scriptUrl + '";</script>';
-  html = html.replace('<head>', '<head>' + proxyScript);
 
   return html;
 }
