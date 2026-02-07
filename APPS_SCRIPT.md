@@ -139,7 +139,12 @@ function getPage(page) {
     + '  }'
     + '});'
     + '</script>';
-  html = html.replace('</body>', clickInterceptor + '</body>');
+  var bodyCloseIndex = html.toLowerCase().lastIndexOf('</body>');
+  if (bodyCloseIndex > -1) {
+    html = html.slice(0, bodyCloseIndex) + clickInterceptor + html.slice(bodyCloseIndex);
+  } else {
+    html += clickInterceptor;
+  }
 
   // Inline Google Fonts (fetch CSS so fonts load without external stylesheet request)
   html = html.replace(
