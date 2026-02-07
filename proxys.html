@@ -242,49 +242,55 @@
 
   <!-- Bypass Method Selector -->
   <div class="method-bar">
-    <button class="method-btn active" data-method="google-translate" onclick="setMethod('google-translate')">
-      <span class="dot"></span> Google Translate
+    <button class="method-btn active" data-method="apps-script" onclick="setMethod('apps-script')">
+      <span class="dot"></span> Apps Script Proxy
+    </button>
+    <button class="method-btn" data-method="allorigins" onclick="setMethod('allorigins')">
+      <span class="dot"></span> AllOrigins
+    </button>
+    <button class="method-btn" data-method="wayback" onclick="setMethod('wayback')">
+      <span class="dot"></span> Wayback Machine
     </button>
     <button class="method-btn" data-method="about-blank" onclick="setMethod('about-blank')">
       <span class="dot"></span> about:blank
     </button>
-    <button class="method-btn" data-method="blob" onclick="setMethod('blob')">
-      <span class="dot"></span> Blob URL
-    </button>
     <button class="method-btn" data-method="google-search" onclick="setMethod('google-search')">
       <span class="dot"></span> Google Search
-    </button>
-    <button class="method-btn" data-method="google-cache" onclick="setMethod('google-cache')">
-      <span class="dot"></span> Google Cache
     </button>
   </div>
 
   <!-- Info Cards -->
   <div class="info-grid">
     <div class="info-card">
-      <div class="icon">🔀</div>
-      <div class="label">Google Translate</div>
-      <div class="desc">Routes through Google's servers. Bypasses most URL filters since traffic comes from google.com.</div>
+      <div class="icon">⚡</div>
+      <div class="label">Apps Script Proxy</div>
+      <div class="desc">Fetches the page through YOUR Google Apps Script. IT only sees traffic to script.google.com.</div>
     </div>
     <div class="info-card">
-      <div class="icon">🛡️</div>
-      <div class="label">about:blank</div>
-      <div class="desc">Opens in a blank tab with no URL visible. The site loads inside a hidden iframe.</div>
+      <div class="icon">🌐</div>
+      <div class="label">AllOrigins</div>
+      <div class="desc">Public CORS proxy that fetches any page server-side. URL bar shows your current site.</div>
     </div>
     <div class="info-card">
-      <div class="icon">💾</div>
-      <div class="label">Blob URL</div>
-      <div class="desc">Creates a local blob: URL with an embedded iframe. URL bar shows blob:// instead of the real site.</div>
+      <div class="icon">📦</div>
+      <div class="label">Wayback Machine</div>
+      <div class="desc">Opens cached version from web.archive.org. Content served from archive.org servers.</div>
     </div>
     <div class="info-card">
       <div class="icon">🔍</div>
-      <div class="label">Google Search / Cache</div>
-      <div class="desc">Opens Google search results or cached versions of pages through Google's domain.</div>
+      <div class="label">about:blank / Search</div>
+      <div class="desc">Opens in an about:blank tab or searches Google with ?igu=1 embedded mode.</div>
     </div>
   </div>
 
-  <!-- Status Area -->
+  <!-- Apps Script URL Config -->
   <div class="status-area">
+    <div style="background:rgba(13,40,24,0.7);border:1px solid #1a3d2e;border-radius:10px;padding:14px 18px;margin-bottom:12px;">
+      <label style="font-size:12px;color:#6b9b6b;font-weight:600;display:block;margin-bottom:6px;">Your Apps Script URL (for Apps Script Proxy method):</label>
+      <input type="text" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/xxxxx/exec" 
+        style="width:100%;background:rgba(13,40,24,0.8);border:1px solid #1a3d2e;color:#a5d6a7;padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit;"
+        oninput="localStorage.setItem('appsScriptUrl',this.value)">
+    </div>
     <div class="status-msg" id="statusMsg"></div>
   </div>
 
@@ -307,7 +313,13 @@
   // =====================
   // STATE
   // =====================
-  var currentMethod = 'google-translate';
+  var currentMethod = 'apps-script';
+
+  // Load saved Apps Script URL
+  (function() {
+    var saved = localStorage.getItem('appsScriptUrl');
+    if (saved) document.getElementById('appsScriptUrl').value = saved;
+  })();
 
   // =====================
   // QUICK LINKS DATA
@@ -380,17 +392,31 @@
 
     hideStatus();
 
-    // Determine if it's a URL or a search query
     var isUrl = looksLikeUrl(query);
     var url = isUrl ? ensureProtocol(query) : null;
 
     switch (currentMethod) {
-      case 'google-translate':
+      case 'apps-script':
         if (isUrl) {
-          openGoogleTranslate(url);
+          openAppsScriptProxy(url);
         } else {
-          // For search queries, do a Google search through translate
-          openGoogleTranslate('https://www.google.com/search?q=' + encodeURIComponent(query));
+          openAppsScriptProxy('https://www.google.com/search?q=' + encodeURIComponent(query));
+        }
+        break;
+
+      case 'allorigins':
+        if (isUrl) {
+          openAllOrigins(url);
+        } else {
+          openAllOrigins('https://www.google.com/search?q=' + encodeURIComponent(query));
+        }
+        break;
+
+      case 'wayback':
+        if (isUrl) {
+          openWayback(url);
+        } else {
+          showStatus('Wayback Machine needs a URL. Try entering a website address.', 'error');
         }
         break;
 
@@ -402,65 +428,101 @@
         }
         break;
 
-      case 'blob':
-        if (isUrl) {
-          openBlobUrl(url);
-        } else {
-          openBlobUrl('https://www.google.com/search?igu=1&q=' + encodeURIComponent(query));
-        }
-        break;
-
       case 'google-search':
         openGoogleSearch(query, isUrl ? url : null);
         break;
-
-      case 'google-cache':
-        if (isUrl) {
-          openGoogleCache(url);
-        } else {
-          showStatus('Google Cache requires a URL, not a search query. Switched to Google Search.', 'error');
-          openGoogleSearch(query, null);
-        }
-        break;
     }
   }
 
   // ========================================
-  // METHOD 1: GOOGLE TRANSLATE PROXY
+  // METHOD 1: APPS SCRIPT PROXY
   // ========================================
-  // This routes the target URL through Google's translation servers.
-  // The browser thinks it's talking to translate.google.com (which is almost never blocked).
-  // The actual page content is fetched by Google's servers and served from their domain.
-  function openGoogleTranslate(url) {
-    // Use a language pair where source ≠ target, and the content won't actually be translated
-    // Spanish-to-English works well for English content (it passes through unchanged)
-    var translateUrl = 'https://translate.google.com/translate?sl=es&tl=en&u=' + encodeURIComponent(url);
-
-    showStatus('Opening through Google Translate proxy. The page will load from <strong>translate.google.com</strong> — this bypasses most URL filters.', 'success');
-
-    // Open in a new tab
-    var win = window.open(translateUrl, '_blank');
-    if (!win) {
-      // Popup blocked — redirect current page
-      showStatus('Popup was blocked. <a onclick="window.location.href=\'' + translateUrl.replace(/'/g, "\\'") + '\'">Click here to open</a>', 'error');
-    }
-  }
-
-  // ========================================
-  // METHOD 2: ABOUT:BLANK IFRAME
-  // ========================================
-  // Opens about:blank and injects an iframe pointing to the target URL.
-  // The URL bar shows "about:blank" — no URL filters will trigger on the address bar.
-  // The iframe request itself still goes to the original server, but many filters
-  // only check the top-level URL, not iframe sub-requests.
-  function openAboutBlankTab(url) {
-    var win = window.open('about:blank', '_blank');
-    if (!win) {
-      showStatus('Popup was blocked by your browser. Allow popups and try again.', 'error');
+  // Uses YOUR Google Apps Script to fetch the page server-side.
+  // IT only sees traffic to script.google.com / googleusercontent.com.
+  // This is the most reliable method since you already proved it works.
+  function openAppsScriptProxy(url) {
+    var scriptUrl = document.getElementById('appsScriptUrl').value.trim();
+    if (!scriptUrl) {
+      showStatus('Enter your Apps Script URL in the field above first! Deploy your script as a web app and paste the URL.', 'error');
       return;
     }
 
-    // Set tab appearance
+    // Build the proxy URL - the Apps Script will fetch and serve the page
+    // We need to add a fetchUrl parameter to the Apps Script
+    var proxyUrl = scriptUrl + (scriptUrl.indexOf('?') === -1 ? '?' : '&') + 'fetchUrl=' + encodeURIComponent(url);
+
+    showStatus('Opening through your Apps Script proxy. IT sees traffic to <strong>script.google.com</strong> only.', 'success');
+
+    var win = window.open(proxyUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + proxyUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+    }
+  }
+
+  // ========================================
+  // METHOD 2: ALLORIGINS CORS PROXY
+  // ========================================
+  // Fetches the page through allorigins.win server-side proxy.
+  // The page content is retrieved by their server and displayed here.
+  // IT sees traffic to api.allorigins.win, not the target site.
+  function openAllOrigins(url) {
+    showStatus('Fetching page through AllOrigins proxy...', 'success');
+
+    var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+
+    fetch(proxyUrl)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function(html) {
+        // Inject <base> so relative resources load from target domain
+        var origin = new URL(url).origin;
+        html = html.replace('<head>', '<head><base href="' + origin + '/">');
+
+        // Open in about:blank and write the fetched HTML
+        var win = window.open('about:blank', '_blank');
+        if (win) {
+          win.document.open();
+          win.document.write(html);
+          win.document.close();
+          win.document.title = 'Math Notes';
+          showStatus('Page loaded through AllOrigins. URL bar shows <strong>about:blank</strong>. Content fetched server-side.', 'success');
+        } else {
+          showStatus('Popup blocked. Allow popups and try again.', 'error');
+        }
+      })
+      .catch(function(err) {
+        showStatus('AllOrigins error: ' + err.message + '. Try a different method.', 'error');
+      });
+  }
+
+  // ========================================
+  // METHOD 3: WAYBACK MACHINE
+  // ========================================
+  // Opens the page through web.archive.org.
+  // Content is served from archive.org servers.
+  function openWayback(url) {
+    var waybackUrl = 'https://web.archive.org/web/' + url;
+
+    showStatus('Opening through Wayback Machine (archive.org). Content served from their servers.', 'success');
+
+    var win = window.open(waybackUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + waybackUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+    }
+  }
+
+  // ========================================
+  // METHOD 4: ABOUT:BLANK IFRAME
+  // ========================================
+  function openAboutBlankTab(url) {
+    var win = window.open('about:blank', '_blank');
+    if (!win) {
+      showStatus('Popup blocked. Allow popups and try again.', 'error');
+      return;
+    }
+
     win.document.title = 'Math Notes';
     var link = win.document.createElement('link');
     link.rel = 'icon';
@@ -468,98 +530,33 @@
     link.href = new URL('favicon.svg', window.location.href).href;
     win.document.head.appendChild(link);
 
-    // Create full-page iframe
     win.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
     var iframe = win.document.createElement('iframe');
     iframe.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
     iframe.src = url;
     win.document.body.appendChild(iframe);
 
-    showStatus('Opened in about:blank tab. URL bar shows "about:blank" — the real site loads inside a hidden iframe.', 'success');
+    showStatus('Opened in about:blank tab with iframe.', 'success');
   }
 
   // ========================================
-  // METHOD 3: BLOB URL
+  // METHOD 5: GOOGLE SEARCH
   // ========================================
-  // Creates a blob: URL containing an HTML page with an iframe.
-  // The URL bar shows "blob:https://..." — URL-pattern filters won't match the real destination.
-  // This is one of the most effective methods against keyword-based URL filters.
-  function openBlobUrl(url) {
-    var html = '<!DOCTYPE html><html><head>' +
-      '<title>Math Notes</title>' +
-      '<link rel="icon" type="image/svg+xml" href="' + new URL('favicon.svg', window.location.href).href + '">' +
-      '</head><body style="margin:0;height:100vh;overflow:hidden;">' +
-      '<iframe src="' + url.replace(/"/g, '&quot;') + '" style="border:none;width:100%;height:100%;position:fixed;top:0;left:0;"></iframe>' +
-      '</body></html>';
-
-    var blob = new Blob([html], { type: 'text/html' });
-    var blobUrl = URL.createObjectURL(blob);
-
-    var win = window.open(blobUrl, '_blank');
-    if (!win) {
-      showStatus('Popup was blocked. Allow popups and try again.', 'error');
-      URL.revokeObjectURL(blobUrl);
-      return;
-    }
-
-    // Clean up blob URL after a delay (the page is already loaded)
-    setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 5000);
-
-    showStatus('Opened via Blob URL. The URL bar shows <strong>blob:https://...</strong> instead of the real address. URL filters can\'t match it.', 'success');
-  }
-
-  // ========================================
-  // METHOD 4: GOOGLE SEARCH
-  // ========================================
-  // Opens Google search results for the query. From there, the user can click through
-  // to any result. Google's AMP cache or "cached" links can also bypass some filters.
   function openGoogleSearch(query, directUrl) {
     var searchUrl;
     if (directUrl) {
-      // Search for the specific site
       searchUrl = 'https://www.google.com/search?igu=1&q=site:' + encodeURIComponent(directUrl.replace(/^https?:\/\//, ''));
     } else {
       searchUrl = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
     }
 
-    // Open through Google Translate to bypass if Google itself is blocked
-    var translateWrapped = 'https://translate.google.com/translate?sl=es&tl=en&u=' + encodeURIComponent(searchUrl);
-
-    var win = window.open(translateWrapped, '_blank');
+    var win = window.open(searchUrl, '_blank');
     if (!win) {
-      showStatus('Popup was blocked. <a onclick="window.location.href=\'' + translateWrapped.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + searchUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
       return;
     }
 
-    showStatus('Opened Google Search through the Translate proxy. Click results to browse.', 'success');
-  }
-
-  // ========================================
-  // METHOD 5: GOOGLE CACHE
-  // ========================================
-  // Opens Google's cached version of a page. The content is served from Google's servers
-  // (webcache.googleusercontent.com), not from the original site.
-  // Note: Google removed public cache links in 2024, so this now uses the Wayback Machine as fallback.
-  function openGoogleCache(url) {
-    // Primary: Try Wayback Machine (web.archive.org)
-    var waybackUrl = 'https://web.archive.org/web/' + url;
-
-    // Also prepare Google Cache URL (works for some pages)
-    var googleCacheUrl = 'https://webcache.googleusercontent.com/search?q=cache:' + encodeURIComponent(url);
-
-    showStatus(
-      'Trying cached versions. ' +
-      '<a onclick="window.open(\'' + waybackUrl.replace(/'/g, "\\'") + '\', \'_blank\')">Wayback Machine</a> · ' +
-      '<a onclick="window.open(\'' + googleCacheUrl.replace(/'/g, "\\'") + '\', \'_blank\')">Google Cache</a> · ' +
-      '<a onclick="openGoogleTranslate(\'' + url.replace(/'/g, "\\'") + '\')">Try Google Translate instead</a>',
-      'success'
-    );
-
-    // Open Wayback Machine by default (most reliable)
-    var win = window.open(waybackUrl, '_blank');
-    if (!win) {
-      showStatus('Popup blocked. Click one of the links above manually.', 'error');
-    }
+    showStatus('Opened Google Search with ?igu=1 embedded mode.', 'success');
   }
 
   // ========================================

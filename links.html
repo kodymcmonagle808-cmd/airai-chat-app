@@ -701,9 +701,9 @@
               <div style="margin-bottom:10px;">
                 <label style="font-size:12px;color:#6b9b6b;font-weight:600;display:block;margin-bottom:5px;">Bypass Method:</label>
                 <select id="bypassMethod" style="width:100%;background:rgba(13,40,24,0.8);border:1px solid #1a3d2e;color:#a5d6a7;padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer;">
-                  <option value="google-translate">🔀 Google Translate (recommended)</option>
+                  <option value="allorigins">🌐 AllOrigins Proxy (recommended)</option>
                   <option value="about-blank">🛡️ about:blank iframe</option>
-                  <option value="blob">💾 Blob URL</option>
+                  <option value="wayback">📦 Wayback Machine</option>
                   <option value="direct">🔗 Direct open</option>
                 </select>
               </div>
@@ -985,18 +985,23 @@
       const url = document.getElementById('launchBtn').getAttribute('data-url');
       if (!url || url === '#') return;
 
-      // Use the selected bypass method
-      const method = document.getElementById('bypassMethod') ? document.getElementById('bypassMethod').value : 'google-translate';
+      const method = document.getElementById('bypassMethod') ? document.getElementById('bypassMethod').value : 'allorigins';
 
       switch (method) {
-        case 'google-translate':
-          // Route through Google Translate servers - bypasses most URL filters
-          var translateUrl = 'https://translate.google.com/translate?sl=es&tl=en&u=' + encodeURIComponent(url);
-          window.open(translateUrl, '_blank');
+        case 'allorigins':
+          // Fetch through AllOrigins CORS proxy and render in about:blank
+          fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url))
+            .then(function(resp) { return resp.text(); })
+            .then(function(html) {
+              var origin = (new URL(url)).origin;
+              html = html.replace('<head>', '<head><base href="' + origin + '/">');
+              var win = window.open('about:blank', '_blank');
+              if (win) { win.document.open(); win.document.write(html); win.document.close(); win.document.title = 'Math Notes'; }
+            })
+            .catch(function() { window.open(url, '_blank'); });
           break;
 
         case 'about-blank':
-          // Open in about:blank with iframe - hides URL from address bar
           var win = window.open('about:blank', '_blank');
           if (win) {
             win.document.title = 'Math Notes';
@@ -1014,25 +1019,16 @@
           }
           break;
 
-        case 'blob':
-          // Blob URL - URL bar shows blob:// instead of real address
-          var html = '<!DOCTYPE html><html><head><title>Math Notes</title></head>' +
-            '<body style="margin:0;height:100vh;overflow:hidden;">' +
-            '<iframe src="' + url.replace(/"/g, '&quot;') + '" style="border:none;width:100%;height:100%;position:fixed;top:0;left:0;"></iframe>' +
-            '</body></html>';
-          var blob = new Blob([html], { type: 'text/html' });
-          var blobUrl = URL.createObjectURL(blob);
-          window.open(blobUrl, '_blank');
-          setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 5000);
+        case 'wayback':
+          window.open('https://web.archive.org/web/' + url, '_blank');
           break;
 
         case 'direct':
-          // Direct open - no bypass
           window.open(url, '_blank');
           break;
 
         default:
-          window.open('https://translate.google.com/translate?sl=es&tl=en&u=' + encodeURIComponent(url), '_blank');
+          window.open(url, '_blank');
       }
     }
   </script>
