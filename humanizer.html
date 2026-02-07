@@ -5,14 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Text Humanizer - AirAI</title>
   <style>
+    :root {
+      --bg-primary: #0a1f0a;
+      --text-primary: #c8e6c9;
+      --accent: #2e7d32;
+    }
+
+    body.light-mode {
+      --bg-primary: #f5f5f5;
+      --text-primary: #1a1a1a;
+      --accent: #4caf50;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: #0a1f0a;
-      color: #c8e6c9;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
     }
 
     /* Animated background */
@@ -45,7 +58,9 @@
     .page-header h1 {
       font-size: 32px; font-weight: 800;
       background: linear-gradient(135deg, #a5d6a7, #4caf50, #81c784);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       margin-bottom: 8px;
     }
     .page-header p {
@@ -71,6 +86,10 @@
     }
     .range-group input[type="range"] {
       -webkit-appearance: none; width: 100px; height: 4px;
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100px;
+        height: 4px;
       background: #1b5e20; border-radius: 2px; border: none; cursor: pointer;
     }
     .range-group input[type="range"]::-webkit-slider-thumb {
@@ -182,6 +201,24 @@
       border-radius: 12px; pointer-events: none;
     }
     @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed; top: 20px; right: 20px; z-index: 100;
+      background: rgba(13, 40, 24, 0.8); border: 1px solid #2e7d32;
+      color: #c8e6c9; padding: 8px 14px; border-radius: 8px;
+      cursor: pointer; font-size: 13px; font-weight: 600;
+      transition: all 0.2s;
+    }
+    .theme-toggle:hover {
+      background: #2e7d32; color: #0a1f0a;
+    }
+    body.light-mode .theme-toggle {
+      background: #eeeeee; border-color: #81c784; color: #1a1a1a;
+    }
+    body.light-mode .theme-toggle:hover {
+      background: #4caf50; color: #f5f5f5;
+    }
   </style>
 </head>
 <body>
@@ -189,6 +226,8 @@
 <div class="bg-animation">
   <div class="orb"></div><div class="orb"></div><div class="orb"></div>
 </div>
+
+<button id="themeBtn" class="theme-toggle">🌙 Dark</button>
 
 <div class="container">
   <div style="text-align:left;margin-bottom:12px;">
@@ -1084,6 +1123,22 @@ function showMeter(score) {
   label.textContent = text;
   label.style.color = color;
 }
+
+// ── Theme Toggle ──
+const themeBtn = document.getElementById('themeBtn');
+const body = document.body;
+
+const savedTheme = localStorage.getItem('theme') || 'dark';
+if (savedTheme === 'light') {
+  body.classList.add('light-mode');
+  themeBtn.textContent = '☀️ Light';
+}
+
+themeBtn.addEventListener('click', function() {
+  const isLight = body.classList.toggle('light-mode');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  themeBtn.textContent = isLight ? '☀️ Light' : '🌙 Dark';
+});
 </script>
 
 </body>

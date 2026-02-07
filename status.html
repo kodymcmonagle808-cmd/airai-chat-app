@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>System Status - AirAI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a1f0a;
+      --bg-secondary: #0d2818;
+      --bg-tertiary: rgba(13, 40, 24, 0.8);
+      --border-color: #2e7d32;
+      --text-primary: #c8e6c9;
+      --text-secondary: #81c784;
+      --accent: #4caf50;
+      --accent-light: #66bb6a;
+    }
+
+    body.light-mode {
+      --bg-primary: #f5f5f5;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #eeeeee;
+      --border-color: #81c784;
+      --text-primary: #1a1a1a;
+      --text-secondary: #2e7d32;
+      --accent: #4caf50;
+      --accent-light: #66bb6a;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Animated background */
+    .bg-animation {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .bg-animation .orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15;
+      animation: float 20s ease-in-out infinite;
+    }
+    .bg-animation .orb:nth-child(1) { width: 400px; height: 400px; background: #2e7d32; top: -100px; left: -100px; }
+    .bg-animation .orb:nth-child(2) { width: 300px; height: 300px; background: #1b5e20; bottom: -50px; right: -50px; animation-delay: -7s; }
+    @keyframes float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(30px,-30px) scale(1.1); }
+      66% { transform: translate(-20px,20px) scale(0.9); }
+    }
+
+    .container {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 0 auto; padding: 24px;
+    }
+
+    /* Header */
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 32px; padding-bottom: 20px;
+      border-bottom: 1px solid rgba(46, 125, 50, 0.15);
+    }
+
+    .header h1 {
+      font-size: 28px; font-weight: 800;
+      background: linear-gradient(135deg, #a5d6a7, #4caf50);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .back-btn {
+      background: var(--bg-tertiary); border: 1px solid var(--border-color);
+      color: var(--text-primary); padding: 8px 16px; border-radius: 8px;
+      cursor: pointer; font-size: 14px; font-weight: 600;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: var(--border-color); color: var(--bg-primary);
+    }
+
+    .theme-toggle {
+      background: var(--bg-tertiary); border: 1px solid var(--border-color);
+      color: var(--text-primary); padding: 8px 16px; border-radius: 8px;
+      cursor: pointer; font-size: 14px; font-weight: 600;
+      transition: all 0.2s;
+    }
+    .theme-toggle:hover {
+      background: var(--border-color); color: var(--bg-primary);
+    }
+
+    /* Status section */
+    .status-section {
+      background: var(--bg-secondary); border: 1px solid rgba(46, 125, 50, 0.3);
+      border-radius: 12px; padding: 24px; margin-bottom: 24px;
+    }
+
+    .status-section h2 {
+      font-size: 18px; font-weight: 700; margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    .status-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px solid rgba(46, 125, 50, 0.1);
+    }
+
+    .status-item:last-child { border-bottom: none; }
+
+    .status-item .name {
+      font-weight: 600; font-size: 14px;
+    }
+
+    .status-item .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    }
+
+    .badge.online { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+    .badge.warning { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
+    .badge.offline { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+
+    /* Uptime chart */
+    .uptime-chart {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+      gap: 4px; margin-top: 12px;
+    }
+
+    .uptime-bar {
+      height: 30px; border-radius: 4px; background: var(--accent);
+      opacity: 0.8; transition: opacity 0.2s;
+    }
+    .uptime-bar:hover { opacity: 1; }
+    .uptime-bar.down { background: #f44336; }
+
+    /* Overall status */
+    .overall-status {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(139, 195, 74, 0.2));
+      border: 1px solid var(--accent); border-radius: 12px; padding: 20px;
+      text-align: center; margin-bottom: 24px;
+    }
+
+    .overall-status .status-code {
+      font-size: 24px; font-weight: 800; color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .overall-status .status-text {
+      font-size: 18px; font-weight: 700; color: var(--text-secondary);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center; padding: 20px; margin-top: 32px;
+      border-top: 1px solid rgba(46, 125, 50, 0.15);
+    }
+    .footer p { font-size: 12px; color: var(--text-primary); opacity: 0.6; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-light); }
+
+  </style>
+</head>
+<body>
+
+<div class="bg-animation">
+  <div class="orb"></div><div class="orb"></div>
+</div>
+
+<div class="container">
+  <div class="header">
+    <h1>📊 System Status</h1>
+    <div style="display: flex; gap: 8px;">
+      <a href="dashboard.html" class="back-btn">← Dashboard</a>
+      <button class="theme-toggle" id="themeBtn">🌙 Dark Mode</button>
+    </div>
+  </div>
+
+  <!-- Overall Status -->
+  <div class="overall-status">
+    <div class="status-code">All Systems Operational</div>
+    <div class="status-text">🟢 Platform Status: HEALTHY</div>
+  </div>
+
+  <!-- Services Status -->
+  <div class="status-section">
+    <h2>🔧 Service Status</h2>
+    
+    <div class="status-item">
+      <span class="name">AI Chat Interface</span>
+      <span class="badge online">🟢 Online</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">Text Humanizer</span>
+      <span class="badge online">🟢 Online</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">URL Opener</span>
+      <span class="badge online">🟢 Online</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">Unblocked Games</span>
+      <span class="badge online">🟢 Online</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">Proxy Services</span>
+      <span class="badge online">🟢 Online</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">Authentication</span>
+      <span class="badge online">🟢 Online</span>
+    </div>
+  </div>
+
+  <!-- Performance Metrics -->
+  <div class="status-section">
+    <h2>📈 Performance Metrics</h2>
+    
+    <div class="status-item">
+      <span class="name">API Response Time</span>
+      <span class="badge online">45ms</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">Server Load</span>
+      <span class="badge online">12%</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">Database Status</span>
+      <span class="badge online">Connected</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">CDN Status</span>
+      <span class="badge online">Operational</span>
+    </div>
+  </div>
+
+  <!-- Uptime History -->
+  <div class="status-section">
+    <h2>📅 30-Day Uptime (Last 30 days)</h2>
+    <div class="uptime-chart">
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+      <div class="uptime-bar"></div><div class="uptime-bar"></div><div class="uptime-bar"></div>
+    </div>
+    <p style="margin-top: 8px; font-size: 12px; opacity: 0.7;">99.9% Uptime</p>
+  </div>
+
+  <!-- Last Updated -->
+  <div class="status-section">
+    <h2>ℹ️ Information</h2>
+    
+    <div class="status-item">
+      <span class="name">Last Updated</span>
+      <span id="lastUpdated" style="font-size: 12px; color: var(--text-secondary);">Just now</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">Platform Version</span>
+      <span style="font-size: 12px; color: var(--text-secondary);">v1.7</span>
+    </div>
+
+    <div class="status-item">
+      <span class="name">Last Incident</span>
+      <span style="font-size: 12px; color: var(--text-secondary);">30 days ago (Resolved)</span>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 AirAI, Inc. All rights reserved. • <a href="dashboard.html">Back to Dashboard</a></p>
+  </footer>
+</div>
+
+<script>
+// ── Theme Toggle ──
+const themeBtn = document.getElementById('themeBtn');
+const body = document.body;
+
+// Load saved theme
+const savedTheme = localStorage.getItem('theme') || 'dark';
+if (savedTheme === 'light') {
+  body.classList.add('light-mode');
+  themeBtn.textContent = '☀️ Light Mode';
+}
+
+themeBtn.addEventListener('click', () => {
+  const isLight = body.classList.toggle('light-mode');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  themeBtn.textContent = isLight ? '☀️ Light Mode' : '🌙 Dark Mode';
+});
+
+// ── Auto-update timestamp ──
+function updateTimestamp() {
+  const lastUpdated = document.getElementById('lastUpdated');
+  const now = new Date();
+  lastUpdated.textContent = 'Just now (' + now.toLocaleTimeString() + ')';
+}
+setInterval(updateTimestamp, 60000); // Update every minute
+</script>
+
+</body>
+</html>

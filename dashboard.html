@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Dashboard - AirAI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a1f0a;
+      --bg-secondary: #0d2818;
+      --bg-tertiary: rgba(13, 40, 24, 0.8);
+      --border-color: #2e7d32;
+      --text-primary: #c8e6c9;
+      --text-secondary: #81c784;
+      --accent: #4caf50;
+      --accent-light: #66bb6a;
+    }
+
+    body.light-mode {
+      --bg-primary: #f5f5f5;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #eeeeee;
+      --border-color: #81c784;
+      --text-primary: #1a1a1a;
+      --text-secondary: #2e7d32;
+      --accent: #4caf50;
+      --accent-light: #66bb6a;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Animated background */
+    .bg-animation {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .bg-animation .orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15;
+      animation: float 20s ease-in-out infinite;
+    }
+    .bg-animation .orb:nth-child(1) { width: 400px; height: 400px; background: #2e7d32; top: -100px; left: -100px; }
+    .bg-animation .orb:nth-child(2) { width: 300px; height: 300px; background: #1b5e20; bottom: -50px; right: -50px; animation-delay: -7s; }
+    @keyframes float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(30px,-30px) scale(1.1); }
+      66% { transform: translate(-20px,20px) scale(0.9); }
+    }
+
+    .container {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto; padding: 24px;
+    }
+
+    /* Header */
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 32px; padding-bottom: 20px;
+      border-bottom: 1px solid rgba(46, 125, 50, 0.15);
+    }
+
+    .header h1 {
+      font-size: 28px; font-weight: 800;
+      background: linear-gradient(135deg, #a5d6a7, #4caf50);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .theme-toggle {
+      background: var(--bg-tertiary); border: 1px solid var(--border-color);
+      color: var(--text-primary); padding: 8px 16px; border-radius: 8px;
+      cursor: pointer; font-size: 14px; font-weight: 600;
+      transition: all 0.2s;
+    }
+    .theme-toggle:hover {
+      background: var(--border-color); color: var(--bg-primary);
+    }
+
+    /* Tools grid */
+    .tools-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px; margin-bottom: 32px;
+    }
+
+    .tool-card {
+      background: var(--bg-secondary); border: 1px solid rgba(46, 125, 50, 0.3);
+      border-radius: 12px; padding: 24px; transition: all 0.3s;
+      cursor: pointer; text-decoration: none; color: inherit;
+      display: flex; flex-direction: column;
+    }
+
+    .tool-card:hover {
+      border-color: var(--accent); transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(46, 125, 50, 0.2);
+    }
+
+    .tool-card .icon {
+      font-size: 36px; margin-bottom: 12px;
+    }
+
+    .tool-card h3 {
+      font-size: 18px; font-weight: 700; margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+
+    .tool-card p {
+      font-size: 13px; color: var(--text-primary); opacity: 0.8;
+      flex: 1;
+    }
+
+    .tool-card .status {
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid rgba(46, 125, 50, 0.15);
+      font-size: 12px; color: var(--accent-light);
+    }
+
+    /* Section title */
+    .section-title {
+      font-size: 20px; font-weight: 700; margin: 28px 0 16px;
+      color: var(--text-secondary);
+    }
+
+    /* Stats */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-bottom: 32px;
+    }
+
+    .stat-box {
+      background: var(--bg-secondary); border: 1px solid rgba(46, 125, 50, 0.3);
+      border-radius: 12px; padding: 20px; text-align: center;
+    }
+
+    .stat-value { font-size: 28px; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+    .stat-label { font-size: 13px; color: var(--text-primary); opacity: 0.8; }
+
+    /* Footer */
+    .footer {
+      text-align: center; padding: 20px; margin-top: 32px;
+      border-top: 1px solid rgba(46, 125, 50, 0.15);
+    }
+    .footer p { font-size: 12px; color: var(--text-primary); opacity: 0.6; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-light); }
+
+  </style>
+</head>
+<body>
+
+<div class="bg-animation">
+  <div class="orb"></div><div class="orb"></div>
+</div>
+
+<div class="container">
+  <div class="header">
+    <h1>🎯 AirAI Dashboard</h1>
+    <button class="theme-toggle" id="themeBtn">🌙 Dark Mode</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-value">6</div>
+      <div class="stat-label">Tools Available</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">v1.7</div>
+      <div class="stat-label">Current Version</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">2026</div>
+      <div class="stat-label">Year</div>
+    </div>
+  </div>
+
+  <!-- Primary Tools -->
+  <h2 class="section-title">📚 Main Features</h2>
+  <div class="tools-grid">
+    <a href="chat-interface.html" class="tool-card">
+      <div class="icon">💬</div>
+      <h3>AI Chat</h3>
+      <p>Access the main AI chat interface. Have conversations with advanced language models.</p>
+      <div class="status">🟢 Active & Ready</div>
+    </a>
+
+    <a href="humanizer.html" class="tool-card">
+      <div class="icon">✍️</div>
+      <h3>Text Humanizer</h3>
+      <p>Transform AI-generated text into natural, human-sounding writing with customizable modes.</p>
+      <div class="status">🟢 Online</div>
+    </a>
+  </div>
+
+  <!-- Utility Tools -->
+  <h2 class="section-title">⚙️ Utility Tools</h2>
+  <div class="tools-grid">
+    <a href="url-opener.html" class="tool-card">
+      <div class="icon">🔗</div>
+      <h3>URL Opener</h3>
+      <p>Open and visit URLs through the platform securely and efficiently.</p>
+      <div class="status">🟢 Available</div>
+    </a>
+
+    <a href="unblocked-games.html" class="tool-card">
+      <div class="icon">🎮</div>
+      <h3>Unblocked Games</h3>
+      <p>Browse and play a collection of games accessible from anywhere.</p>
+      <div class="status">🟢 Active</div>
+    </a>
+
+    <a href="proxys.html" class="tool-card">
+      <div class="icon">🔀</div>
+      <h3>Proxys</h3>
+      <p>Access web proxies for browsing content securely and anonymously.</p>
+      <div class="status">🟢 Running</div>
+    </a>
+
+    <a href="time-left.html" class="tool-card">
+      <div class="icon">⏱️</div>
+      <h3>Time Left</h3>
+      <p>Monitor your session time remaining and manage your access duration.</p>
+      <div class="status">🟢 Tracking</div>
+    </a>
+
+    <a href="links.html" class="tool-card">
+      <div class="icon">🌐</div>
+      <h3>Quick Links</h3>
+      <p>Access a curated collection of useful resources and bookmarks.</p>
+      <div class="status">🟢 Ready</div>
+    </a>
+  </div>
+
+  <!-- Account Section -->
+  <h2 class="section-title">👤 Account</h2>
+  <div class="tools-grid">
+    <a href="login.html" class="tool-card">
+      <div class="icon">🔑</div>
+      <h3>Login / Profile</h3>
+      <p>Back to login page. View your profile and generate new session codes.</p>
+      <div class="status">🟢 Connected</div>
+    </a>
+
+    <a href="status.html" class="tool-card">
+      <div class="icon">📊</div>
+      <h3>System Status</h3>
+      <p>Check platform health, uptime, and service availability in real-time.</p>
+      <div class="status">🟢 Operational</div>
+    </a>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: var(--accent);">v1.7</span></p>
+  </footer>
+</div>
+
+<script>
+// ── Theme Toggle ──
+const themeBtn = document.getElementById('themeBtn');
+const html = document.documentElement;
+const body = document.body;
+
+// Load saved theme
+const savedTheme = localStorage.getItem('theme') || 'dark';
+if (savedTheme === 'light') {
+  body.classList.add('light-mode');
+  themeBtn.textContent = '☀️ Light Mode';
+}
+
+themeBtn.addEventListener('click', () => {
+  const isLight = body.classList.toggle('light-mode');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  themeBtn.textContent = isLight ? '☀️ Light Mode' : '🌙 Dark Mode';
+});
+</script>
+
+</body>
+</html>

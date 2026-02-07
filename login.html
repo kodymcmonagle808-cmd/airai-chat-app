@@ -12,6 +12,24 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-primary: #0a1f0a;
+      --bg-secondary: #0d2818;
+      --bg-tertiary: #1a3d2e;
+      --text-primary: #e8f5e9;
+      --text-secondary: #81c784;
+      --accent: #2e7d32;
+    }
+
+    body.light-mode {
+      --bg-primary: #f5f5f5;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #eeeeee;
+      --text-primary: #1a1a1a;
+      --text-secondary: #2e7d32;
+      --accent: #4caf50;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -20,13 +38,14 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a1f0a;
+      background: var(--bg-primary);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      color: #e8f5e9;
+      color: var(--text-primary);
       position: relative;
       overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
     }
 
     /* Animated Background */
@@ -229,7 +248,7 @@
     }
 
     .header-link {
-      color: #81c784;
+      color: var(--text-secondary);
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
@@ -237,7 +256,24 @@
     }
 
     .header-link:hover {
-      color: #c8e6c9;
+      color: var(--text-primary);
+    }
+
+    .theme-toggle {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--accent);
+      color: var(--text-primary);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent);
+      color: var(--bg-primary);
     }
 
     /* Main Content */
@@ -798,6 +834,7 @@
         <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbwmxrri842YO6SRozjZzMB4iGgRQCOpF75OS27Mk92ut-6b5Vq8MIcDwnePV4XiDcH8/exec', 'Current Models'); return false;">Current Models</a>
         <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbxrY9Ibvsl5Nk6-v9ADiR5JNlyWb2Maw-H6Z_ocRMgxtSV9zv7ZKK2xFfEPfEGxsvkE/exec', 'Credits'); return false;">Credits</a>
         <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbyhPQkCpZemA307jkAwm7zDArprxyYUcR-C_RsQ72MAuc4fknKVw1usGAupOGLMgdXB/exec', 'Support'); return false;">Support</a>
+        <button id="themeBtn" class="theme-toggle">🌙 Dark</button>
       </nav>
     </div>
   </header>
@@ -1661,6 +1698,24 @@ function handleGuest() {
 
       watchForFishMovement();
     })();
+
+    // ── Theme Toggle ──
+    const themeBtn = document.getElementById('themeBtn');
+    const body = document.body;
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+      body.classList.add('light-mode');
+      themeBtn.textContent = '☀️ Light';
+    }
+
+    themeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const isLight = body.classList.toggle('light-mode');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      themeBtn.textContent = isLight ? '☀️ Light' : '🌙 Dark';
+    });
   </script>
 </body>
 
