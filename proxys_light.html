@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Notes - Search</title>
+  <meta name="theme-color" content="#040d01">
+  <meta name="description" content="Web Proxy - AirAI Platform">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #1a1a1a;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .background-animation {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0; overflow: hidden; pointer-events: none;
+    }
+    .bg-gradient {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+      animation: float 20s infinite ease-in-out;
+    }
+    .bg-gradient-1 { width: 500px; height: 500px; background: radial-gradient(circle, #4caf50, #66bb6a); top: -10%; left: -10%; }
+    .bg-gradient-2 { width: 400px; height: 400px; background: radial-gradient(circle, #66bb6a, #ffffff); top: 50%; right: -5%; animation-delay: 7s; }
+    .bg-gradient-3 { width: 600px; height: 600px; background: radial-gradient(circle, #4caf50, #f5f5f5); bottom: -15%; left: 30%; animation-delay: 14s; }
+    .grid-pattern {
+      position: absolute; width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(46,125,50,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(46,125,50,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 30s linear infinite;
+    }
+    @keyframes float { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-30px) scale(1.1)} 66%{transform:translate(-20px,20px) scale(0.9)} }
+    @keyframes gridMove { 0%{transform:translate(0,0)} 100%{transform:translate(50px,50px)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    .header, .main-content, .page-footer { position: relative; z-index: 1; }
+
+    /* Header */
+    .header {
+      background: #ffffff; border-bottom: 1px solid #e0e0e0; padding: 16px 0;
+    }
+    .header-content {
+      max-width: 1200px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: default; }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #4caf50, #66bb6a);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px rgba(46,125,50,0.4);
+    }
+    .logo-icon svg { width: 18px; height: 18px; color: #2d2d2d; }
+    .logo-text { font-size: 20px; font-weight: 700; color: #2d2d2d; }
+    .header-links { display: flex; gap: 12px; align-items: center; }
+    .header-btn {
+      background: rgba(46,125,50,0.15); border: 1px solid #4caf50; color: #2e7d32;
+      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+    }
+    .header-btn:hover { background: #4caf50; color: #2d2d2d; }
+
+    /* Search hero */
+    .search-hero {
+      text-align: center; padding: 48px 24px 24px; animation: fadeUp 0.6s ease;
+    }
+    .search-hero h1 {
+      font-size: 32px; font-weight: 800;
+      background: linear-gradient(135deg, #1b5e20, #2e7d32, #2e7d32);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .search-hero p { color: #2e7d32; font-size: 14px; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+    /* Search Container */
+    .search-container { max-width: 700px; margin: 24px auto; padding: 0 24px; animation: fadeUp 0.7s ease; }
+    .search-wrapper { display: flex; gap: 0; }
+    .search-input {
+      flex: 1; background: rgba(255, 255, 255,0.8); border: 2px solid #e0e0e0;
+      border-right: none; border-radius: 12px 0 0 12px;
+      padding: 14px 20px; color: #1a1a1a; font-size: 15px; font-family: inherit;
+      outline: none; transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: #4caf50; }
+    .search-input::placeholder { color: #757575; }
+    .search-btn {
+      background: linear-gradient(135deg, #4caf50, #66bb6a); border: 2px solid #4caf50;
+      border-radius: 0 12px 12px 0; padding: 14px 24px; color: #2d2d2d;
+      font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; gap: 8px; transition: all 0.2s; white-space: nowrap;
+    }
+    .search-btn:hover { background: linear-gradient(135deg, #388e3c, #4caf50); }
+    .search-btn svg { width: 18px; height: 18px; }
+
+    /* Method selector */
+    .method-bar {
+      max-width: 700px; margin: 16px auto; padding: 0 24px;
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 0.8s ease;
+    }
+    .method-btn {
+      background: rgba(255, 255, 255,0.7); border: 1px solid #e0e0e0;
+      color: #6b9b6b; padding: 8px 16px; border-radius: 20px;
+      font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    }
+    .method-btn:hover { border-color: #4caf50; color: #2e7d32; }
+    .method-btn.active {
+      background: rgba(46,125,50,0.2); border-color: #4caf50; color: #1b5e20;
+    }
+    .method-btn .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #2e7d32;
+    }
+
+    /* Info cards */
+    .info-grid {
+      max-width: 700px; margin: 32px auto; padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      animation: fadeUp 0.9s ease;
+    }
+    .info-card {
+      background: rgba(255, 255, 255,0.6); border: 1px solid rgba(46,125,50,0.2);
+      border-radius: 12px; padding: 16px; text-align: center;
+    }
+    .info-card .icon { font-size: 24px; margin-bottom: 6px; }
+    .info-card .label { font-size: 12px; color: #2e7d32; font-weight: 600; }
+    .info-card .desc { font-size: 11px; color: #757575; margin-top: 4px; line-height: 1.4; }
+
+    /* Status messages */
+    .status-area {
+      max-width: 700px; margin: 16px auto; padding: 0 24px;
+    }
+    .status-msg {
+      background: rgba(255, 255, 255,0.7); border: 1px solid #e0e0e0;
+      border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #2e7d32;
+      line-height: 1.5; display: none;
+    }
+    .status-msg.show { display: block; animation: fadeUp 0.3s ease; }
+    .status-msg.error { border-color: #c62828; color: #ef9a9a; }
+    .status-msg.success { border-color: #4caf50; color: #1b5e20; }
+    .status-msg a { color: #388e3c; text-decoration: underline; cursor: pointer; }
+
+    /* Quick links */
+    .quick-links {
+      max-width: 700px; margin: 24px auto; padding: 0 24px;
+    }
+    .quick-links h3 { font-size: 14px; color: #757575; margin-bottom: 10px; font-weight: 600; }
+    .quick-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .quick-chip {
+      background: rgba(255, 255, 255,0.7); border: 1px solid #e0e0e0;
+      color: #2e7d32; padding: 6px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all 0.2s;
+    }
+    .quick-chip:hover { border-color: #4caf50; color: #1b5e20; background: rgba(46,125,50,0.15); }
+
+    /* Footer */
+    .page-footer {
+      text-align: center; padding: 24px; margin-top: auto;
+      border-top: 1px solid rgba(46,125,50,0.1);
+    }
+    .page-footer p { font-size: 12px; color: #757575; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #66bb6a; color: #2d2d2d; padding: 12px 24px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; z-index: 9999; transition: transform 0.3s;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 640px) {
+      .search-hero h1 { font-size: 24px; }
+      .info-grid { grid-template-columns: 1fr; }
+      .search-wrapper { flex-direction: column; }
+      .search-input { border-right: 2px solid #e0e0e0; border-radius: 12px 12px 0 0; border-bottom: none; }
+      .search-btn { border-radius: 0 0 12px 12px; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="background-animation">
+  <div class="bg-gradient bg-gradient-1"></div>
+  <div class="bg-gradient bg-gradient-2"></div>
+  <div class="bg-gradient bg-gradient-3"></div>
+  <div class="grid-pattern"></div>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-content">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <span class="logo-text">AirAI &middot; Proxy</span>
+    </div>
+    <div class="header-links">
+      <a href="#" class="header-btn" style="text-decoration:none;" onclick="event.preventDefault();window.location.href='login.html'">← Back</a>
+      <button class="header-btn" onclick="openAboutBlank()" title="Open this page in about:blank">🛡️ Cloak</button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+  <div class="search-hero">
+    <h1>🌐 Web Proxy</h1>
+    <p>Open any URL through multiple bypass methods. If one method is blocked, try another. Enter a URL or search query below.</p>
+  </div>
+
+  <!-- Search Box -->
+  <div class="search-container">
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" class="search-input" placeholder="Enter a URL or search query..." autocomplete="off" autofocus>
+      <button class="search-btn" onclick="go()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Go
+      </button>
+    </div>
+  </div>
+
+  <!-- Bypass Method Selector -->
+  <div class="method-bar">
+    <button class="method-btn active" data-method="apps-script" onclick="setMethod('apps-script')">
+      <span class="dot"></span> Apps Script Proxy
+    </button>
+    <button class="method-btn" data-method="allorigins" onclick="setMethod('allorigins')">
+      <span class="dot"></span> AllOrigins
+    </button>
+    <button class="method-btn" data-method="wayback" onclick="setMethod('wayback')">
+      <span class="dot"></span> Wayback Machine
+    </button>
+    <button class="method-btn" data-method="about-blank" onclick="setMethod('about-blank')">
+      <span class="dot"></span> about:blank
+    </button>
+    <button class="method-btn" data-method="google-search" onclick="setMethod('google-search')">
+      <span class="dot"></span> Google Search
+    </button>
+  </div>
+
+  <!-- Info Cards -->
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">⚡</div>
+      <div class="label">Apps Script Proxy</div>
+      <div class="desc">Fetches the page through YOUR Google Apps Script. IT only sees traffic to script.google.com.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">🌐</div>
+      <div class="label">AllOrigins</div>
+      <div class="desc">Public CORS proxy that fetches any page server-side. URL bar shows your current site.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">📦</div>
+      <div class="label">Wayback Machine</div>
+      <div class="desc">Opens cached version from web.archive.org. Content served from archive.org servers.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">🔍</div>
+      <div class="label">about:blank / Search</div>
+      <div class="desc">Opens in an about:blank tab or searches Google with ?igu=1 embedded mode.</div>
+    </div>
+  </div>
+
+  <!-- Apps Script URL Config -->
+  <div class="status-area">
+    <div style="background:rgba(255, 255, 255,0.7);border:1px solid #e0e0e0;border-radius:10px;padding:14px 18px;margin-bottom:12px;">
+      <label style="font-size:12px;color:#6b9b6b;font-weight:600;display:block;margin-bottom:6px;">Your Apps Script URL (for Apps Script Proxy method):</label>
+      <input type="text" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/xxxxx/exec" 
+        style="width:100%;background:rgba(255, 255, 255,0.8);border:1px solid #e0e0e0;color:#1b5e20;padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit;"
+        oninput="localStorage.setItem('appsScriptUrl',this.value)">
+    </div>
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="quick-links">
+    <h3>⚡ Quick Links</h3>
+    <div class="quick-grid" id="quickGrid"></div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="page-footer">
+  <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: #757575;">v1.8</span></p>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // =====================
+  // STATE
+  // =====================
+  var currentMethod = 'apps-script';
+
+  // Load saved Apps Script URL
+  (function() {
+    var saved = localStorage.getItem('appsScriptUrl');
+    if (saved) document.getElementById('appsScriptUrl').value = saved;
+  })();
+
+  // =====================
+  // QUICK LINKS DATA
+  // =====================
+  var quickLinks = [
+    { label: 'Google', url: 'https://www.google.com' },
+    { label: 'YouTube', url: 'https://www.youtube.com' },
+    { label: 'Discord', url: 'https://discord.com/app' },
+    { label: 'Reddit', url: 'https://www.reddit.com' },
+    { label: 'Spotify', url: 'https://open.spotify.com' },
+    { label: 'Netflix', url: 'https://www.netflix.com' },
+    { label: 'Twitter / X', url: 'https://x.com' },
+    { label: 'TikTok', url: 'https://www.tiktok.com' },
+    { label: 'Instagram', url: 'https://www.instagram.com' },
+    { label: 'Twitch', url: 'https://www.twitch.tv' },
+    { label: 'ChatGPT', url: 'https://chat.openai.com' },
+    { label: 'Steam', url: 'https://store.steampowered.com' },
+    { label: 'GitHub', url: 'https://github.com' },
+    { label: 'Coolmath Games', url: 'https://www.coolmathgames.com' },
+  ];
+
+  // Build quick link chips
+  (function() {
+    var grid = document.getElementById('quickGrid');
+    quickLinks.forEach(function(link) {
+      var chip = document.createElement('button');
+      chip.className = 'quick-chip';
+      chip.textContent = link.label;
+      chip.onclick = function() {
+        document.getElementById('searchInput').value = link.url;
+        go();
+      };
+      grid.appendChild(chip);
+    });
+  })();
+
+  // =====================
+  // METHOD SELECTION
+  // =====================
+  function setMethod(method) {
+    currentMethod = method;
+    document.querySelectorAll('.method-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-method') === method);
+    });
+  }
+
+  // =====================
+  // INPUT HANDLING
+  // =====================
+  document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') go();
+  });
+
+  function looksLikeUrl(str) {
+    return /^(https?:\/\/)/i.test(str) ||
+           /^[a-zA-Z0-9]([a-zA-Z0-9\-]*\.)+[a-zA-Z]{2,}(\/.*)?$/.test(str);
+  }
+
+  function ensureProtocol(url) {
+    if (!/^https?:\/\//i.test(url)) return 'https://' + url;
+    return url;
+  }
+
+  // =====================
+  // MAIN GO FUNCTION
+  // =====================
+  function go() {
+    var query = document.getElementById('searchInput').value.trim();
+    if (!query) return;
+
+    hideStatus();
+
+    var isUrl = looksLikeUrl(query);
+    var url = isUrl ? ensureProtocol(query) : null;
+
+    switch (currentMethod) {
+      case 'apps-script':
+        if (isUrl) {
+          openAppsScriptProxy(url);
+        } else {
+          openAppsScriptProxy('https://www.google.com/search?q=' + encodeURIComponent(query));
+        }
+        break;
+
+      case 'allorigins':
+        if (isUrl) {
+          openAllOrigins(url);
+        } else {
+          openAllOrigins('https://www.google.com/search?q=' + encodeURIComponent(query));
+        }
+        break;
+
+      case 'wayback':
+        if (isUrl) {
+          openWayback(url);
+        } else {
+          showStatus('Wayback Machine needs a URL. Try entering a website address.', 'error');
+        }
+        break;
+
+      case 'about-blank':
+        if (isUrl) {
+          openAboutBlankTab(url);
+        } else {
+          openAboutBlankTab('https://www.google.com/search?q=' + encodeURIComponent(query));
+        }
+        break;
+
+      case 'google-search':
+        openGoogleSearch(query, isUrl ? url : null);
+        break;
+    }
+  }
+
+  // ========================================
+  // METHOD 1: APPS SCRIPT PROXY
+  // ========================================
+  // Uses YOUR Google Apps Script to fetch the page server-side.
+  // IT only sees traffic to script.google.com / googleusercontent.com.
+  // This is the most reliable method since you already proved it works.
+  function openAppsScriptProxy(url) {
+    var scriptUrl = document.getElementById('appsScriptUrl').value.trim();
+    if (!scriptUrl) {
+      showStatus('Enter your Apps Script URL in the field above first! Deploy your script as a web app and paste the URL.', 'error');
+      return;
+    }
+
+    // Build the proxy URL - the Apps Script will fetch and serve the page
+    // We need to add a fetchUrl parameter to the Apps Script
+    var proxyUrl = scriptUrl + (scriptUrl.indexOf('?') === -1 ? '?' : '&') + 'fetchUrl=' + encodeURIComponent(url);
+
+    showStatus('Opening through your Apps Script proxy. IT sees traffic to <strong>script.google.com</strong> only.', 'success');
+
+    var win = window.open(proxyUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + proxyUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+    }
+  }
+
+  // ========================================
+  // METHOD 2: ALLORIGINS CORS PROXY
+  // ========================================
+  // Fetches the page through allorigins.win server-side proxy.
+  // The page content is retrieved by their server and displayed here.
+  // IT sees traffic to api.allorigins.win, not the target site.
+  function openAllOrigins(url) {
+    showStatus('Fetching page through AllOrigins proxy...', 'success');
+
+    var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+
+    fetch(proxyUrl)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function(html) {
+        // Inject <base> so relative resources load from target domain
+        var origin = new URL(url).origin;
+        html = html.replace('<head>', '<head><base href="' + origin + '/">');
+
+        // Open in about:blank and write the fetched HTML
+        var win = window.open('about:blank', '_blank');
+        if (win) {
+          win.document.open();
+          win.document.write(html);
+          win.document.close();
+          win.document.title = 'Math Notes';
+          showStatus('Page loaded through AllOrigins. URL bar shows <strong>about:blank</strong>. Content fetched server-side.', 'success');
+        } else {
+          showStatus('Popup blocked. Allow popups and try again.', 'error');
+        }
+      })
+      .catch(function(err) {
+        showStatus('AllOrigins error: ' + err.message + '. Try a different method.', 'error');
+      });
+  }
+
+  // ========================================
+  // METHOD 3: WAYBACK MACHINE
+  // ========================================
+  // Opens the page through web.archive.org.
+  // Content is served from archive.org servers.
+  function openWayback(url) {
+    var waybackUrl = 'https://web.archive.org/web/' + url;
+
+    showStatus('Opening through Wayback Machine (archive.org). Content served from their servers.', 'success');
+
+    var win = window.open(waybackUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + waybackUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+    }
+  }
+
+  // ========================================
+  // METHOD 4: ABOUT:BLANK IFRAME
+  // ========================================
+  function openAboutBlankTab(url) {
+    var win = window.open('about:blank', '_blank');
+    if (!win) {
+      showStatus('Popup blocked. Allow popups and try again.', 'error');
+      return;
+    }
+
+    win.document.title = 'Math Notes';
+    var link = win.document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/svg+xml';
+    link.href = new URL('favicon.svg', window.location.href).href;
+    win.document.head.appendChild(link);
+
+    win.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
+    var iframe = win.document.createElement('iframe');
+    iframe.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
+    iframe.src = url;
+    win.document.body.appendChild(iframe);
+
+    showStatus('Opened in about:blank tab with iframe.', 'success');
+  }
+
+  // ========================================
+  // METHOD 5: GOOGLE SEARCH
+  // ========================================
+  function openGoogleSearch(query, directUrl) {
+    var searchUrl;
+    if (directUrl) {
+      searchUrl = 'https://www.google.com/search?igu=1&q=site:' + encodeURIComponent(directUrl.replace(/^https?:\/\//, ''));
+    } else {
+      searchUrl = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
+    }
+
+    var win = window.open(searchUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + searchUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+      return;
+    }
+
+    showStatus('Opened Google Search with ?igu=1 embedded mode.', 'success');
+  }
+
+  // ========================================
+  // CLOAK ENTIRE PAGE TO ABOUT:BLANK
+  // ========================================
+  function openAboutBlank() {
+    var win = window.open('about:blank', '_blank');
+    if (win) {
+      win.document.title = 'Math Notes';
+      var link = win.document.createElement('link');
+      link.rel = 'icon';
+      link.type = 'image/svg+xml';
+      link.href = new URL('favicon.svg', window.location.href).href;
+      win.document.head.appendChild(link);
+      win.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
+      var iframe = win.document.createElement('iframe');
+      iframe.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
+      iframe.src = window.location.href;
+      win.document.body.appendChild(iframe);
+    }
+    window.location.replace('https://google.com');
+  }
+
+  // ========================================
+  // HELPERS
+  // ========================================
+  function showStatus(msg, type) {
+    var el = document.getElementById('statusMsg');
+    el.innerHTML = msg;
+    el.className = 'status-msg show ' + (type || '');
+  }
+
+  function hideStatus() {
+    document.getElementById('statusMsg').className = 'status-msg';
+  }
+
+  function showToast(msg) {
+    var toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 2500);
+  }
+</script>
+
+</body>
+</html>

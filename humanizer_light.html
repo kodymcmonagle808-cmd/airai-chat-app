@@ -26,7 +26,26 @@
       --orb-opacity: 0.15;
     }
 
-
+    body.light-mode {
+      --bg-primary: #f0f4f0;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-card-header: rgba(232, 245, 233, 0.8);
+      --bg-input: rgba(240, 244, 240, 0.9);
+      --border: rgba(46, 125, 50, 0.2);
+      --border-accent: #81c784;
+      --text-primary: #1a2e1a;
+      --text-secondary: #2e7d32;
+      --text-heading: #1b5e20;
+      --text-muted: #6b8f6b;
+      --text-badge: #2e7d32;
+      --accent: #2e7d32;
+      --accent-dark: #4caf50;
+      --btn-bg: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      --btn-primary-bg: linear-gradient(135deg, #4caf50, #2e7d32);
+      --slider-bg: #c8e6c9;
+      --placeholder: rgba(46, 125, 50, 0.3);
+      --orb-opacity: 0.05;
+    }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -244,11 +263,12 @@
     }
   </style>
 </head>
-<body>
+<body class="light-mode">
 
 <div class="bg-animation">
   <div class="orb"></div><div class="orb"></div><div class="orb"></div>
 </div>
+
 
 
 <div class="container">
@@ -1145,6 +1165,7 @@ function showMeter(score) {
   label.textContent = text;
   label.style.color = color;
 }
+
 
 </script>
 

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Math Notes</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #2d2d2d;
+    }
+    .redirect-message {
+      text-align: center;
+      padding: 40px;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(46, 125, 50, 0.15);
+      border-top-color: #4caf50;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    a {
+      color: #2e7d32;
+      text-decoration: none;
+    }
+    a:hover {
+      color: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <div class="redirect-message">
+    <div class="spinner"></div>
+    <h2>Loading...</h2>
+    <p>If nothing happens, <a href="login.html">click here</a>.</p>
+    <pre id="debug" style="text-align:left; font-size:12px; color:#388e3c; background:#ffffff; padding:16px; border-radius:8px; margin-top:20px; max-width:500px; word-wrap:break-word; white-space:pre-wrap;"></pre>
+  </div>
+  <script>
+    var dbg = document.getElementById('debug');
+    function log(msg) {
+      console.log('[cloak] ' + msg);
+      if (dbg) dbg.textContent += msg + '\n';
+    }
+
+    (function() {
+      log('Protocol: ' + window.location.protocol);
+      log('Hostname: ' + window.location.hostname);
+      log('Origin: ' + window.location.origin);
+      log('Href: ' + window.location.href);
+      log('window.self === window.top: ' + (window.self === window.top));
+
+      // If we're inside an iframe already, just go to login normally
+      if (window.self !== window.top) {
+        log('Inside iframe — redirecting to login.html normally');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // If we're already on about:blank somehow, skip
+      if (window.location.protocol === 'about:') {
+        log('Already about:blank — skipping');
+        return;
+      }
+
+      log('Attempting to open about:blank window...');
+      try {
+        var win = window.open('about:blank', '_blank');
+        log('window.open result: ' + (win ? 'SUCCESS' : 'BLOCKED/null'));
+
+        if (win) {
+          // Use relative URL resolution so it works on any host (including GitHub Pages subpaths)
+          var base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+          var url = base + 'login.html';
+          var faviconUrl = base + 'favicon.svg';
+          log('Base: ' + base);
+          log('Iframe URL: ' + url);
+          win.document.open();
+          win.document.write(
+            '<!DOCTYPE html><html><head><title>Math Notes</title>' +
+            '<link rel="icon" type="image/svg+xml" href="' + faviconUrl + '">' +
+            '<style>body{margin:0;overflow:hidden;height:100vh;background:#f5f5f5}iframe{width:100%;height:100%;border:none}</style>' +
+            '</head><body><iframe src="' + url + '"></iframe></body></html>'
+          );
+          win.document.close();
+          log('Wrote to about:blank window — redirecting this tab to Google');
+          // Small delay so user can see logs if needed
+          setTimeout(function() {
+            window.location.replace('https://www.google.com');
+          }, 500);
+        } else {
+          log('Popup was blocked — falling back to normal redirect');
+          window.location.href = 'login.html';
+        }
+      } catch(e) {
+        log('ERROR: ' + e.message);
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
+</body>
+</html>

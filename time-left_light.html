@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Left - AirAI</title>
+  <meta name="theme-color" content="#040d01">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #1a1a1a;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .background-animation {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0; overflow: hidden; pointer-events: none;
+    }
+    .bg-gradient {
+      position: absolute; border-radius: 50%; filter: blur(80px);
+      opacity: 0.3; animation: float 20s infinite ease-in-out;
+    }
+    .bg-gradient-1 { width: 500px; height: 500px; background: radial-gradient(circle, #4caf50, #66bb6a); top: -10%; left: -10%; }
+    .bg-gradient-2 { width: 400px; height: 400px; background: radial-gradient(circle, #66bb6a, #ffffff); top: 50%; right: -5%; animation-delay: 7s; }
+    .bg-gradient-3 { width: 600px; height: 600px; background: radial-gradient(circle, #4caf50, #f5f5f5); bottom: -15%; left: 30%; animation-delay: 14s; }
+    .grid-pattern {
+      position: absolute; width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(46,125,50,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(46,125,50,0.03) 1px, transparent 1px);
+      background-size: 50px 50px; animation: gridMove 30s linear infinite;
+    }
+    .bubble {
+      position: absolute; bottom: -100px; background: rgba(46,125,50,0.15);
+      border: 2px solid rgba(129,199,132,0.3); border-radius: 50%;
+      animation: rise linear infinite; box-shadow: 0 0 20px rgba(46,125,50,0.2);
+    }
+    .bubble::before {
+      content: ''; position: absolute; top: 10%; left: 15%; width: 30%; height: 30%;
+      background: rgba(255,255,255,0.2); border-radius: 50%;
+    }
+    @keyframes rise { to { bottom: 110%; transform: translateX(var(--drift)) rotate(360deg); } }
+    .fish { position: absolute; animation: swim linear infinite; opacity: 0.6; }
+    .fish svg { filter: drop-shadow(0 0 10px rgba(46,125,50,0.4)); }
+    @keyframes swim {
+      0% { left: -100px; transform: translateY(0) scaleX(1); }
+      48% { transform: translateY(var(--wave)) scaleX(1); }
+      50% { transform: translateY(var(--wave)) scaleX(-1); }
+      98% { transform: translateY(0) scaleX(-1); }
+      100% { left: calc(100% + 100px); transform: translateY(0) scaleX(-1); }
+    }
+    @keyframes float { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-30px) scale(1.1)} 66%{transform:translate(-20px,20px) scale(0.9)} }
+    @keyframes gridMove { 0%{transform:translate(0,0)} 100%{transform:translate(50px,50px)} }
+
+    .header, .main-content, .page-footer { position: relative; z-index: 1; }
+
+    /* Header */
+    .header { background: #ffffff; border-bottom: 1px solid #e0e0e0; padding: 16px 0; }
+    .header-content { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #4caf50, #66bb6a); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(46,125,50,0.4); }
+    .logo-icon svg { width: 18px; height: 18px; color: #2d2d2d; }
+    .logo-text { font-size: 20px; font-weight: 700; color: #2d2d2d; }
+    .header-links { display: flex; gap: 32px; align-items: center; }
+    .header-link { color: #2e7d32; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .header-link:hover { color: #2d2d2d; }
+
+    /* Main */
+    .main-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 24px; }
+    .login-container { width: 100%; max-width: 440px; }
+    .login-header { text-align: center; margin-bottom: 32px; }
+    .login-title { font-size: 28px; font-weight: 700; color: #2d2d2d; margin-bottom: 8px; }
+    .login-subtitle { font-size: 15px; color: #2e7d32; }
+
+    /* Card */
+    .card { background: #ffffff; border-radius: 12px; border: 1px solid #e0e0e0; padding: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+
+    /* Form */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 14px; font-weight: 500; color: #2d2d2d; margin-bottom: 6px; }
+    .form-input {
+      width: 100%; padding: 11px 14px; border: 1px solid #e0e0e0; border-radius: 8px;
+      font-size: 14px; color: #2d2d2d; background: #f5f5f5; transition: all 0.2s; font-family: inherit;
+    }
+    .form-input:focus { outline: none; border-color: #4caf50; box-shadow: 0 0 0 3px rgba(46,125,50,0.2); }
+    .form-input::placeholder { color: #757575; }
+    .btn-primary {
+      width: 100%; padding: 12px 16px; background: linear-gradient(135deg, #4caf50, #66bb6a);
+      color: #2d2d2d; border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.15);
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, #388e3c, #66bb6a); box-shadow: 0 6px 16px rgba(46,125,50,0.4); transform: translateY(-1px); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none; }
+    .alert.show { display: block; }
+    .alert-error { background: #1a0f0f; color: #ef9a9a; border: 1px solid #4a2626; }
+    .alert-success { background: #0f1a0f; color: #1b5e20; border: 1px solid #2e4a2e; }
+
+    /* Schedule Clock */
+    .schedule-section { display: none; }
+    .schedule-section.active { display: block; }
+
+    .status-badge {
+      display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 13px;
+      font-weight: 600; margin-bottom: 16px; letter-spacing: 0.5px;
+    }
+    .status-normal { background: rgba(0,184,148,0.15); color: #00b894; border: 1px solid rgba(0,184,148,0.3); }
+    .status-delay { background: rgba(255,209,102,0.15); color: #ffd166; border: 1px solid rgba(255,209,102,0.3); }
+    .status-noschool { background: rgba(255,71,87,0.15); color: #ff4757; border: 1px solid rgba(255,71,87,0.3); }
+    .status-halfday { background: rgba(162,155,254,0.15); color: #a29bfe; border: 1px solid rgba(162,155,254,0.3); }
+    .status-wednesday { background: rgba(116,185,255,0.15); color: #74b9ff; border: 1px solid rgba(116,185,255,0.3); }
+    .status-checking { background: rgba(255,255,255,0.08); color: #2e7d32; border: 1px solid rgba(255,255,255,0.15); }
+
+    #scheduleDate { font-size: 14px; color: #2e7d32; opacity: 0.9; margin-bottom: 4px; }
+    #scheduleDayType { font-size: 15px; color: #1b5e20; font-weight: 600; margin-bottom: 8px; }
+    #scheduleClock { font-size: 40px; font-weight: 700; color: #2d2d2d; margin: 8px 0; font-family: 'Courier New', monospace; }
+
+    #schedulePeriod {
+      margin: 12px auto; font-size: 24px; font-weight: 700; padding: 10px 20px;
+      border-radius: 10px; display: inline-block; min-width: 200px;
+    }
+    #scheduleCountdown { margin-top: 8px; font-size: 18px; color: #2d2d2d; opacity: 0.95; }
+
+    #progressContainer {
+      width: 100%; height: 16px; background: rgba(255,255,255,0.08);
+      border-radius: 8px; margin: 16px 0 0 0; overflow: hidden;
+    }
+    #progressFill { height: 100%; width: 0%; border-radius: 8px; transition: width 0.5s linear; }
+
+    .state-school { color: #2d2d2d; border: 1px solid rgba(0,184,148,0.3); background: rgba(0,184,148,0.08); }
+    .state-lunch  { color: #ffd166; border: 1px solid rgba(255,209,102,0.3); background: rgba(255,209,102,0.08); }
+    .state-change { color: #ff6b6b; border: 1px solid rgba(255,107,107,0.3); background: rgba(255,107,107,0.08); }
+    .state-noschool { color: #ff4757; border: 1px solid rgba(255,71,87,0.3); background: rgba(255,71,87,0.08); }
+
+    .override-row {
+      display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-top: 16px;
+    }
+    .override-btn {
+      padding: 6px 12px; font-size: 11px; font-weight: 600; border-radius: 6px;
+      border: 1px solid #e0e0e0; background: #f5f5f5; color: #388e3c;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .override-btn:hover { border-color: #4caf50; background: #122a12; color: #1b5e20; }
+    .override-btn.active { border-color: #4caf50; background: rgba(46,125,50,0.2); color: #2d2d2d; }
+
+    /* Footer */
+    .page-footer { background: #ffffff; border-top: 1px solid #e0e0e0; padding: 24px 0; margin-top: auto; }
+    .page-footer-content { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-text { font-size: 13px; color: #388e3c; }
+    .footer-nav { display: flex; gap: 24px; }
+    .footer-nav a { font-size: 13px; color: #388e3c; text-decoration: none; }
+    .footer-nav a:hover { color: #2d2d2d; }
+
+    @media (max-width: 640px) {
+      .header-links { display: none; }
+      .card { padding: 24px; }
+      .login-title { font-size: 24px; }
+      #scheduleClock { font-size: 32px; }
+      #schedulePeriod { font-size: 20px; }
+      .page-footer-content { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="background-animation">
+    <div class="grid-pattern"></div>
+    <div class="bg-gradient bg-gradient-1"></div>
+    <div class="bg-gradient bg-gradient-2"></div>
+    <div class="bg-gradient bg-gradient-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="login.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <span class="logo-text">AirAI · Time Left</span>
+      </a>
+      <nav class="header-links">
+        <a href="#" class="header-link" onclick="event.preventDefault();window.location.href='login.html'">← Back to Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="login-container">
+      <!-- Auth Screen -->
+      <div id="authScreen">
+        <div class="login-header">
+          <h1 class="login-title">⏱️ Time Left</h1>
+          <p class="login-subtitle">Enter your auth code to continue</p>
+        </div>
+        <div class="card">
+          <div id="alertError" class="alert alert-error"></div>
+          <div id="alertSuccess" class="alert alert-success"></div>
+          <form onsubmit="handleAuthCode(event)">
+            <div class="form-group">
+              <label class="form-label" for="authCode">Member Key</label>
+              <input type="text" id="authCode" class="form-input" placeholder="Enter your 6-digit code"
+                maxlength="6" autocomplete="off" required
+                style="text-align:center; font-size:24px; letter-spacing:8px; font-family:'Courier New',monospace;">
+            </div>
+            <button type="submit" id="authBtn" class="btn-primary">Verify & Enter</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Schedule Screen -->
+      <div id="scheduleScreen" class="schedule-section">
+        <div class="login-header">
+          <h1 class="login-title">⏱️ Time Left</h1>
+          <p class="login-subtitle">Welcome, <strong id="menuUsername">User</strong></p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div id="statusBadge" class="status-badge status-checking">Checking status...</div>
+          <div id="scheduleDate"></div>
+          <div id="scheduleDayType"></div>
+          <div id="scheduleClock"></div>
+          <div id="schedulePeriod">Loading…</div>
+          <div id="scheduleCountdown"></div>
+          <div id="progressContainer">
+            <div id="progressFill"></div>
+          </div>
+          <div class="override-row">
+            <button class="override-btn" onclick="overrideSchedule('auto')">Auto</button>
+            <button class="override-btn" onclick="overrideSchedule('regular')">Normal</button>
+            <button class="override-btn" onclick="overrideSchedule('twohourdelay')">2hr Delay</button>
+            <button class="override-btn" onclick="overrideSchedule('noschool')">No School</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <div class="page-footer-content">
+      <p class="footer-text">© 2026 AirAI, Inc. All rights reserved. · <span style="color: #757575;">v1.8</span></p>
+      <nav class="footer-nav">
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // ============================================
+    // BACKGROUND ANIMATIONS
+    // ============================================
+    function createBubbles() {
+      const bg = document.querySelector('.background-animation');
+      for (let i = 0; i < 15; i++) {
+        const b = document.createElement('div'); b.className = 'bubble';
+        const sz = Math.random()*60+20;
+        b.style.width = sz+'px'; b.style.height = sz+'px';
+        b.style.left = Math.random()*100+'%';
+        b.style.animationDuration = (Math.random()*10+10)+'s';
+        b.style.animationDelay = (Math.random()*5)+'s';
+        b.style.setProperty('--drift', (Math.random()-0.5)*200+'px');
+        bg.appendChild(b);
+      }
+    }
+    function createFish() {
+      const bg = document.querySelector('.background-animation');
+      const svg = '<svg width="60" height="30" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 15C5 15 10 5 25 5C35 5 45 10 55 15C45 20 35 25 25 25C10 25 5 15 5 15Z" fill="rgba(46,125,50,0.4)" stroke="rgba(129,199,132,0.6)" stroke-width="1.5"/><circle cx="35" cy="15" r="2" fill="rgba(200,230,201,0.8)"/><path d="M5 15L0 10L0 20L5 15Z" fill="rgba(46,125,50,0.4)" stroke="rgba(129,199,132,0.6)" stroke-width="1.5"/></svg>';
+      for (let i = 0; i < 8; i++) {
+        const f = document.createElement('div'); f.className = 'fish'; f.innerHTML = svg;
+        f.style.top = (Math.random()*80+10)+'%';
+        f.style.animationDuration = (Math.random()*8+8)+'s';
+        f.style.animationDelay = (Math.random()*3)+'s';
+        f.style.setProperty('--wave', (Math.random()-0.5)*100+'px');
+        f.style.transform = 'scale('+(Math.random()*0.5+0.7)+')';
+        bg.appendChild(f);
+      }
+    }
+    createBubbles(); createFish();
+
+    // ============================================
+    // AUTO-FILL FROM URL PARAM
+    // ============================================
+    (function() {
+      const p = new URLSearchParams(window.location.search);
+      const k = p.get('memberKey');
+      if (k) {
+        document.getElementById('authCode').value = k;
+        setTimeout(() => document.querySelector('#authScreen form').dispatchEvent(new Event('submit')), 300);
+      }
+    })();
+
+    // ============================================
+    // AUTH
+    // ============================================
+    function handleAuthCode(e) {
+      e.preventDefault();
+      const code = document.getElementById('authCode').value.trim();
+      document.getElementById('alertError').classList.remove('show');
+      document.getElementById('alertSuccess').classList.remove('show');
+      if (!code) { showAlert('error','Please enter your member key.'); return; }
+      const btn = document.getElementById('authBtn');
+      const orig = btn.textContent; btn.disabled = true; btn.textContent = 'Verifying...';
+      const cb = 'verifyCallback' + Date.now();
+      window[cb] = function(data) {
+        btn.disabled = false; btn.textContent = orig;
+        if (data.success) {
+          showAlert('success','Access granted!');
+          setTimeout(() => {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('scheduleScreen').classList.add('active');
+            document.getElementById('menuUsername').textContent = data.username || 'User';
+            startSchedule();
+          }, 600);
+        } else { showAlert('error', data.error || 'Invalid or expired code.'); }
+        delete window[cb];
+      };
+      const s = document.createElement('script');
+      s.src = 'https://script.google.com/macros/s/AKfycbzHDXl45MX96gaOlKPeqD4Q75nNeDm1cMUvQpc0GWVXHSE8ErnMbkZ6GSMnO9zTbFO_Bg/exec?action=validateCode&code=' + encodeURIComponent(code) + '&callback=' + cb;
+      s.onerror = function() { btn.disabled=false; btn.textContent=orig; showAlert('error','Connection failed.'); delete window[cb]; };
+      document.body.appendChild(s);
+    }
+    function showAlert(type, msg) {
+      const el = document.getElementById(type==='error'?'alertError':'alertSuccess');
+      el.textContent = msg; el.classList.add('show');
+    }
+
+    // ============================================
+    // SCHEDULE DATA
+    // ============================================
+    const noSchoolDates = [
+      "2025-11-26","2025-11-27","2025-11-28",
+      "2025-12-24","2025-12-25","2025-12-26",
+      "2025-12-29","2025-12-30","2025-12-31",
+      "2026-01-01","2026-01-02","2026-01-19",
+      "2026-02-16","2026-02-17","2026-04-15",
+      "2026-04-03","2026-03-20","2026-03-30",
+      "2026-03-31","2026-04-01","2026-04-02",
+      "2026-04-03","2026-06-19","2026-06-23",
+      "2026-07-03"
+    ];
+
+    const halfDayDates = [
+      "2025-11-25","2025-12-22","2025-12-23",
+      "2026-01-22","2026-02-05","2026-03-03",
+      "2026-04-15","2026-06-08","2026-06-11",
+      "2026-06-12","2026-06-15"
+    ];
+
+    function getRegularSchedule() { return [
+      { start:510, end:564, name:"Period 1" },
+      { start:567, end:617, name:"Period 2" },
+      { start:620, end:670, name:"Period 3" },
+      { start:673, end:723, name:"Period 4" },
+      { start:726, end:776, name:"Period 5" },
+      { start:779, end:809, name:"Lunch" },
+      { start:812, end:862, name:"Period 6" },
+      { start:865, end:915, name:"Period 7" }
+    ]; }
+
+    function getWednesdaySchedule() { return [
+      { start:510, end:559, name:"Period 1" },
+      { start:562, end:609, name:"Period 2" },
+      { start:612, end:642, name:"Bobcat Time" },
+      { start:645, end:690, name:"Period 3" },
+      { start:693, end:738, name:"Period 4" },
+      { start:741, end:786, name:"Period 5" },
+      { start:789, end:819, name:"Lunch" },
+      { start:822, end:867, name:"Period 6" },
+      { start:870, end:915, name:"Period 7" }
+    ]; }
+
+    function getHalfDaySchedule() { return [
+      { start:495, end:536, name:"Period 1" },
+      { start:539, end:561, name:"Period 2" },
+      { start:564, end:586, name:"Period 3" },
+      { start:589, end:611, name:"Period 6" },
+      { start:614, end:636, name:"Period 7" },
+      { start:639, end:669, name:"Period 4" },
+      { start:672, end:702, name:"Lunch" },
+      { start:705, end:735, name:"Period 5" }
+    ]; }
+
+    function getTwoHourDelaySchedule() { return [
+      { start:615, end:625, name:"Breakfast" },
+      { start:630, end:668, name:"Period 1" },
+      { start:671, end:705, name:"Period 2" },
+      { start:708, end:742, name:"Period 3" },
+      { start:745, end:775, name:"Period 4" },
+      { start:778, end:808, name:"Period 5" },
+      { start:811, end:841, name:"Lunch" },
+      { start:844, end:878, name:"Period 6" },
+      { start:881, end:915, name:"Period 7" }
+    ]; }
+
+    // ============================================
+    // STATUS DETECTION
+    // ============================================
+    let scheduleOverride = 'auto';
+    let detectedStatus = null;
+
+    function checkHCPSSStatus() {
+      const badge = document.getElementById('statusBadge');
+      badge.textContent = 'Checking HCPSS status...';
+      badge.className = 'status-badge status-checking';
+
+      // Try fetching via a CORS proxy
+      const statusUrl = 'https://status.hcpss.org/';
+      const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(statusUrl);
+
+      fetch(proxyUrl, { signal: AbortSignal.timeout(8000) })
+        .then(r => r.text())
+        .then(html => {
+          const lower = html.toLowerCase();
+          if (lower.includes('closed') || lower.includes('cancel')) {
+            detectedStatus = 'noschool';
+          } else if (lower.includes('two-hour') || lower.includes('two hour') || lower.includes('2-hour') || lower.includes('2 hour') || lower.includes('delay')) {
+            detectedStatus = 'twohourdelay';
+          } else {
+            detectedStatus = null; // normal / no special status
+          }
+          updateStatusBadge();
+        })
+        .catch(() => {
+          detectedStatus = null; // couldn't check, assume normal
+          updateStatusBadge();
+        });
+    }
+
+    function updateStatusBadge() {
+      const badge = document.getElementById('statusBadge');
+      const mode = getCurrentMode();
+      switch (mode) {
+        case 'noschool':
+          badge.textContent = '🚫 No School'; badge.className = 'status-badge status-noschool'; break;
+        case 'twohourdelay':
+          badge.textContent = '⏰ Two Hour Delay'; badge.className = 'status-badge status-delay'; break;
+        case 'halfday':
+          badge.textContent = '🕐 Half Day'; badge.className = 'status-badge status-halfday'; break;
+        case 'wednesday':
+          badge.textContent = '📅 Wednesday Schedule'; badge.className = 'status-badge status-wednesday'; break;
+        default:
+          badge.textContent = '✅ Normal Day'; badge.className = 'status-badge status-normal'; break;
+      }
+    }
+
+    function overrideSchedule(mode) {
+      scheduleOverride = mode;
+      document.querySelectorAll('.override-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      updateStatusBadge();
+    }
+
+    function getCurrentMode() {
+      if (scheduleOverride !== 'auto') return scheduleOverride;
+
+      const now = new Date();
+      const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
+      const dateStr = y+'-'+m+'-'+d;
+      const dow = now.getDay();
+
+      // Detected status from HCPSS overrides calendar
+      if (detectedStatus === 'noschool') return 'noschool';
+      if (detectedStatus === 'twohourdelay') return 'twohourdelay';
+
+      if (noSchoolDates.includes(dateStr)) return 'noschool';
+      if (dow === 0 || dow === 6) return 'noschool';
+      if (halfDayDates.includes(dateStr)) return 'halfday';
+      if (dow === 3) return 'wednesday';
+      return 'regular';
+    }
+
+    // ============================================
+    // CLOCK LOGIC
+    // ============================================
+    function getMinutes(t) { return t.getHours()*60 + t.getMinutes(); }
+
+    function getScheduleForMode(mode) {
+      switch(mode) {
+        case 'noschool': return null;
+        case 'twohourdelay': return getTwoHourDelaySchedule();
+        case 'halfday': return getHalfDaySchedule();
+        case 'wednesday': return getWednesdaySchedule();
+        default: return getRegularSchedule();
+      }
+    }
+
+    function getPeriod(now) {
+      const m = getMinutes(now);
+      const mode = getCurrentMode();
+      const schedule = getScheduleForMode(mode);
+
+      if (!schedule) return { name:"No School", state:"noschool", start:null, end:null };
+      if (m < schedule[0].start || m > schedule[schedule.length-1].end)
+        return { name:"No School", state:"noschool", start:null, end:null };
+
+      for (let p of schedule) {
+        if (m >= p.start && m <= p.end) {
+          const isBreak = (p.name === "Lunch" || p.name === "Breakfast");
+          return { name:p.name, state: isBreak ? "lunch" : "school", start:p.start, end:p.end };
+        }
+      }
+      for (let i = 0; i < schedule.length; i++) {
+        if (m < schedule[i].start)
+          return { name:"Class Change", state:"change", start:m, end:schedule[i].start };
+      }
+      return { name:"Class Change", state:"change", start:null, end:null };
+    }
+
+    function formatTimeLeft(sec) {
+      let m = Math.floor(sec/60), s = sec%60;
+      return m + 'm ' + (s<10?'0'+s:s) + 's';
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const mNow = getMinutes(now);
+
+      document.getElementById('scheduleDate').textContent =
+        now.toLocaleDateString([], { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+
+      const mode = getCurrentMode();
+      let dayText = '';
+      switch(mode) {
+        case 'noschool': dayText = 'No School'; break;
+        case 'twohourdelay': dayText = 'Two Hour Delay Schedule'; break;
+        case 'halfday': dayText = 'Half Day'; break;
+        case 'wednesday': dayText = 'Wednesday Schedule'; break;
+        default: dayText = 'Normal Day'; break;
+      }
+      document.getElementById('scheduleDayType').textContent = dayText;
+      document.getElementById('scheduleClock').textContent =
+        now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+
+      const p = getPeriod(now);
+      const periodEl = document.getElementById('schedulePeriod');
+      const countdownEl = document.getElementById('scheduleCountdown');
+      const fill = document.getElementById('progressFill');
+
+      periodEl.textContent = p.name;
+      periodEl.className = 'state-' + p.state;
+
+      if (p.name === 'No School') {
+        countdownEl.textContent = '';
+        fill.style.width = '100%';
+        fill.style.backgroundColor = '#ff4757';
+        return;
+      }
+      if (p.end !== null && p.start !== null) {
+        const totalSec = (p.end - p.start) * 60;
+        const leftSec = (p.end - mNow) * 60 - now.getSeconds();
+        countdownEl.textContent = '⏳ ' + formatTimeLeft(Math.max(0, leftSec)) + ' left';
+        const pct = 100 - (leftSec / totalSec * 100);
+        fill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+        if (p.state === 'school') fill.style.backgroundColor = '#00b894';
+        else if (p.state === 'lunch') fill.style.backgroundColor = '#ffd166';
+        else if (p.state === 'change') fill.style.backgroundColor = '#ff6b6b';
+      } else {
+        countdownEl.textContent = '';
+        fill.style.width = '0%';
+      }
+
+      updateStatusBadge();
+    }
+
+    let clockInterval = null;
+    function startSchedule() {
+      checkHCPSSStatus();
+      updateClock();
+      clockInterval = setInterval(updateClock, 1000);
+      // Re-check status every 5 minutes
+      setInterval(checkHCPSSStatus, 5 * 60 * 1000);
+      // Set Auto button as active
+      document.querySelector('.override-btn').classList.add('active');
+    }
+  </script>
+</body>
+</html>
