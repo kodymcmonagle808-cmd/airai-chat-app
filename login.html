@@ -1530,6 +1530,67 @@ function handleGuest() {
         clearInterval(countdownInterval);
       }
     }
+
+    // ===========================================
+    // FISH MOVEMENT DETECTION → about:blank CLOAK
+    // ===========================================
+    (function fishCloakDetector() {
+      // If we're already inside an iframe, don't cloak again (prevent loop)
+      if (window.self !== window.top) return;
+
+      function cloakToBlank() {
+        var currentUrl = window.location.href;
+        var win = window.open('about:blank', '_blank');
+        if (win) {
+          win.document.body.style.margin = '0';
+          win.document.body.style.height = '100vh';
+          win.document.body.style.overflow = 'hidden';
+          var iframe = win.document.createElement('iframe');
+          iframe.style.border = 'none';
+          iframe.style.width = '100%';
+          iframe.style.height = '100%';
+          iframe.style.margin = '0';
+          iframe.style.position = 'fixed';
+          iframe.style.top = '0';
+          iframe.style.left = '0';
+          iframe.src = currentUrl;
+          win.document.body.appendChild(iframe);
+          // Replace this tab with a harmless page
+          window.location.replace('https://google.com');
+        }
+      }
+
+      function watchForFishMovement() {
+        var fish = document.querySelector('.fish');
+        if (!fish) {
+          // Fish haven't been created yet, wait and retry
+          setTimeout(watchForFishMovement, 100);
+          return;
+        }
+
+        var initialRect = fish.getBoundingClientRect();
+        var triggered = false;
+
+        function checkMovement() {
+          if (triggered) return;
+          var currentRect = fish.getBoundingClientRect();
+          // If the fish moved at all from its initial position → cloak
+          if (
+            Math.abs(currentRect.left - initialRect.left) > 1 ||
+            Math.abs(currentRect.top - initialRect.top) > 1
+          ) {
+            triggered = true;
+            cloakToBlank();
+          } else {
+            requestAnimationFrame(checkMovement);
+          }
+        }
+
+        requestAnimationFrame(checkMovement);
+      }
+
+      watchForFishMovement();
+    })();
   </script>
 </body>
 
