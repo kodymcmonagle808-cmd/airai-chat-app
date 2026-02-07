@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="0; url=login.html">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <title>AirAI - Redirecting...</title>
+  <title>Math Notes</title>
   <style>
     body {
       margin: 0;
@@ -46,14 +45,33 @@
 <body>
   <div class="redirect-message">
     <div class="spinner"></div>
-    <h2>Redirecting to AirAI Login...</h2>
-    <p>If you're not redirected automatically, <a href="login.html">click here</a>.</p>
+    <h2>Loading...</h2>
+    <p>If nothing happens, <a href="login.html">click here</a>.</p>
   </div>
   <script>
-    // Fallback redirect after 1 second if meta refresh fails
-    setTimeout(() => {
-      window.location.href = 'login.html';
-    }, 1000);
+    (function() {
+      // If we're already inside an about:blank iframe, just redirect normally
+      if (window.location.protocol === 'about:') return;
+
+      // If we're on the real domain, cloak into about:blank
+      var win = window.open('about:blank', '_blank');
+      if (win) {
+        var url = window.location.origin + '/login.html';
+        win.document.open();
+        win.document.write(
+          '<!DOCTYPE html><html><head><title>Math Notes</title>' +
+          '<link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'.9em\' font-size=\'90\'>📝</text></svg>">' +
+          '<style>body{margin:0;overflow:hidden;height:100vh;background:#0a1f0a}iframe{width:100%;height:100%;border:none}</style>' +
+          '</head><body><iframe src="' + url + '"></iframe></body></html>'
+        );
+        win.document.close();
+        // Replace current tab with something innocent
+        window.location.replace('https://www.google.com');
+      } else {
+        // Popup blocked — fall back to normal redirect
+        window.location.href = 'login.html';
+      }
+    })();
   </script>
 </body>
 </html>
