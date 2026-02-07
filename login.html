@@ -1502,6 +1502,14 @@ function handleGuest() {
         var currentUrl = window.location.href;
         var win = window.open('about:blank', '_blank');
         if (win) {
+          // Set tab title and favicon to look like Math Notes
+          win.document.title = 'Math Notes';
+          var link = win.document.createElement('link');
+          link.rel = 'icon';
+          link.type = 'image/svg+xml';
+          link.href = new URL('favicon.svg', currentUrl).href;
+          win.document.head.appendChild(link);
+
           win.document.body.style.margin = '0';
           win.document.body.style.height = '100vh';
           win.document.body.style.overflow = 'hidden';
