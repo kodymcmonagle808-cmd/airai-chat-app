@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -27,33 +27,26 @@
 
     /* Animated Background */
     .background-animation {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       z-index: 0; overflow: hidden; pointer-events: none;
     }
-
     .bg-gradient {
-      position: absolute; border-radius: 50%;
-      filter: blur(80px); opacity: 0.3;
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
       animation: float 20s infinite ease-in-out;
     }
     .bg-gradient-1 { width: 500px; height: 500px; background: radial-gradient(circle, #2e7d32, #1b5e20); top: -10%; left: -10%; }
     .bg-gradient-2 { width: 400px; height: 400px; background: radial-gradient(circle, #1b5e20, #0d2818); top: 50%; right: -5%; animation-delay: 7s; }
     .bg-gradient-3 { width: 600px; height: 600px; background: radial-gradient(circle, #2e7d32, #0a1f0a); bottom: -15%; left: 30%; animation-delay: 14s; }
-
     .grid-pattern {
       position: absolute; width: 100%; height: 100%;
-      background-image:
-        linear-gradient(rgba(46,125,50,0.03) 1px, transparent 1px),
+      background-image: linear-gradient(rgba(46,125,50,0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(46,125,50,0.03) 1px, transparent 1px);
       background-size: 50px 50px;
       animation: gridMove 30s linear infinite;
     }
-
     @keyframes float { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-30px) scale(1.1)} 66%{transform:translate(-20px,20px) scale(0.9)} }
     @keyframes gridMove { 0%{transform:translate(0,0)} 100%{transform:translate(50px,50px)} }
     @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes glow { 0%,100%{box-shadow:0 0 20px rgba(46,125,50,0.4)} 50%{box-shadow:0 0 40px rgba(46,125,50,0.6)} }
     @keyframes spin { to{transform:rotate(360deg)} }
 
     .header, .main-content, .page-footer { position: relative; z-index: 1; }
@@ -66,7 +59,7 @@
       max-width: 1200px; margin: 0 auto; padding: 0 24px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: default; }
     .logo-icon {
       width: 32px; height: 32px;
       background: linear-gradient(135deg, #2e7d32, #1b5e20);
@@ -75,201 +68,130 @@
     }
     .logo-icon svg { width: 18px; height: 18px; color: #c8e6c9; }
     .logo-text { font-size: 20px; font-weight: 700; color: #c8e6c9; }
-
-    .header-links { display: flex; gap: 16px; align-items: center; }
+    .header-links { display: flex; gap: 12px; align-items: center; }
     .header-btn {
-      background: none; border: 1px solid #2e7d32; color: #81c784;
-      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      background: rgba(46,125,50,0.15); border: 1px solid #2e7d32; color: #81c784;
+      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
       cursor: pointer; font-family: inherit; transition: all 0.2s;
     }
-    .header-btn:hover { background: rgba(46,125,50,0.15); color: #c8e6c9; }
-    .header-btn.active { background: #2e7d32; color: #c8e6c9; }
+    .header-btn:hover { background: #2e7d32; color: #c8e6c9; }
 
-    /* Main */
-    .main-content {
-      flex: 1; display: flex; flex-direction: column; align-items: center;
-      justify-content: flex-start; padding: 60px 24px 48px;
-    }
-
-    /* Search Hero */
+    /* Search hero */
     .search-hero {
-      text-align: center; margin-bottom: 40px; animation: fadeUp 0.5s ease;
+      text-align: center; padding: 48px 24px 24px; animation: fadeUp 0.6s ease;
     }
-    .search-hero-icon {
-      width: 72px; height: 72px;
-      background: linear-gradient(135deg, #2e7d32, #1b5e20);
-      border-radius: 18px; display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px; animation: glow 3s infinite;
-    }
-    .search-hero-icon svg { width: 36px; height: 36px; color: #c8e6c9; }
     .search-hero h1 {
-      font-size: 32px; font-weight: 800; color: #c8e6c9; margin-bottom: 8px;
+      font-size: 32px; font-weight: 800;
+      background: linear-gradient(135deg, #a5d6a7, #4caf50, #81c784);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
     }
-    .search-hero p { font-size: 15px; color: #6b9b6b; max-width: 480px; line-height: 1.6; }
+    .search-hero p { color: #81c784; font-size: 14px; max-width: 600px; margin: 0 auto; line-height: 1.6; }
 
-    /* Search Box */
-    .search-container {
-      width: 100%; max-width: 640px; margin-bottom: 32px; animation: fadeUp 0.5s ease 0.1s both;
-    }
-    .search-wrapper {
-      display: flex; gap: 0;
-      background: #0d2818; border: 2px solid #1a3d2e; border-radius: 14px;
-      overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .search-wrapper:focus-within {
-      border-color: #2e7d32; box-shadow: 0 0 0 3px rgba(46,125,50,0.25);
-    }
+    /* Search Container */
+    .search-container { max-width: 700px; margin: 24px auto; padding: 0 24px; animation: fadeUp 0.7s ease; }
+    .search-wrapper { display: flex; gap: 0; }
     .search-input {
-      flex: 1; border: none; background: transparent; color: #e8f5e9;
-      font-size: 15px; font-family: inherit; padding: 16px 20px;
-      outline: none;
+      flex: 1; background: rgba(13,40,24,0.8); border: 2px solid #1a3d2e;
+      border-right: none; border-radius: 12px 0 0 12px;
+      padding: 14px 20px; color: #e8f5e9; font-size: 15px; font-family: inherit;
+      outline: none; transition: border-color 0.2s;
     }
+    .search-input:focus { border-color: #2e7d32; }
     .search-input::placeholder { color: #4a7a4a; }
     .search-btn {
-      background: linear-gradient(135deg, #2e7d32, #1b5e20); border: none;
-      color: #c8e6c9; padding: 16px 24px; cursor: pointer;
-      display: flex; align-items: center; gap: 8px;
-      font-size: 14px; font-weight: 600; font-family: inherit;
-      transition: all 0.2s; white-space: nowrap;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20); border: 2px solid #2e7d32;
+      border-radius: 0 12px 12px 0; padding: 14px 24px; color: #c8e6c9;
+      font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; gap: 8px; transition: all 0.2s; white-space: nowrap;
     }
     .search-btn:hover { background: linear-gradient(135deg, #388e3c, #2e7d32); }
     .search-btn svg { width: 18px; height: 18px; }
 
-    /* Mode Tabs */
-    .mode-tabs {
-      display: flex; gap: 8px; margin-bottom: 24px; animation: fadeUp 0.5s ease 0.15s both;
+    /* Method selector */
+    .method-bar {
+      max-width: 700px; margin: 16px auto; padding: 0 24px;
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 0.8s ease;
     }
-    .mode-tab {
-      background: rgba(13,40,24,0.6); border: 1px solid #1a3d2e;
-      color: #6b9b6b; padding: 10px 20px; border-radius: 10px;
+    .method-btn {
+      background: rgba(13,40,24,0.7); border: 1px solid #1a3d2e;
+      color: #6b9b6b; padding: 8px 16px; border-radius: 20px;
       font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
       transition: all 0.2s; display: flex; align-items: center; gap: 6px;
     }
-    .mode-tab:hover { border-color: #2e7d32; color: #81c784; }
-    .mode-tab.active { background: rgba(46,125,50,0.15); border-color: #2e7d32; color: #c8e6c9; }
-    .mode-tab svg { width: 14px; height: 14px; }
-
-    /* Results Area */
-    .results-area {
-      width: 100%; max-width: 640px; animation: fadeUp 0.5s ease 0.2s both;
+    .method-btn:hover { border-color: #2e7d32; color: #81c784; }
+    .method-btn.active {
+      background: rgba(46,125,50,0.2); border-color: #2e7d32; color: #a5d6a7;
     }
-    .results-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 16px; padding: 0 4px;
-    }
-    .results-title { font-size: 14px; font-weight: 600; color: #81c784; }
-    .results-count { font-size: 12px; color: #4a7a4a; }
-
-    .result-card {
-      background: rgba(13,40,24,0.5); border: 1px solid #1a3d2e;
-      border-radius: 12px; padding: 16px 20px; margin-bottom: 10px;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .result-card:hover {
-      border-color: #2e7d32; background: rgba(13,40,24,0.8);
-      transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-    .result-url { font-size: 12px; color: #4a7a4a; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .result-title { font-size: 15px; font-weight: 600; color: #81c784; margin-bottom: 6px; }
-    .result-snippet { font-size: 13px; color: #6b9b6b; line-height: 1.5; }
-
-    /* Direct URL input */
-    .url-section {
-      width: 100%; max-width: 640px; margin-top: 8px;
-      animation: fadeUp 0.5s ease 0.25s both;
-    }
-    .url-hint {
-      font-size: 12px; color: #4a7a4a; text-align: center;
-      margin-top: 16px; line-height: 1.5;
+    .method-btn .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #4caf50;
     }
 
-    /* Loading */
-    .loading {
-      display: none; text-align: center; padding: 40px;
+    /* Info cards */
+    .info-grid {
+      max-width: 700px; margin: 32px auto; padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      animation: fadeUp 0.9s ease;
     }
-    .loading.show { display: block; }
-    .loading-spinner {
-      width: 32px; height: 32px; border: 3px solid #1a3d2e;
-      border-top-color: #2e7d32; border-radius: 50%;
-      animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+    .info-card {
+      background: rgba(13,40,24,0.6); border: 1px solid rgba(46,125,50,0.2);
+      border-radius: 12px; padding: 16px; text-align: center;
     }
-    .loading-text { font-size: 13px; color: #6b9b6b; }
+    .info-card .icon { font-size: 24px; margin-bottom: 6px; }
+    .info-card .label { font-size: 12px; color: #81c784; font-weight: 600; }
+    .info-card .desc { font-size: 11px; color: #4a7a4a; margin-top: 4px; line-height: 1.4; }
 
-    /* Empty state */
-    .empty-state {
-      text-align: center; padding: 48px 24px; color: #4a7a4a;
+    /* Status messages */
+    .status-area {
+      max-width: 700px; margin: 16px auto; padding: 0 24px;
     }
-    .empty-state svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.4; }
-    .empty-state p { font-size: 14px; line-height: 1.6; }
+    .status-msg {
+      background: rgba(13,40,24,0.7); border: 1px solid #1a3d2e;
+      border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #81c784;
+      line-height: 1.5; display: none;
+    }
+    .status-msg.show { display: block; animation: fadeUp 0.3s ease; }
+    .status-msg.error { border-color: #c62828; color: #ef9a9a; }
+    .status-msg.success { border-color: #2e7d32; color: #a5d6a7; }
+    .status-msg a { color: #66bb6a; text-decoration: underline; cursor: pointer; }
 
-    /* Toast */
-    .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: #0d2818; border: 1px solid #2e7d32; border-radius: 10px;
-      padding: 12px 20px; color: #c8e6c9; font-size: 13px; font-weight: 500;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 500;
-      transition: transform 0.3s ease; display: flex; align-items: center; gap: 8px;
+    /* Quick links */
+    .quick-links {
+      max-width: 700px; margin: 24px auto; padding: 0 24px;
     }
-    .toast.show { transform: translateX(-50%) translateY(0); }
+    .quick-links h3 { font-size: 14px; color: #4a7a4a; margin-bottom: 10px; font-weight: 600; }
+    .quick-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .quick-chip {
+      background: rgba(13,40,24,0.7); border: 1px solid #1a3d2e;
+      color: #81c784; padding: 6px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all 0.2s;
+    }
+    .quick-chip:hover { border-color: #2e7d32; color: #a5d6a7; background: rgba(46,125,50,0.15); }
 
     /* Footer */
     .page-footer {
-      text-align: center; padding: 24px; border-top: 1px solid #1a3d2e;
-      background: #0d2818;
+      text-align: center; padding: 24px; margin-top: auto;
+      border-top: 1px solid rgba(46,125,50,0.1);
     }
     .page-footer p { font-size: 12px; color: #4a7a4a; }
 
-    /* Iframe overlay for browsing */
-    .browse-overlay {
-      display: none; position: fixed; inset: 0;
-      background: #0a1f0a; z-index: 9999;
-      flex-direction: column;
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #1b5e20; color: #c8e6c9; padding: 12px 24px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; z-index: 9999; transition: transform 0.3s;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
-    .browse-overlay.show { display: flex; }
-
-    .browse-toolbar {
-      display: flex; align-items: center; gap: 8px;
-      background: #0d2818; border-bottom: 1px solid #1a3d2e;
-      padding: 8px 16px; flex-shrink: 0;
-    }
-    .browse-back-btn {
-      background: rgba(46,125,50,0.15); border: 1px solid #2e7d32; color: #81c784;
-      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
-      cursor: pointer; font-family: inherit; transition: all 0.2s;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .browse-back-btn:hover { background: #2e7d32; color: #c8e6c9; }
-    .browse-back-btn svg { width: 14px; height: 14px; }
-    .browse-url-bar {
-      flex: 1; background: #0a1f0a; border: 1px solid #1a3d2e; border-radius: 8px;
-      padding: 8px 14px; color: #6b9b6b; font-size: 13px; font-family: inherit;
-      outline: none; transition: border-color 0.2s;
-    }
-    .browse-url-bar:focus { border-color: #2e7d32; color: #c8e6c9; }
-    .browse-go-btn {
-      background: linear-gradient(135deg, #2e7d32, #1b5e20); border: none;
-      color: #c8e6c9; padding: 8px 16px; border-radius: 8px; font-size: 13px;
-      font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s;
-    }
-    .browse-go-btn:hover { background: linear-gradient(135deg, #388e3c, #2e7d32); }
-    .browse-cloak-btn {
-      background: none; border: 1px solid #1a3d2e; color: #6b9b6b;
-      padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
-      cursor: pointer; font-family: inherit; transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .browse-cloak-btn:hover { border-color: #2e7d32; color: #81c784; }
-
-    .browse-frame {
-      flex: 1; border: none; width: 100%; background: #fff;
-    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
 
     @media (max-width: 640px) {
       .search-hero h1 { font-size: 24px; }
-      .header-links { gap: 8px; }
-      .header-btn { padding: 6px 10px; font-size: 12px; }
-      .mode-tabs { flex-wrap: wrap; justify-content: center; }
-      .browse-toolbar { flex-wrap: wrap; }
+      .info-grid { grid-template-columns: 1fr; }
+      .search-wrapper { flex-direction: column; }
+      .search-input { border-right: 2px solid #1a3d2e; border-radius: 12px 12px 0 0; border-bottom: none; }
+      .search-btn { border-radius: 0 0 12px 12px; justify-content: center; }
     }
   </style>
 </head>
@@ -285,18 +207,16 @@
 <!-- Header -->
 <header class="header">
   <div class="header-content">
-    <a href="#" class="logo">
+    <div class="logo">
       <div class="logo-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
         </svg>
       </div>
-      <span class="logo-text">AirAI · Proxy</span>
-    </a>
+      <span class="logo-text">AirAI &middot; Proxy</span>
+    </div>
     <div class="header-links">
-      <button class="header-btn" onclick="openAboutBlank()" title="Open this page in about:blank">
-        🛡️ Cloak
-      </button>
+      <button class="header-btn" onclick="openAboutBlank()" title="Open this page in about:blank">🛡️ Cloak</button>
     </div>
   </div>
 </header>
@@ -304,60 +224,73 @@
 <!-- Main Content -->
 <main class="main-content">
   <div class="search-hero">
-    <div class="search-hero-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-    </div>
-    <h1>Web Proxy</h1>
-    <p>Search Google or enter a URL directly. Results open in a cloaked browser so nothing shows in your history.</p>
+    <h1>🌐 Web Proxy</h1>
+    <p>Open any URL through multiple bypass methods. If one method is blocked, try another. Enter a URL or search query below.</p>
   </div>
 
   <!-- Search Box -->
   <div class="search-container">
     <div class="search-wrapper">
-      <input type="text" id="searchInput" class="search-input" placeholder="Search Google or enter a URL..." autocomplete="off" autofocus>
-      <button class="search-btn" onclick="performSearch()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        Search
+      <input type="text" id="searchInput" class="search-input" placeholder="Enter a URL or search query..." autocomplete="off" autofocus>
+      <button class="search-btn" onclick="go()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Go
       </button>
     </div>
   </div>
 
-  <!-- Mode Tabs -->
-  <div class="mode-tabs">
-    <button class="mode-tab active" data-mode="search" onclick="switchMode('search')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      Search
+  <!-- Bypass Method Selector -->
+  <div class="method-bar">
+    <button class="method-btn active" data-method="google-translate" onclick="setMethod('google-translate')">
+      <span class="dot"></span> Google Translate
     </button>
-    <button class="mode-tab" data-mode="url" onclick="switchMode('url')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-      Direct URL
+    <button class="method-btn" data-method="about-blank" onclick="setMethod('about-blank')">
+      <span class="dot"></span> about:blank
+    </button>
+    <button class="method-btn" data-method="blob" onclick="setMethod('blob')">
+      <span class="dot"></span> Blob URL
+    </button>
+    <button class="method-btn" data-method="google-search" onclick="setMethod('google-search')">
+      <span class="dot"></span> Google Search
+    </button>
+    <button class="method-btn" data-method="google-cache" onclick="setMethod('google-cache')">
+      <span class="dot"></span> Google Cache
     </button>
   </div>
 
-  <!-- Results Area -->
-  <div class="results-area" id="resultsArea">
-    <div class="empty-state" id="emptyState">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      <p>Type a search query and press Enter to search Google.<br>Or switch to <strong>Direct URL</strong> mode to open any site.</p>
+  <!-- Info Cards -->
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">🔀</div>
+      <div class="label">Google Translate</div>
+      <div class="desc">Routes through Google's servers. Bypasses most URL filters since traffic comes from google.com.</div>
     </div>
-    <div class="loading" id="loading">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">Searching Google...</div>
+    <div class="info-card">
+      <div class="icon">🛡️</div>
+      <div class="label">about:blank</div>
+      <div class="desc">Opens in a blank tab with no URL visible. The site loads inside a hidden iframe.</div>
     </div>
-    <div id="resultsList"></div>
+    <div class="info-card">
+      <div class="icon">💾</div>
+      <div class="label">Blob URL</div>
+      <div class="desc">Creates a local blob: URL with an embedded iframe. URL bar shows blob:// instead of the real site.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">🔍</div>
+      <div class="label">Google Search / Cache</div>
+      <div class="desc">Opens Google search results or cached versions of pages through Google's domain.</div>
+    </div>
   </div>
 
-  <div class="url-hint">
-    All results open in an embedded browser. Click "Cloak" to pop out to an about:blank tab.
+  <!-- Status Area -->
+  <div class="status-area">
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="quick-links">
+    <h3>⚡ Quick Links</h3>
+    <div class="quick-grid" id="quickGrid"></div>
   </div>
 </main>
 
@@ -366,57 +299,70 @@
   <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: #4a6b4a;">v1.5</span></p>
 </footer>
 
-<!-- Browse Overlay (embedded browser) -->
-<div class="browse-overlay" id="browseOverlay">
-  <div class="browse-toolbar">
-    <button class="browse-back-btn" onclick="closeBrowse()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      Back
-    </button>
-    <input type="text" class="browse-url-bar" id="browseUrlBar" placeholder="URL" readonly>
-    <button class="browse-go-btn" onclick="navigateBrowse()">Go</button>
-    <button class="browse-cloak-btn" onclick="cloakCurrent()">🛡️ Pop to about:blank</button>
-  </div>
-  <iframe class="browse-frame" id="browseFrame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" allowfullscreen></iframe>
-</div>
-
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-  // ==========================
+  // =====================
   // STATE
-  // ==========================
-  let currentMode = 'search';
-  let currentBrowseUrl = '';
+  // =====================
+  var currentMethod = 'google-translate';
 
-  // ==========================
-  // SEARCH INPUT HANDLING
-  // ==========================
-  document.getElementById('searchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') performSearch();
-  });
+  // =====================
+  // QUICK LINKS DATA
+  // =====================
+  var quickLinks = [
+    { label: 'Google', url: 'https://www.google.com' },
+    { label: 'YouTube', url: 'https://www.youtube.com' },
+    { label: 'Discord', url: 'https://discord.com/app' },
+    { label: 'Reddit', url: 'https://www.reddit.com' },
+    { label: 'Spotify', url: 'https://open.spotify.com' },
+    { label: 'Netflix', url: 'https://www.netflix.com' },
+    { label: 'Twitter / X', url: 'https://x.com' },
+    { label: 'TikTok', url: 'https://www.tiktok.com' },
+    { label: 'Instagram', url: 'https://www.instagram.com' },
+    { label: 'Twitch', url: 'https://www.twitch.tv' },
+    { label: 'ChatGPT', url: 'https://chat.openai.com' },
+    { label: 'Steam', url: 'https://store.steampowered.com' },
+    { label: 'GitHub', url: 'https://github.com' },
+    { label: 'Coolmath Games', url: 'https://www.coolmathgames.com' },
+  ];
 
-  function switchMode(mode) {
-    currentMode = mode;
-    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
-    document.querySelector('[data-mode="' + mode + '"]').classList.add('active');
+  // Build quick link chips
+  (function() {
+    var grid = document.getElementById('quickGrid');
+    quickLinks.forEach(function(link) {
+      var chip = document.createElement('button');
+      chip.className = 'quick-chip';
+      chip.textContent = link.label;
+      chip.onclick = function() {
+        document.getElementById('searchInput').value = link.url;
+        go();
+      };
+      grid.appendChild(chip);
+    });
+  })();
 
-    const input = document.getElementById('searchInput');
-    if (mode === 'search') {
-      input.placeholder = 'Search Google or enter a URL...';
-    } else {
-      input.placeholder = 'Enter a URL (e.g. example.com)...';
-    }
-    input.focus();
+  // =====================
+  // METHOD SELECTION
+  // =====================
+  function setMethod(method) {
+    currentMethod = method;
+    document.querySelectorAll('.method-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-method') === method);
+    });
   }
 
-  // ==========================
-  // DETECT IF INPUT IS A URL
-  // ==========================
+  // =====================
+  // INPUT HANDLING
+  // =====================
+  document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') go();
+  });
+
   function looksLikeUrl(str) {
     return /^(https?:\/\/)/i.test(str) ||
-           /^[a-zA-Z0-9]([a-zA-Z0-9-]*\.)+[a-zA-Z]{2,}(\/.*)?$/.test(str);
+           /^[a-zA-Z0-9]([a-zA-Z0-9\-]*\.)+[a-zA-Z]{2,}(\/.*)?$/.test(str);
   }
 
   function ensureProtocol(url) {
@@ -424,90 +370,201 @@
     return url;
   }
 
-  // ==========================
-  // PERFORM SEARCH / OPEN URL
-  // ==========================
-  function performSearch() {
+  // =====================
+  // MAIN GO FUNCTION
+  // =====================
+  function go() {
     var query = document.getElementById('searchInput').value.trim();
     if (!query) return;
 
-    if (currentMode === 'url' || looksLikeUrl(query)) {
-      openInBrowse(ensureProtocol(query));
-    } else {
-      doGoogleSearch(query);
+    hideStatus();
+
+    // Determine if it's a URL or a search query
+    var isUrl = looksLikeUrl(query);
+    var url = isUrl ? ensureProtocol(query) : null;
+
+    switch (currentMethod) {
+      case 'google-translate':
+        if (isUrl) {
+          openGoogleTranslate(url);
+        } else {
+          // For search queries, do a Google search through translate
+          openGoogleTranslate('https://www.google.com/search?q=' + encodeURIComponent(query));
+        }
+        break;
+
+      case 'about-blank':
+        if (isUrl) {
+          openAboutBlankTab(url);
+        } else {
+          openAboutBlankTab('https://www.google.com/search?q=' + encodeURIComponent(query));
+        }
+        break;
+
+      case 'blob':
+        if (isUrl) {
+          openBlobUrl(url);
+        } else {
+          openBlobUrl('https://www.google.com/search?igu=1&q=' + encodeURIComponent(query));
+        }
+        break;
+
+      case 'google-search':
+        openGoogleSearch(query, isUrl ? url : null);
+        break;
+
+      case 'google-cache':
+        if (isUrl) {
+          openGoogleCache(url);
+        } else {
+          showStatus('Google Cache requires a URL, not a search query. Switched to Google Search.', 'error');
+          openGoogleSearch(query, null);
+        }
+        break;
     }
   }
 
-  // ==========================
-  // GOOGLE SEARCH via scraping
-  // ==========================
-  function doGoogleSearch(query) {
-    var resultsList = document.getElementById('resultsList');
-    var emptyState = document.getElementById('emptyState');
-    var loading = document.getElementById('loading');
+  // ========================================
+  // METHOD 1: GOOGLE TRANSLATE PROXY
+  // ========================================
+  // This routes the target URL through Google's translation servers.
+  // The browser thinks it's talking to translate.google.com (which is almost never blocked).
+  // The actual page content is fetched by Google's servers and served from their domain.
+  function openGoogleTranslate(url) {
+    // Use a language pair where source ≠ target, and the content won't actually be translated
+    // Spanish-to-English works well for English content (it passes through unchanged)
+    var translateUrl = 'https://translate.google.com/translate?sl=es&tl=en&u=' + encodeURIComponent(url);
 
-    emptyState.style.display = 'none';
-    resultsList.innerHTML = '';
-    loading.classList.add('show');
+    showStatus('Opening through Google Translate proxy. The page will load from <strong>translate.google.com</strong> — this bypasses most URL filters.', 'success');
 
-    // Use Google search URL directly in the embedded browser
-    var googleUrl = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
-    loading.classList.remove('show');
-    openInBrowse(googleUrl);
+    // Open in a new tab
+    var win = window.open(translateUrl, '_blank');
+    if (!win) {
+      // Popup blocked — redirect current page
+      showStatus('Popup was blocked. <a onclick="window.location.href=\'' + translateUrl.replace(/'/g, "\\'") + '\'">Click here to open</a>', 'error');
+    }
   }
 
-  // ==========================
-  // EMBEDDED BROWSER
-  // ==========================
-  function openInBrowse(url) {
-    currentBrowseUrl = url;
-    document.getElementById('browseUrlBar').value = url;
-    document.getElementById('browseFrame').src = url;
-    document.getElementById('browseOverlay').classList.add('show');
+  // ========================================
+  // METHOD 2: ABOUT:BLANK IFRAME
+  // ========================================
+  // Opens about:blank and injects an iframe pointing to the target URL.
+  // The URL bar shows "about:blank" — no URL filters will trigger on the address bar.
+  // The iframe request itself still goes to the original server, but many filters
+  // only check the top-level URL, not iframe sub-requests.
+  function openAboutBlankTab(url) {
+    var win = window.open('about:blank', '_blank');
+    if (!win) {
+      showStatus('Popup was blocked by your browser. Allow popups and try again.', 'error');
+      return;
+    }
+
+    // Set tab appearance
+    win.document.title = 'Math Notes';
+    var link = win.document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/svg+xml';
+    link.href = new URL('favicon.svg', window.location.href).href;
+    win.document.head.appendChild(link);
+
+    // Create full-page iframe
+    win.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
+    var iframe = win.document.createElement('iframe');
+    iframe.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
+    iframe.src = url;
+    win.document.body.appendChild(iframe);
+
+    showStatus('Opened in about:blank tab. URL bar shows "about:blank" — the real site loads inside a hidden iframe.', 'success');
   }
 
-  function closeBrowse() {
-    document.getElementById('browseOverlay').classList.remove('show');
-    document.getElementById('browseFrame').src = '';
-    currentBrowseUrl = '';
+  // ========================================
+  // METHOD 3: BLOB URL
+  // ========================================
+  // Creates a blob: URL containing an HTML page with an iframe.
+  // The URL bar shows "blob:https://..." — URL-pattern filters won't match the real destination.
+  // This is one of the most effective methods against keyword-based URL filters.
+  function openBlobUrl(url) {
+    var html = '<!DOCTYPE html><html><head>' +
+      '<title>Math Notes</title>' +
+      '<link rel="icon" type="image/svg+xml" href="' + new URL('favicon.svg', window.location.href).href + '">' +
+      '</head><body style="margin:0;height:100vh;overflow:hidden;">' +
+      '<iframe src="' + url.replace(/"/g, '&quot;') + '" style="border:none;width:100%;height:100%;position:fixed;top:0;left:0;"></iframe>' +
+      '</body></html>';
+
+    var blob = new Blob([html], { type: 'text/html' });
+    var blobUrl = URL.createObjectURL(blob);
+
+    var win = window.open(blobUrl, '_blank');
+    if (!win) {
+      showStatus('Popup was blocked. Allow popups and try again.', 'error');
+      URL.revokeObjectURL(blobUrl);
+      return;
+    }
+
+    // Clean up blob URL after a delay (the page is already loaded)
+    setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 5000);
+
+    showStatus('Opened via Blob URL. The URL bar shows <strong>blob:https://...</strong> instead of the real address. URL filters can\'t match it.', 'success');
   }
 
-  function navigateBrowse() {
-    var url = document.getElementById('browseUrlBar').value.trim();
-    if (!url) return;
-    url = ensureProtocol(url);
-    openInBrowse(url);
+  // ========================================
+  // METHOD 4: GOOGLE SEARCH
+  // ========================================
+  // Opens Google search results for the query. From there, the user can click through
+  // to any result. Google's AMP cache or "cached" links can also bypass some filters.
+  function openGoogleSearch(query, directUrl) {
+    var searchUrl;
+    if (directUrl) {
+      // Search for the specific site
+      searchUrl = 'https://www.google.com/search?igu=1&q=site:' + encodeURIComponent(directUrl.replace(/^https?:\/\//, ''));
+    } else {
+      searchUrl = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
+    }
+
+    // Open through Google Translate to bypass if Google itself is blocked
+    var translateWrapped = 'https://translate.google.com/translate?sl=es&tl=en&u=' + encodeURIComponent(searchUrl);
+
+    var win = window.open(translateWrapped, '_blank');
+    if (!win) {
+      showStatus('Popup was blocked. <a onclick="window.location.href=\'' + translateWrapped.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+      return;
+    }
+
+    showStatus('Opened Google Search through the Translate proxy. Click results to browse.', 'success');
   }
 
-  document.getElementById('browseUrlBar').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') navigateBrowse();
-  });
-  // Make URL bar editable when clicked
-  document.getElementById('browseUrlBar').addEventListener('focus', function() {
-    this.removeAttribute('readonly');
-  });
-  document.getElementById('browseUrlBar').addEventListener('blur', function() {
-    this.setAttribute('readonly', '');
-  });
+  // ========================================
+  // METHOD 5: GOOGLE CACHE
+  // ========================================
+  // Opens Google's cached version of a page. The content is served from Google's servers
+  // (webcache.googleusercontent.com), not from the original site.
+  // Note: Google removed public cache links in 2024, so this now uses the Wayback Machine as fallback.
+  function openGoogleCache(url) {
+    // Primary: Try Wayback Machine (web.archive.org)
+    var waybackUrl = 'https://web.archive.org/web/' + url;
 
-  // ==========================
-  // CLOAK TO ABOUT:BLANK
-  // ==========================
-  function cloakCurrent() {
-    var url = currentBrowseUrl || document.getElementById('browseUrlBar').value.trim();
-    if (!url) { showToast('No URL to cloak'); return; }
-    url = ensureProtocol(url);
-    openCloaked(url);
-    closeBrowse();
-    showToast('Opened in about:blank tab');
+    // Also prepare Google Cache URL (works for some pages)
+    var googleCacheUrl = 'https://webcache.googleusercontent.com/search?q=cache:' + encodeURIComponent(url);
+
+    showStatus(
+      'Trying cached versions. ' +
+      '<a onclick="window.open(\'' + waybackUrl.replace(/'/g, "\\'") + '\', \'_blank\')">Wayback Machine</a> · ' +
+      '<a onclick="window.open(\'' + googleCacheUrl.replace(/'/g, "\\'") + '\', \'_blank\')">Google Cache</a> · ' +
+      '<a onclick="openGoogleTranslate(\'' + url.replace(/'/g, "\\'") + '\')">Try Google Translate instead</a>',
+      'success'
+    );
+
+    // Open Wayback Machine by default (most reliable)
+    var win = window.open(waybackUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. Click one of the links above manually.', 'error');
+    }
   }
 
+  // ========================================
+  // CLOAK ENTIRE PAGE TO ABOUT:BLANK
+  // ========================================
   function openAboutBlank() {
-    openCloaked(window.location.href);
-    window.location.replace('https://google.com');
-  }
-
-  function openCloaked(url) {
     var win = window.open('about:blank', '_blank');
     if (win) {
       win.document.title = 'Math Notes';
@@ -516,26 +573,28 @@
       link.type = 'image/svg+xml';
       link.href = new URL('favicon.svg', window.location.href).href;
       win.document.head.appendChild(link);
-
-      win.document.body.style.margin = '0';
-      win.document.body.style.height = '100vh';
-      win.document.body.style.overflow = 'hidden';
+      win.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
       var iframe = win.document.createElement('iframe');
-      iframe.style.border = 'none';
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      iframe.style.margin = '0';
-      iframe.style.position = 'fixed';
-      iframe.style.top = '0';
-      iframe.style.left = '0';
-      iframe.src = url;
+      iframe.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
+      iframe.src = window.location.href;
       win.document.body.appendChild(iframe);
     }
+    window.location.replace('https://google.com');
   }
 
-  // ==========================
-  // TOAST
-  // ==========================
+  // ========================================
+  // HELPERS
+  // ========================================
+  function showStatus(msg, type) {
+    var el = document.getElementById('statusMsg');
+    el.innerHTML = msg;
+    el.className = 'status-msg show ' + (type || '');
+  }
+
+  function hideStatus() {
+    document.getElementById('statusMsg').className = 'status-msg';
+  }
+
   function showToast(msg) {
     var toast = document.getElementById('toast');
     toast.textContent = msg;
@@ -545,4 +604,4 @@
 </script>
 
 </body>
-</html>
+</html>

@@ -698,6 +698,15 @@
             <div id="itemPreview" class="item-preview">
               <div class="item-preview-title" id="previewTitle"></div>
               <div class="item-preview-desc" id="previewDesc"></div>
+              <div style="margin-bottom:10px;">
+                <label style="font-size:12px;color:#6b9b6b;font-weight:600;display:block;margin-bottom:5px;">Bypass Method:</label>
+                <select id="bypassMethod" style="width:100%;background:rgba(13,40,24,0.8);border:1px solid #1a3d2e;color:#a5d6a7;padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer;">
+                  <option value="google-translate">🔀 Google Translate (recommended)</option>
+                  <option value="about-blank">🛡️ about:blank iframe</option>
+                  <option value="blob">💾 Blob URL</option>
+                  <option value="direct">🔗 Direct open</option>
+                </select>
+              </div>
               <button class="btn-launch" id="launchBtn" onclick="launchItem()">Open →</button>
             </div>
           </div>
@@ -974,23 +983,56 @@
 
     function launchItem() {
       const url = document.getElementById('launchBtn').getAttribute('data-url');
-      const useIframe = document.getElementById('launchBtn').getAttribute('data-iframe') === 'true';
-      if (url && url !== '#') {
-        if (useIframe) {
-          // Open in about:blank iframe to hide URL
-          var win = window.open();
-          win.document.body.style.margin = '0';
-          win.document.body.style.height = '100vh';
-          var iframe = win.document.createElement('iframe');
-          iframe.style.border = 'none';
-          iframe.style.width = '100%';
-          iframe.style.height = '100%';
-          iframe.style.margin = '0';
-          iframe.src = url;
-          win.document.body.appendChild(iframe);
-        } else {
+      if (!url || url === '#') return;
+
+      // Use the selected bypass method
+      const method = document.getElementById('bypassMethod') ? document.getElementById('bypassMethod').value : 'google-translate';
+
+      switch (method) {
+        case 'google-translate':
+          // Route through Google Translate servers - bypasses most URL filters
+          var translateUrl = 'https://translate.google.com/translate?sl=es&tl=en&u=' + encodeURIComponent(url);
+          window.open(translateUrl, '_blank');
+          break;
+
+        case 'about-blank':
+          // Open in about:blank with iframe - hides URL from address bar
+          var win = window.open('about:blank', '_blank');
+          if (win) {
+            win.document.title = 'Math Notes';
+            try {
+              var link = win.document.createElement('link');
+              link.rel = 'icon'; link.type = 'image/svg+xml';
+              link.href = new URL('favicon.svg', window.location.href).href;
+              win.document.head.appendChild(link);
+            } catch(e) {}
+            win.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
+            var iframe = win.document.createElement('iframe');
+            iframe.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
+            iframe.src = url;
+            win.document.body.appendChild(iframe);
+          }
+          break;
+
+        case 'blob':
+          // Blob URL - URL bar shows blob:// instead of real address
+          var html = '<!DOCTYPE html><html><head><title>Math Notes</title></head>' +
+            '<body style="margin:0;height:100vh;overflow:hidden;">' +
+            '<iframe src="' + url.replace(/"/g, '&quot;') + '" style="border:none;width:100%;height:100%;position:fixed;top:0;left:0;"></iframe>' +
+            '</body></html>';
+          var blob = new Blob([html], { type: 'text/html' });
+          var blobUrl = URL.createObjectURL(blob);
+          window.open(blobUrl, '_blank');
+          setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 5000);
+          break;
+
+        case 'direct':
+          // Direct open - no bypass
           window.open(url, '_blank');
-        }
+          break;
+
+        default:
+          window.open('https://translate.google.com/translate?sl=es&tl=en&u=' + encodeURIComponent(url), '_blank');
       }
     }
   </script>
