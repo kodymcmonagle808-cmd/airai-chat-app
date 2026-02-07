@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Opener - AirAI</title>
+  <meta name="theme-color" content="#040d01">
+  <meta name="description" content="URL Opener - AirAI Platform">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a1f0a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #e8f5e9;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .background-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-gradient {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .bg-gradient-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #2e7d32, #1b5e20);
+      top: -10%;
+      left: -10%;
+      animation-delay: 0s;
+    }
+
+    .bg-gradient-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #1b5e20, #0d2818);
+      top: 50%;
+      right: -5%;
+      animation-delay: 7s;
+    }
+
+    .bg-gradient-3 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, #2e7d32, #0a1f0a);
+      bottom: -15%;
+      left: 30%;
+      animation-delay: 14s;
+    }
+
+    .grid-pattern {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(46, 125, 50, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(46, 125, 50, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 30s linear infinite;
+    }
+
+    /* Bubbles */
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: rgba(46, 125, 50, 0.15);
+      border: 2px solid rgba(129, 199, 132, 0.3);
+      border-radius: 50%;
+      animation: rise linear infinite;
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.2);
+    }
+
+    .bubble::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 15%;
+      width: 30%;
+      height: 30%;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+
+    @keyframes rise {
+      to {
+        bottom: 110%;
+        transform: translateX(var(--drift)) rotate(360deg);
+      }
+    }
+
+    /* Fish */
+    .fish {
+      position: absolute;
+      animation: swim linear infinite;
+      opacity: 0.6;
+    }
+
+    .fish svg {
+      filter: drop-shadow(0 0 10px rgba(46, 125, 50, 0.4));
+    }
+
+    @keyframes swim {
+      0% {
+        left: -100px;
+        transform: translateY(0) scaleX(1);
+      }
+      48% {
+        transform: translateY(var(--wave)) scaleX(1);
+      }
+      50% {
+        transform: translateY(var(--wave)) scaleX(-1);
+      }
+      98% {
+        transform: translateY(0) scaleX(-1);
+      }
+      100% {
+        left: calc(100% + 100px);
+        transform: translateY(0) scaleX(-1);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(30px, -30px) scale(1.1);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+    }
+
+    @keyframes gridMove {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(50px, 50px);
+      }
+    }
+
+    /* Ensure content is above background */
+    .header,
+    .main-content,
+    .page-footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      background: #0d2818;
+      border-bottom: 1px solid #1a3d2e;
+      padding: 16px 0;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.4);
+    }
+
+    .logo-icon svg {
+      width: 18px;
+      height: 18px;
+      color: #c8e6c9;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: #c8e6c9;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .header-link {
+      color: #81c784;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .header-link:hover {
+      color: #c8e6c9;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #c8e6c9;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      font-size: 15px;
+      color: #81c784;
+    }
+
+    /* Card */
+    .card {
+      background: #0d2818;
+      border-radius: 12px;
+      border: 1px solid #1a3d2e;
+      padding: 32px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #c8e6c9;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #1a3d2e;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #c8e6c9;
+      background: #0a1f0a;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #2e7d32;
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+    }
+
+    .form-input::placeholder {
+      color: #4a6b4a;
+    }
+
+    /* Button */
+    .btn-primary {
+      width: 100%;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: #c8e6c9;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #388e3c, #1b5e20);
+      box-shadow: 0 6px 16px rgba(46, 125, 50, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    /* Alert */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-error {
+      background: #1a0f0f;
+      color: #ef9a9a;
+      border: 1px solid #4a2626;
+    }
+
+    .alert-success {
+      background: #0f1a0f;
+      color: #a5d6a7;
+      border: 1px solid #2e4a2e;
+    }
+
+    /* URL Opener styles */
+    .opener-section {
+      display: none;
+    }
+
+    .opener-section.active {
+      display: block;
+    }
+
+    .protocol-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: #0a1f0a;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .protocol-tab {
+      flex: 1;
+      padding: 10px 16px;
+      background: transparent;
+      color: #66bb6a;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .protocol-tab.active {
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: #c8e6c9;
+      box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+    }
+
+    .protocol-tab:hover:not(.active) {
+      color: #81c784;
+    }
+
+    .protocol-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #0a1f0a;
+      border: 1px solid #1a3d2e;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #66bb6a;
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .url-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 16px;
+    }
+
+    .url-prefix {
+      padding: 11px 12px;
+      background: #122a12;
+      border: 1px solid #1a3d2e;
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+      font-size: 14px;
+      color: #66bb6a;
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .url-input {
+      flex: 1;
+      padding: 11px 14px;
+      border: 1px solid #1a3d2e;
+      border-left: none;
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+      color: #c8e6c9;
+      background: #0a1f0a;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .url-input:focus {
+      outline: none;
+      border-color: #2e7d32;
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+    }
+
+    .url-input:focus ~ .url-prefix,
+    .url-input:focus + .url-prefix {
+      border-color: #2e7d32;
+    }
+
+    .url-input::placeholder {
+      color: #4a6b4a;
+    }
+
+    .info-box {
+      padding: 14px 16px;
+      background: rgba(46, 125, 50, 0.08);
+      border: 1px solid #1a3d2e;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .info-box-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #a5d6a7;
+      margin-bottom: 6px;
+    }
+
+    .info-box-text {
+      font-size: 12px;
+      color: #81c784;
+      line-height: 1.5;
+    }
+
+    .open-window-info {
+      margin-top: 16px;
+      padding: 10px 14px;
+      background: #0a1f0a;
+      border: 1px dashed #1a3d2e;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #66bb6a;
+      text-align: center;
+      display: none;
+    }
+
+    .open-window-info.show {
+      display: block;
+    }
+
+    /* Footer */
+    .page-footer {
+      background: #0d2818;
+      border-top: 1px solid #1a3d2e;
+      padding: 24px 0;
+      margin-top: auto;
+    }
+
+    .page-footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: #66bb6a;
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-nav a {
+      font-size: 13px;
+      color: #66bb6a;
+      text-decoration: none;
+    }
+
+    .footer-nav a:hover {
+      color: #c8e6c9;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .header-links {
+        display: none;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .login-title {
+        font-size: 24px;
+      }
+
+      .page-footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="background-animation">
+    <div class="grid-pattern"></div>
+    <div class="bg-gradient bg-gradient-1"></div>
+    <div class="bg-gradient bg-gradient-2"></div>
+    <div class="bg-gradient bg-gradient-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="login.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <span class="logo-text">AirAI · URL Opener</span>
+      </a>
+      <nav class="header-links">
+        <a href="login.html" class="header-link">← Back to Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="login-container">
+      <!-- Auth Code Screen -->
+      <div id="authScreen">
+        <div class="login-header">
+          <h1 class="login-title">🔗 URL Opener</h1>
+          <p class="login-subtitle">Enter your auth code to continue</p>
+        </div>
+
+        <div class="card">
+          <div id="alertError" class="alert alert-error"></div>
+          <div id="alertSuccess" class="alert alert-success"></div>
+
+          <form onsubmit="handleAuthCode(event)">
+            <div class="form-group">
+              <label class="form-label" for="authCode">Member Key</label>
+              <input 
+                type="text" 
+                id="authCode" 
+                class="form-input" 
+                placeholder="Enter your 6-digit code"
+                maxlength="6"
+                autocomplete="off"
+                required
+                style="text-align: center; font-size: 24px; letter-spacing: 8px; font-family: 'Courier New', monospace;"
+              >
+            </div>
+
+            <button type="submit" id="authBtn" class="btn-primary">Verify & Enter</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- URL Opener Screen -->
+      <div id="openerScreen" class="opener-section">
+        <div class="login-header">
+          <h1 class="login-title">🔗 URL Opener</h1>
+          <p class="login-subtitle">Welcome, <strong id="menuUsername">User</strong> — open any URL in a cloaked window</p>
+        </div>
+
+        <div class="card">
+          <!-- Protocol Tabs -->
+          <div class="protocol-tabs">
+            <button class="protocol-tab active" onclick="switchProtocol('https')">https://</button>
+            <button class="protocol-tab" onclick="switchProtocol('http')">http://</button>
+          </div>
+
+          <!-- URL Input -->
+          <div class="form-group">
+            <label class="form-label">Enter URL</label>
+            <div class="url-input-wrapper">
+              <span class="url-prefix" id="protocolPrefix">https://</span>
+              <input 
+                type="text" 
+                id="urlInput" 
+                class="url-input" 
+                placeholder="example.com"
+                autocomplete="off"
+              >
+            </div>
+          </div>
+
+          <button class="btn-primary" id="openBtn" onclick="openUrl()">Open in Cloaked Window</button>
+
+          <div class="open-window-info" id="windowInfo">
+            ✅ Window opened! If it didn't appear, check your pop-up blocker.
+          </div>
+
+          <!-- Info box -->
+          <div class="info-box" style="margin-top: 20px;">
+            <div class="info-box-title">ℹ️ How it works</div>
+            <div class="info-box-text">
+              Your URL opens in a new <strong>about:blank</strong> window with a full-page iframe. 
+              The address bar shows <code style="color: #a5d6a7;">about:blank</code> instead of the actual URL, keeping your browsing private.
+              If an existing window is already open, it will be focused instead of creating a new one.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <div class="page-footer-content">
+      <p class="footer-text">© 2026 AirAI, Inc. All rights reserved.</p>
+      <nav class="footer-nav">
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // ============================================
+    // BACKGROUND ANIMATIONS (same as login.html)
+    // ============================================
+    function createBubbles() {
+      const bgAnimation = document.querySelector('.background-animation');
+      const bubbleCount = 15;
+      for (let i = 0; i < bubbleCount; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        const size = Math.random() * 60 + 20;
+        const startPos = Math.random() * 100;
+        const drift = (Math.random() - 0.5) * 200;
+        const duration = Math.random() * 10 + 10;
+        const delay = Math.random() * 5;
+        bubble.style.width = size + 'px';
+        bubble.style.height = size + 'px';
+        bubble.style.left = startPos + '%';
+        bubble.style.animationDuration = duration + 's';
+        bubble.style.animationDelay = delay + 's';
+        bubble.style.setProperty('--drift', drift + 'px');
+        bgAnimation.appendChild(bubble);
+      }
+    }
+
+    function createFish() {
+      const bgAnimation = document.querySelector('.background-animation');
+      const fishCount = 8;
+      const fishSVG = '<svg width="60" height="30" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 15C5 15 10 5 25 5C35 5 45 10 55 15C45 20 35 25 25 25C10 25 5 15 5 15Z" fill="rgba(46, 125, 50, 0.4)" stroke="rgba(129, 199, 132, 0.6)" stroke-width="1.5"/><circle cx="35" cy="15" r="2" fill="rgba(200, 230, 201, 0.8)"/><path d="M5 15L0 10L0 20L5 15Z" fill="rgba(46, 125, 50, 0.4)" stroke="rgba(129, 199, 132, 0.6)" stroke-width="1.5"/></svg>';
+      for (let i = 0; i < fishCount; i++) {
+        const fish = document.createElement('div');
+        fish.className = 'fish';
+        fish.innerHTML = fishSVG;
+        const yPos = Math.random() * 80 + 10;
+        const wave = (Math.random() - 0.5) * 100;
+        const duration = Math.random() * 8 + 8;
+        const delay = Math.random() * 3;
+        const scale = Math.random() * 0.5 + 0.7;
+        fish.style.top = yPos + '%';
+        fish.style.animationDuration = duration + 's';
+        fish.style.animationDelay = delay + 's';
+        fish.style.setProperty('--wave', wave + 'px');
+        fish.style.transform = 'scale(' + scale + ')';
+        bgAnimation.appendChild(fish);
+      }
+    }
+
+    createBubbles();
+    createFish();
+
+    // ============================================
+    // STATE
+    // ============================================
+    let currentProtocol = 'https';
+    let cloakedWindow = null; // reuse the same window
+
+    // ============================================
+    // AUTO-FILL FROM URL PARAM
+    // ============================================
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const memberKey = params.get('memberKey');
+      if (memberKey) {
+        document.getElementById('authCode').value = memberKey;
+        setTimeout(() => {
+          document.querySelector('#authScreen form').dispatchEvent(new Event('submit'));
+        }, 300);
+      }
+    })();
+
+    // ============================================
+    // AUTH CODE VERIFICATION (same API as chat-interface)
+    // ============================================
+    function handleAuthCode(e) {
+      e.preventDefault();
+
+      const code = document.getElementById('authCode').value.trim();
+
+      document.getElementById('alertError').classList.remove('show');
+      document.getElementById('alertSuccess').classList.remove('show');
+
+      if (!code) {
+        showAlert('error', 'Please enter your member key.');
+        return;
+      }
+
+      const btn = document.getElementById('authBtn');
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Verifying...';
+
+      const callbackName = 'verifyCallback' + Date.now();
+      window[callbackName] = function(data) {
+        btn.disabled = false;
+        btn.textContent = originalText;
+
+        if (data.success) {
+          showAlert('success', 'Access granted!');
+          setTimeout(() => {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('openerScreen').classList.add('active');
+            document.getElementById('menuUsername').textContent = data.username || 'User';
+          }, 600);
+        } else {
+          showAlert('error', data.error || 'Invalid or expired code. Please try again.');
+        }
+
+        delete window[callbackName];
+      };
+
+      const script = document.createElement('script');
+      script.src = 'https://script.google.com/macros/s/AKfycbzHDXl45MX96gaOlKPeqD4Q75nNeDm1cMUvQpc0GWVXHSE8ErnMbkZ6GSMnO9zTbFO_Bg/exec?action=validateCode&code=' +
+                   encodeURIComponent(code) + '&callback=' + callbackName;
+      script.onerror = function() {
+        btn.disabled = false;
+        btn.textContent = originalText;
+        showAlert('error', 'Connection failed. Please try again.');
+        delete window[callbackName];
+      };
+      document.body.appendChild(script);
+    }
+
+    function showAlert(type, message) {
+      const id = type === 'error' ? 'alertError' : 'alertSuccess';
+      const el = document.getElementById(id);
+      el.textContent = message;
+      el.classList.add('show');
+    }
+
+    // ============================================
+    // PROTOCOL SWITCHING
+    // ============================================
+    function switchProtocol(protocol) {
+      currentProtocol = protocol;
+      document.getElementById('protocolPrefix').textContent = protocol + '://';
+
+      // Update tab styles
+      document.querySelectorAll('.protocol-tab').forEach(function(tab) {
+        tab.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+
+      // Hide window info
+      document.getElementById('windowInfo').classList.remove('show');
+    }
+
+    // ============================================
+    // URL OPENER (about:blank iframe cloaking)
+    // ============================================
+    function openUrl() {
+      const input = document.getElementById('urlInput').value.trim();
+      const fullUrl = currentProtocol + '://' + (input || 'kzhpucwnht.iltec.cl/');
+
+      // Reuse existing window if still open
+      if (cloakedWindow && !cloakedWindow.closed) {
+        cloakedWindow.focus();
+      } else {
+        cloakedWindow = window.open();
+        cloakedWindow.document.body.style.margin = '0';
+        cloakedWindow.document.body.style.height = '100vh';
+        var iframe = cloakedWindow.document.createElement('iframe');
+        iframe.style.border = 'none';
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.margin = '0';
+        iframe.src = fullUrl;
+        cloakedWindow.document.body.appendChild(iframe);
+      }
+
+      // Show confirmation
+      document.getElementById('windowInfo').classList.add('show');
+    }
+
+    // Allow pressing Enter in the URL input to trigger open
+    document.getElementById('urlInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        openUrl();
+      }
+    });
+  </script>
+</body>
+</html>
