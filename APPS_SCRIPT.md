@@ -77,27 +77,28 @@ function getPage(page) {
     '(function fishCloakDetector() { if(typeof PROXY_BASE!=="undefined") return;'
   );
 
-  // Rewrite iframe.src = 'page.html' → window.location.href = 'SCRIPT?p=page.html'
+  // Rewrite iframe.src = 'page.html' → top.location.href = 'SCRIPT?p=page.html'
+  // Uses top.location so navigation escapes Google's HtmlService sandbox iframe
   html = html.replace(
     /iframe\.src\s*=\s*'([^']+\.html)(\?[^']*)?' /g,
     function(match, file, query) {
       var sep = '?p=' + file;
       if (query) sep += '&' + query.substring(1);
-      return "window.location.href = '" + scriptUrl + sep + "' ";
+      return "top.location.href = '" + scriptUrl + sep + "' ";
     }
   );
 
   // Rewrite iframe.src = "page.html" (double quotes)
   html = html.replace(
-    /iframe\.src\s*=\s*"([^"]+\.html)(\?[^"]*)?" /g,
+    /iframe\.src\s*=\s*"([^"]+\.html)(\?[^"]*)?"/g,
     function(match, file, query) {
       var sep = '?p=' + file;
       if (query) sep += '&' + query.substring(1);
-      return 'window.location.href = "' + scriptUrl + sep + '" ';
+      return 'top.location.href = "' + scriptUrl + sep + '" ';
     }
   );
 
-  // Rewrite window.location.href = 'page.html' (single quotes)
+  // Rewrite window.location.href = 'page.html' → top.location.href (single quotes)
   html = html.replace(
     /window\.location\.href\s*=\s*'([^']+\.html[^']*)'/g,
     function(match, target) {
@@ -106,13 +107,13 @@ function getPage(page) {
       if (hasQuery > -1) {
         var file = target.substring(0, hasQuery);
         var qs = target.substring(hasQuery + 1);
-        return "window.location.href = '" + scriptUrl + "?p=" + file + "&" + qs + "'";
+        return "top.location.href = '" + scriptUrl + "?p=" + file + "&" + qs + "'";
       }
-      return "window.location.href = '" + scriptUrl + "?p=" + target + "'";
+      return "top.location.href = '" + scriptUrl + "?p=" + target + "'";
     }
   );
 
-  // Rewrite window.location.href = "page.html" (double quotes)
+  // Rewrite window.location.href = "page.html" → top.location.href (double quotes)
   html = html.replace(
     /window\.location\.href\s*=\s*"([^"]+\.html[^"]*)"/g,
     function(match, target) {
@@ -121,9 +122,9 @@ function getPage(page) {
       if (hasQuery > -1) {
         var file = target.substring(0, hasQuery);
         var qs = target.substring(hasQuery + 1);
-        return 'window.location.href = "' + scriptUrl + '?p=' + file + '&' + qs + '"';
+        return 'top.location.href = "' + scriptUrl + '?p=' + file + '&' + qs + '"';
       }
-      return 'window.location.href = "' + scriptUrl + '?p=' + target + '"';
+      return 'top.location.href = "' + scriptUrl + '?p=' + target + '"';
     }
   );
 
@@ -134,7 +135,7 @@ function getPage(page) {
     + '  if (a && a.href && a.href.indexOf(".html") > -1 && a.href.indexOf("' + scriptUrl + '") === -1) {'
     + '    e.preventDefault();'
     + '    var file = a.href.split("/").pop();'
-    + '    window.location.href = "' + scriptUrl + '?p=" + file;'
+    + '    top.location.href = "' + scriptUrl + '?p=" + file;'
     + '  }'
     + '});'
     + '</script>';
