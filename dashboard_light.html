@@ -29,23 +29,7 @@
       --orb-opacity: 0.15;
     }
 
-    body.light-mode {
-      --bg-primary: #f0f4f0;
-      --bg-secondary: #ffffff;
-      --bg-card: rgba(255, 255, 255, 0.9);
-      --bg-card-hover: rgba(255, 255, 255, 1);
-      --border: rgba(46, 125, 50, 0.15);
-      --border-hover: rgba(76, 175, 80, 0.5);
-      --text-primary: #1a2e1a;
-      --text-secondary: #2e7d32;
-      --text-muted: #6b8f6b;
-      --accent: #2e7d32;
-      --accent-glow: rgba(46, 125, 50, 0.2);
-      --gradient-start: #2e7d32;
-      --gradient-end: #4caf50;
-      --shadow: rgba(0, 0, 0, 0.08);
-      --orb-opacity: 0.06;
-    }
+
 
     body {
       font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -336,7 +320,7 @@
     <div class="top-bar-right">
       <a href="login.html" class="top-btn">🔑 Login</a>
       <a href="status.html" class="top-btn">📊 Status</a>
-      <button class="top-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+      <a href="dashboard.html" class="top-btn">🌙 Dark</a>
     </div>
   </div>
 
@@ -514,20 +498,6 @@
 </div>
 
 <script>
-function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-mode');
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
-  document.getElementById('themeBtn').textContent = isLight ? '☀️ Light' : '🌙 Dark';
-}
-
-(function() {
-  const saved = localStorage.getItem('theme') || 'dark';
-  if (saved === 'light') {
-    document.body.classList.add('light-mode');
-    document.getElementById('themeBtn').textContent = '☀️ Light';
-  }
-})();
-
 // Live response time animation
 setInterval(function() {
   var rt = document.getElementById('responseTime');
