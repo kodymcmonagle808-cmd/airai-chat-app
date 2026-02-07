@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Humanizer - AirAI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0a1f0a;
+      color: #c8e6c9;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    .bg-animation {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .bg-animation .orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15;
+      animation: float 20s ease-in-out infinite;
+    }
+    .bg-animation .orb:nth-child(1) { width: 400px; height: 400px; background: #2e7d32; top: -100px; left: -100px; }
+    .bg-animation .orb:nth-child(2) { width: 300px; height: 300px; background: #1b5e20; bottom: -50px; right: -50px; animation-delay: -7s; }
+    .bg-animation .orb:nth-child(3) { width: 250px; height: 250px; background: #4caf50; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -14s; }
+    @keyframes float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(30px,-30px) scale(1.1); }
+      66% { transform: translate(-20px,20px) scale(0.9); }
+    }
+
+    .container {
+      position: relative; z-index: 1;
+      max-width: 1000px; margin: 0 auto; padding: 24px;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center; margin-bottom: 28px; padding: 24px 0;
+    }
+    .page-header h1 {
+      font-size: 32px; font-weight: 800;
+      background: linear-gradient(135deg, #a5d6a7, #4caf50, #81c784);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      color: #81c784; font-size: 14px; opacity: 0.8;
+    }
+
+    /* Controls bar */
+    .controls {
+      display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .controls label {
+      font-size: 13px; color: #81c784; font-weight: 600;
+    }
+    .controls select, .controls input[type="range"] {
+      background: rgba(13, 40, 24, 0.8); border: 1px solid #2e7d32;
+      color: #c8e6c9; padding: 6px 10px; border-radius: 6px;
+      font-size: 13px; outline: none;
+    }
+    .controls select:focus { border-color: #4caf50; }
+    .range-group {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .range-group input[type="range"] {
+      -webkit-appearance: none; width: 100px; height: 4px;
+      background: #1b5e20; border-radius: 2px; border: none; cursor: pointer;
+    }
+    .range-group input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 14px; height: 14px;
+      background: #4caf50; border-radius: 50%; cursor: pointer;
+    }
+    .range-val { font-size: 12px; color: #66bb6a; min-width: 20px; }
+
+    /* Editor area */
+    .editor-wrap {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      flex: 1; min-height: 0;
+    }
+    @media (max-width: 700px) {
+      .editor-wrap { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    }
+    .panel {
+      display: flex; flex-direction: column;
+      background: rgba(13, 40, 24, 0.6); border: 1px solid rgba(46, 125, 50, 0.3);
+      border-radius: 12px; overflow: hidden;
+    }
+    .panel-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px;
+      background: rgba(27, 94, 32, 0.25); border-bottom: 1px solid rgba(46, 125, 50, 0.2);
+    }
+    .panel-header h3 { font-size: 14px; font-weight: 700; color: #a5d6a7; }
+    .panel-header .badge {
+      font-size: 11px; padding: 2px 8px; border-radius: 10px;
+      background: rgba(46, 125, 50, 0.3); color: #66bb6a;
+    }
+    .panel textarea {
+      flex: 1; width: 100%; min-height: 300px; padding: 16px;
+      background: transparent; border: none; color: #c8e6c9;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px; line-height: 1.7; resize: none; outline: none;
+    }
+    .panel textarea::placeholder { color: rgba(129, 199, 132, 0.4); }
+    .panel .output-text {
+      flex: 1; padding: 16px; overflow-y: auto;
+      font-size: 14px; line-height: 1.7; white-space: pre-wrap;
+      min-height: 300px; user-select: text;
+    }
+    .output-text.empty { color: rgba(129, 199, 132, 0.4); font-style: italic; }
+
+    /* Buttons */
+    .action-bar {
+      display: flex; gap: 10px; margin: 16px 0; flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn {
+      padding: 12px 28px; border: 2px solid #2e7d32; border-radius: 10px;
+      background: linear-gradient(135deg, #1b5e20, #0d3b14);
+      color: #c8e6c9; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(46, 125, 50, 0.5);
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      box-shadow: 0 4px 16px rgba(46, 125, 50, 0.4);
+    }
+    .btn:disabled {
+      opacity: 0.5; cursor: not-allowed; transform: none !important;
+      box-shadow: none !important;
+    }
+    .btn-sm {
+      padding: 4px 12px; font-size: 12px; border-width: 1px;
+    }
+
+    /* Stats */
+    .stats {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      margin-top: 12px; font-size: 12px; color: #66bb6a;
+    }
+    .stats span { display: flex; align-items: center; gap: 4px; }
+
+    /* Detection meter */
+    .detection-meter {
+      margin-top: 12px; text-align: center;
+    }
+    .meter-bar {
+      width: 100%; max-width: 400px; height: 8px; margin: 8px auto;
+      background: rgba(46,125,50,0.2); border-radius: 4px; overflow: hidden;
+    }
+    .meter-fill {
+      height: 100%; border-radius: 4px; transition: width 0.5s, background 0.5s;
+    }
+    .meter-label { font-size: 13px; font-weight: 600; }
+
+    /* Footer */
+    .page-footer {
+      text-align: center; padding: 20px; margin-top: 24px;
+      border-top: 1px solid rgba(46, 125, 50, 0.15);
+    }
+    .page-footer p { font-size: 12px; color: #4a7a4a; }
+
+    /* Processing animation */
+    .processing { position: relative; }
+    .processing::after {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        90deg, transparent, rgba(46,125,50,0.05) 50%, transparent 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 12px; pointer-events: none;
+    }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  </style>
+</head>
+<body>
+
+<div class="bg-animation">
+  <div class="orb"></div><div class="orb"></div><div class="orb"></div>
+</div>
+
+<div class="container">
+  <div class="page-header">
+    <h1>✍️ AI Text Humanizer</h1>
+    <p>Transform AI-generated text into natural, human-sounding writing</p>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <label>Mode:</label>
+    <select id="modeSelect">
+      <option value="balanced">Balanced</option>
+      <option value="light">Light Touch</option>
+      <option value="heavy">Heavy Rewrite</option>
+      <option value="academic">Academic</option>
+      <option value="casual">Casual / Conversational</option>
+    </select>
+
+    <div class="range-group">
+      <label>Strength:</label>
+      <input type="range" id="strengthSlider" min="1" max="10" value="6">
+      <span class="range-val" id="strengthVal">6</span>
+    </div>
+  </div>
+
+  <!-- Editor panels -->
+  <div class="editor-wrap">
+    <div class="panel">
+      <div class="panel-header">
+        <h3>📥 Input (AI Text)</h3>
+        <span class="badge" id="inputCount">0 words</span>
+      </div>
+      <textarea id="inputText" placeholder="Paste your AI-generated text here..."></textarea>
+    </div>
+    <div class="panel" id="outputPanel">
+      <div class="panel-header">
+        <h3>📤 Humanized Output</h3>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-sm" onclick="copyOutput()" id="copyBtn" disabled>📋 Copy</button>
+        </div>
+      </div>
+      <div class="output-text empty" id="outputText">Humanized text will appear here...</div>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="action-bar">
+    <button class="btn primary" id="humanizeBtn" onclick="humanize()">🔄 Humanize</button>
+    <button class="btn" onclick="clearAll()">🗑️ Clear</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="detection-meter" id="meterWrap" style="display:none;">
+    <span class="meter-label" id="meterLabel"></span>
+    <div class="meter-bar"><div class="meter-fill" id="meterFill"></div></div>
+  </div>
+  <div class="stats" id="statsBar" style="display:none;">
+    <span>📝 <span id="statWords">0</span> words</span>
+    <span>🔄 <span id="statChanges">0</span> changes</span>
+    <span>📊 <span id="statReadability">0</span> readability</span>
+  </div>
+
+  <footer class="page-footer">
+    <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: #4a6b4a;">v1.5</span></p>
+  </footer>
+</div>
+
+<script>
+// ── Strength slider ──
+const strengthSlider = document.getElementById('strengthSlider');
+const strengthVal = document.getElementById('strengthVal');
+strengthSlider.addEventListener('input', () => strengthVal.textContent = strengthSlider.value);
+
+// ── Word count ──
+const inputEl = document.getElementById('inputText');
+inputEl.addEventListener('input', () => {
+  const wc = inputEl.value.trim() ? inputEl.value.trim().split(/\s+/).length : 0;
+  document.getElementById('inputCount').textContent = wc + ' words';
+});
+
+// ── Copy ──
+function copyOutput() {
+  const text = document.getElementById('outputText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 1500);
+  });
+}
+
+function clearAll() {
+  inputEl.value = '';
+  document.getElementById('inputCount').textContent = '0 words';
+  const out = document.getElementById('outputText');
+  out.textContent = 'Humanized text will appear here...';
+  out.classList.add('empty');
+  document.getElementById('meterWrap').style.display = 'none';
+  document.getElementById('statsBar').style.display = 'none';
+  document.getElementById('copyBtn').disabled = true;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HUMANIZER ENGINE — Rule-based text transformation system
+   ═══════════════════════════════════════════════════════════════ */
+
+function humanize() {
+  const raw = inputEl.value.trim();
+  if (!raw) return;
+
+  const mode = document.getElementById('modeSelect').value;
+  const strength = parseInt(strengthSlider.value);
+  const btn = document.getElementById('humanizeBtn');
+  const panel = document.getElementById('outputPanel');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Processing...';
+  panel.classList.add('processing');
+
+  // Simulate brief processing delay for UX
+  setTimeout(() => {
+    let result;
+    let changeCount = 0;
+
+    try {
+      const ctx = { mode, strength, changes: 0 };
+      result = runHumanizer(raw, ctx);
+      changeCount = ctx.changes;
+    } catch (e) {
+      result = raw;
+      console.error('Humanizer error:', e);
+    }
+
+    // Display result
+    const out = document.getElementById('outputText');
+    out.textContent = result;
+    out.classList.remove('empty');
+    document.getElementById('copyBtn').disabled = false;
+
+    // Stats
+    const words = result.trim().split(/\s+/).length;
+    document.getElementById('statWords').textContent = words;
+    document.getElementById('statChanges').textContent = changeCount;
+    document.getElementById('statReadability').textContent = calcReadability(result);
+    document.getElementById('statsBar').style.display = 'flex';
+
+    // Human-likeness meter
+    const score = estimateHumanScore(result);
+    showMeter(score);
+
+    btn.disabled = false;
+    btn.textContent = '🔄 Humanize';
+    panel.classList.remove('processing');
+  }, 400 + Math.random() * 300);
+}
+
+
+/* ── MAIN PIPELINE ── */
+function runHumanizer(text, ctx) {
+  const s = ctx.strength;
+  const mode = ctx.mode;
+
+  // Split into paragraphs, process each
+  let paragraphs = text.split(/\n{2,}/);
+
+  paragraphs = paragraphs.map(p => {
+    let t = p.trim();
+    if (!t) return '';
+
+    // 1. Contractions
+    if (mode !== 'academic') {
+      t = applyContractions(t, s, ctx);
+    }
+
+    // 2. Replace AI-typical phrases
+    t = replaceAIPhrases(t, s, mode, ctx);
+
+    // 3. Sentence structure variation
+    t = varySentenceStructure(t, s, mode, ctx);
+
+    // 4. Reduce repetitive starters
+    t = reduceRepetitiveStarters(t, ctx);
+
+    // 5. Vocabulary naturalizer
+    t = naturalizeVocabulary(t, s, mode, ctx);
+
+    // 6. Add human imperfections (heavy/casual modes)
+    if ((mode === 'heavy' || mode === 'casual') && s >= 5) {
+      t = addHumanTouches(t, s, ctx);
+    }
+
+    // 7. Fix over-punctuation
+    t = fixPunctuation(t, ctx);
+
+    // 8. Paragraph transitions
+    if (mode !== 'light') {
+      t = humanizeTransitions(t, ctx);
+    }
+
+    return t;
+  });
+
+  // Reassemble
+  let result = paragraphs.filter(p => p).join('\n\n');
+
+  // 9. Final global passes
+  result = removeBulletPointFormality(result, mode, ctx);
+  result = finalCleanup(result);
+
+  return result;
+}
+
+
+/* ── 1. CONTRACTIONS ── */
+function applyContractions(text, strength, ctx) {
+  const contractions = [
+    [/\bI am\b/g, "I'm"],
+    [/\bI have\b/g, "I've"],
+    [/\bI will\b/g, "I'll"],
+    [/\bI would\b/g, "I'd"],
+    [/\bI had\b/g, "I'd"],
+    [/\bwe have\b/gi, m => (m[0][0] === 'W' ? "We've" : "we've")],
+    [/\bwe are\b/gi, m => (m[0][0] === 'W' ? "We're" : "we're")],
+    [/\bwe will\b/gi, m => (m[0][0] === 'W' ? "We'll" : "we'll")],
+    [/\bthey are\b/gi, m => (m[0][0] === 'T' ? "They're" : "they're")],
+    [/\bthey have\b/gi, m => (m[0][0] === 'T' ? "They've" : "they've")],
+    [/\bthey will\b/gi, m => (m[0][0] === 'T' ? "They'll" : "they'll")],
+    [/\bthere is\b/gi, m => (m[0][0] === 'T' ? "There's" : "there's")],
+    [/\bthere are\b/gi, m => (m[0][0] === 'T' ? "There're" : "there're")],
+    [/\bit is\b/gi, m => (m[0][0] === 'I' ? "It's" : "it's")],
+    [/\bit has\b/gi, m => (m[0][0] === 'I' ? "It's" : "it's")],
+    [/\bit will\b/gi, m => (m[0][0] === 'I' ? "It'll" : "it'll")],
+    [/\bthat is\b/gi, m => (m[0][0] === 'T' ? "That's" : "that's")],
+    [/\bwhat is\b/gi, m => (m[0][0] === 'W' ? "What's" : "what's")],
+    [/\bwho is\b/gi, m => (m[0][0] === 'W' ? "Who's" : "who's")],
+    [/\bwho are\b/gi, m => (m[0][0] === 'W' ? "Who're" : "who're")],
+    [/\bhere is\b/gi, m => (m[0][0] === 'H' ? "Here's" : "here's")],
+    [/\bdo not\b/gi, m => (m[0][0] === 'D' ? "Don't" : "don't")],
+    [/\bdoes not\b/gi, m => (m[0][0] === 'D' ? "Doesn't" : "doesn't")],
+    [/\bdid not\b/gi, m => (m[0][0] === 'D' ? "Didn't" : "didn't")],
+    [/\bwill not\b/gi, m => (m[0][0] === 'W' ? "Won't" : "won't")],
+    [/\bwould not\b/gi, m => (m[0][0] === 'W' ? "Wouldn't" : "wouldn't")],
+    [/\bcould not\b/gi, m => (m[0][0] === 'C' ? "Couldn't" : "couldn't")],
+    [/\bshould not\b/gi, m => (m[0][0] === 'S' ? "Shouldn't" : "shouldn't")],
+    [/\bcannot\b/gi, m => (m[0][0] === 'C' ? "Can't" : "can't")],
+    [/\bcan not\b/gi, m => (m[0][0] === 'C' ? "Can't" : "can't")],
+    [/\bis not\b/gi, m => (m[0][0] === 'I' ? "Isn't" : "isn't")],
+    [/\bare not\b/gi, m => (m[0][0] === 'A' ? "Aren't" : "aren't")],
+    [/\bwas not\b/gi, m => (m[0][0] === 'W' ? "Wasn't" : "wasn't")],
+    [/\bwere not\b/gi, m => (m[0][0] === 'W' ? "Weren't" : "weren't")],
+    [/\bhas not\b/gi, m => (m[0][0] === 'H' ? "Hasn't" : "hasn't")],
+    [/\bhave not\b/gi, m => (m[0][0] === 'H' ? "Haven't" : "haven't")],
+    [/\bhad not\b/gi, m => (m[0][0] === 'H' ? "Hadn't" : "hadn't")],
+    [/\blet us\b/gi, m => (m[0][0] === 'L' ? "Let's" : "let's")],
+    [/\byou are\b/gi, m => (m[0][0] === 'Y' ? "You're" : "you're")],
+    [/\byou have\b/gi, m => (m[0][0] === 'Y' ? "You've" : "you've")],
+    [/\byou will\b/gi, m => (m[0][0] === 'Y' ? "You'll" : "you'll")],
+    [/\byou would\b/gi, m => (m[0][0] === 'Y' ? "You'd" : "you'd")],
+    [/\bhe is\b/gi, m => (m[0][0] === 'H' ? "He's" : "he's")],
+    [/\bshe is\b/gi, m => (m[0][0] === 'S' ? "She's" : "she's")],
+    [/\bhe will\b/gi, m => (m[0][0] === 'H' ? "He'll" : "he'll")],
+    [/\bshe will\b/gi, m => (m[0][0] === 'S' ? "She'll" : "she'll")],
+  ];
+
+  // At lower strength, only apply a fraction
+  const prob = Math.min(1, (strength + 2) / 12);
+  let result = text;
+  for (const [pattern, replacement] of contractions) {
+    result = result.replace(pattern, (...args) => {
+      if (Math.random() < prob) {
+        ctx.changes++;
+        if (typeof replacement === 'function') return replacement(args);
+        return replacement;
+      }
+      return args[0];
+    });
+  }
+  return result;
+}
+
+
+/* ── 2. AI-TYPICAL PHRASE REPLACEMENT ── */
+function replaceAIPhrases(text, strength, mode, ctx) {
+  // Phrases that AI commonly uses, mapped to more human alternatives
+  const replacements = [
+    // Overused AI transitions and fillers
+    [/\bIt is worth noting that\b/gi, () => pick(["Worth mentioning,", "Notably,", "One thing to keep in mind is that", "On that note,"])],
+    [/\bIt is important to note that\b/gi, () => pick(["Keep in mind that", "Note that", "Something to remember is that", "Just so you know,"])],
+    [/\bIt is important to understand that\b/gi, () => pick(["The key thing is that", "Basically,", "You should know that"])],
+    [/\bIt('s| is) worth mentioning that\b/gi, () => pick(["Also,", "On top of that,", "Something else —"])],
+    [/\bIn today's world\b/gi, () => pick(["These days", "Nowadays", "Right now", "Currently"])],
+    [/\bIn today's society\b/gi, () => pick(["These days", "In modern life", "The way things are now"])],
+    [/\bIn the realm of\b/gi, () => pick(["In", "When it comes to", "With"])],
+    [/\bIn the world of\b/gi, () => pick(["In", "When it comes to", "With"])],
+    [/\bIn the context of\b/gi, () => pick(["For", "With", "When talking about"])],
+    [/\bIt can be argued that\b/gi, () => pick(["You could say that", "Some would say", "Arguably,"])],
+    [/\bOne could argue that\b/gi, () => pick(["You could say", "Some people think", "Arguably,"])],
+
+    // "Landscape" and tech-speak
+    [/\bthe landscape of\b/gi, () => pick(["the world of", "the field of", "how"])],
+    [/\bthe digital landscape\b/gi, () => pick(["the online world", "the digital world", "tech"])],
+    [/\brapidly evolving\b/gi, () => pick(["fast-changing", "quickly shifting", "always changing"])],
+    [/\bever-evolving\b/gi, () => pick(["always changing", "constantly shifting", "ever-changing"])],
+    [/\bever-changing\b/gi, () => pick(["always shifting", "constantly evolving"])],
+    [/\bgroundbreaking\b/gi, m => pick(["game-changing", "huge", "major", "impressive"])],
+    [/\bcutting-edge\b/gi, m => pick(["latest", "newest", "advanced", "modern"])],
+    [/\bstate-of-the-art\b/gi, m => pick(["top-of-the-line", "latest", "modern", "advanced"])],
+    [/\bparadigm shift\b/gi, () => pick(["big change", "major shift", "turning point"])],
+    [/\bgame-changer\b/gi, () => pick(["big deal", "major shift", "huge step forward"])],
+
+    // Overly formal connectors
+    [/\bFurthermore,?\s?/gi, () => pick(["Also, ", "On top of that, ", "Plus, ", "And "])],
+    [/\bMoreover,?\s?/gi, () => pick(["Also, ", "What's more, ", "Plus, ", "And "])],
+    [/\bAdditionally,?\s?/gi, () => pick(["Also, ", "On top of that, ", "Plus, "])],
+    [/\bConsequently,?\s?/gi, () => pick(["So, ", "Because of this, ", "As a result, "])],
+    [/\bNevertheless,?\s?/gi, () => pick(["Still, ", "Even so, ", "That said, "])],
+    [/\bNonetheless,?\s?/gi, () => pick(["Still, ", "Even so, ", "But "])],
+    [/\bHowever,?\s?/gi, () => pick(["But ", "That said, ", "Then again, ", "Still, "])],
+    [/\bIn conclusion,?\s?/gi, () => pick(["All in all, ", "To wrap up, ", "So basically, ", "At the end of the day, "])],
+    [/\bTo summarize,?\s?/gi, () => pick(["So basically, ", "In short, ", "Long story short, "])],
+    [/\bIn summary,?\s?/gi, () => pick(["So basically, ", "In short, ", "To put it simply, "])],
+    [/\bFor instance,?\s?/gi, () => pick(["Like, ", "For example, ", "Say, "])],
+    [/\bIn addition,?\s?/gi, () => pick(["Also, ", "Plus, ", "And "])],
+    [/\bOn the other hand,?\s?/gi, () => pick(["Then again, ", "But ", "At the same time, "])],
+    [/\bAs a result,?\s?/gi, () => pick(["So, ", "Because of that, ", "That's why "])],
+    [/\bDue to the fact that\b/gi, () => pick(["Because", "Since"])],
+    [/\bIn order to\b/gi, () => "to"],
+    [/\bFor the purpose of\b/gi, () => "to"],
+    [/\bWith regard to\b/gi, () => pick(["About", "As for", "On"])],
+    [/\bWith respect to\b/gi, () => pick(["About", "As for", "On"])],
+    [/\bIn light of\b/gi, () => pick(["Given", "Because of", "Considering"])],
+    [/\bConversely,?\s?/gi, () => pick(["On the flip side, ", "But then, "])],
+    [/\bSubsequently,?\s?/gi, () => pick(["Then, ", "After that, ", "Next, "])],
+
+    // AI filler / padding
+    [/\bIt goes without saying that\b/gi, () => pick(["Obviously,", "Naturally,", "Of course,"])],
+    [/\bNeedless to say,?\s?/gi, () => pick(["Obviously, ", "Of course, "])],
+    [/\bAs (?:we all know|everyone knows),?\s?/gi, () => ""],
+    [/\bAs mentioned (?:earlier|previously|above),?\s?/gi, () => pick(["As I said, ", "Like I mentioned, ", ""])],
+    [/\bIn essence,?\s?/gi, () => pick(["Basically, ", "Really, ", "At its core, "])],
+    [/\bAt the end of the day,?\s?/gi, () => pick(["Ultimately, ", "When it comes down to it, ", ""])],
+    [/\bAll things considered,?\s?/gi, () => pick(["Overall, ", "When you think about it, ", ""])],
+
+    // Hedging language AI overuses
+    [/\bIt is essential to\b/gi, () => pick(["You need to", "It's key to", "Make sure to", "You should"])],
+    [/\bIt is crucial to\b/gi, () => pick(["You really need to", "It's vital to", "Make sure to"])],
+    [/\bIt is vital to\b/gi, () => pick(["You need to", "It's important to", "You should"])],
+    [/\bIt is imperative that\b/gi, () => pick(["You really need to", "It's critical that"])],
+    [/\bplay a (?:crucial|vital|important|significant|key|pivotal) role\b/gi, () => pick(["matter a lot", "are really important", "make a big difference", "are a key part"])],
+    [/\bplays a (?:crucial|vital|important|significant|key|pivotal) role\b/gi, () => pick(["matters a lot", "is really important", "makes a big difference", "is a key part"])],
+
+    // "Delve" and overused verbs
+    [/\bdelve(?:s)? into\b/gi, () => pick(["dig into", "look at", "explore", "get into", "break down"])],
+    [/\bdelving into\b/gi, () => pick(["digging into", "looking at", "exploring", "breaking down"])],
+    [/\bleverage(?:s|d)?\b/gi, m => pick(["use", "take advantage of", "make the most of", "build on"])],
+    [/\bleveraging\b/gi, () => pick(["using", "taking advantage of", "building on"])],
+    [/\butilize(?:s|d)?\b/gi, () => pick(["use", "work with", "put to use"])],
+    [/\butilizing\b/gi, () => pick(["using", "working with"])],
+    [/\bfacilitate(?:s|d)?\b/gi, () => pick(["help with", "make easier", "support", "enable"])],
+    [/\bfacilitating\b/gi, () => pick(["helping with", "making easier", "supporting"])],
+    [/\boptimize(?:s|d)?\b/gi, () => pick(["improve", "fine-tune", "make better"])],
+    [/\boptimizing\b/gi, () => pick(["improving", "fine-tuning", "making better"])],
+    [/\bimplement(?:s|ed)?\b/gi, () => pick(["set up", "put in place", "start using", "roll out"])],
+    [/\bimplementing\b/gi, () => pick(["setting up", "putting in place", "rolling out"])],
+    [/\bimpact(?:s|ed)?\b/gi, m => pick(["affect", "change", "shape", "influence"])],
+
+    // Overly wordy constructions
+    [/\ba wide (?:range|variety|array) of\b/gi, () => pick(["many", "a lot of", "all kinds of", "various"])],
+    [/\ba myriad of\b/gi, () => pick(["many", "a lot of", "tons of", "countless"])],
+    [/\ba plethora of\b/gi, () => pick(["a lot of", "plenty of", "tons of"])],
+    [/\ba multitude of\b/gi, () => pick(["many", "a lot of", "tons of"])],
+    [/\bin a (?:significant|meaningful) way\b/gi, () => pick(["a lot", "significantly", "in a real way"])],
+    [/\bon a daily basis\b/gi, () => pick(["every day", "daily"])],
+    [/\bat this point in time\b/gi, () => pick(["now", "right now", "currently"])],
+    [/\bthe vast majority of\b/gi, () => pick(["most", "the bulk of", "almost all"])],
+    [/\bin the near future\b/gi, () => pick(["soon", "before long", "in the coming months"])],
+
+    // "Tapestry", "testament", "embark" - classic AI words
+    [/\btapestry of\b/gi, () => pick(["mix of", "blend of", "combination of"])],
+    [/\ba testament to\b/gi, () => pick(["proof of", "a sign of", "shows"])],
+    [/\bembark on\b/gi, () => pick(["start", "begin", "kick off", "set out on"])],
+    [/\bembarking on\b/gi, () => pick(["starting", "beginning", "kicking off"])],
+    [/\bnavigate(?:s|d)?\b/gi, () => pick(["handle", "deal with", "work through", "figure out"])],
+    [/\bnavigating\b/gi, () => pick(["handling", "dealing with", "working through"])],
+    [/\bseamless(?:ly)?\b/gi, () => pick(["smooth", "easy", "effortless", "without a hitch"])],
+    [/\brobust\b/gi, () => pick(["strong", "solid", "reliable", "sturdy"])],
+    [/\bholistic\b/gi, () => pick(["overall", "complete", "full-picture", "well-rounded"])],
+    [/\bsynergy\b/gi, () => pick(["teamwork", "collaboration", "working together"])],
+    [/\bfoster(?:s|ed|ing)?\b/gi, () => pick(["encourage", "build", "support", "grow"])],
+  ];
+
+  const prob = Math.min(1, (strength + 1) / 11);
+  let result = text;
+
+  for (const [pattern, replacer] of replacements) {
+    result = result.replace(pattern, (...args) => {
+      if (Math.random() < prob) {
+        ctx.changes++;
+        const rep = replacer(args);
+        // Preserve capitalization of first letter if at sentence start
+        if (args[args.length - 2] === 0 || /[.!?]\s*$/.test(text.substring(0, args[args.length - 2]))) {
+          return rep.charAt(0).toUpperCase() + rep.slice(1);
+        }
+        return rep;
+      }
+      return args[0];
+    });
+  }
+
+  return result;
+}
+
+
+/* ── 3. SENTENCE STRUCTURE VARIATION ── */
+function varySentenceStructure(text, strength, mode, ctx) {
+  let sentences = splitSentences(text);
+  if (sentences.length < 2) return text;
+
+  const result = [];
+  let prevLength = 0;
+
+  for (let i = 0; i < sentences.length; i++) {
+    let s = sentences[i].trim();
+    if (!s) continue;
+
+    const words = s.split(/\s+/);
+
+    // Break very long sentences (> 35 words) if strength is high enough
+    if (words.length > 35 && strength >= 4) {
+      const parts = breakLongSentence(s);
+      if (parts.length > 1) {
+        ctx.changes++;
+        result.push(...parts);
+        prevLength = parts[parts.length - 1].split(/\s+/).length;
+        continue;
+      }
+    }
+
+    // Occasionally combine very short consecutive sentences
+    if (words.length < 8 && i + 1 < sentences.length && strength >= 5 && mode !== 'light') {
+      const nextWords = sentences[i + 1].trim().split(/\s+/);
+      if (nextWords.length < 10 && Math.random() < 0.35) {
+        // Combine with connector
+        const connector = pick([" — and ", ", and ", ". Basically, ", "; "]);
+        const combined = s.replace(/[.!?]$/, '') + connector +
+          sentences[i + 1].trim().charAt(0).toLowerCase() + sentences[i + 1].trim().slice(1);
+        result.push(combined);
+        ctx.changes++;
+        i++; // skip next
+        prevLength = combined.split(/\s+/).length;
+        continue;
+      }
+    }
+
+    result.push(s);
+    prevLength = words.length;
+  }
+
+  return result.join(' ');
+}
+
+
+/* ── 4. REDUCE REPETITIVE SENTENCE STARTERS ── */
+function reduceRepetitiveStarters(text, ctx) {
+  const sentences = splitSentences(text);
+  if (sentences.length < 3) return text;
+
+  const result = [sentences[0]];
+  let lastStarter = getStarter(sentences[0]);
+
+  for (let i = 1; i < sentences.length; i++) {
+    let s = sentences[i].trim();
+    if (!s) continue;
+    const starter = getStarter(s);
+
+    // If same starter as previous sentence, try to rephrase
+    if (starter && starter === lastStarter) {
+      const rephrased = rephraseSentenceStart(s);
+      if (rephrased !== s) {
+        ctx.changes++;
+        s = rephrased;
+      }
+    }
+
+    result.push(s);
+    lastStarter = getStarter(s);
+  }
+
+  return result.join(' ');
+}
+
+function getStarter(sentence) {
+  const m = sentence.trim().match(/^(\w+)/);
+  return m ? m[1].toLowerCase() : '';
+}
+
+function rephraseSentenceStart(sentence) {
+  const s = sentence.trim();
+
+  // "This ..." → rephrase
+  if (/^This /i.test(s)) {
+    const alts = ["That ", "What this means is ", "Basically, this "];
+    return pick(alts) + s.slice(5);
+  }
+  // "The ..." → rephrase
+  if (/^The /i.test(s)) {
+    if (Math.random() < 0.5) return "A " + s.slice(4);
+    return "Overall, the " + s.slice(4);
+  }
+  // "It ..." → rephrase
+  if (/^It /i.test(s)) {
+    const alts = ["This ", "That "];
+    return pick(alts) + s.slice(3);
+  }
+  // Generic: prepend a transition
+  const transitions = ["In fact, ", "Actually, ", "Really, ", "Honestly, "];
+  return pick(transitions) + s.charAt(0).toLowerCase() + s.slice(1);
+}
+
+
+/* ── 5. VOCABULARY NATURALIZER ── */
+function naturalizeVocabulary(text, strength, mode, ctx) {
+  const swaps = [
+    [/\bcommence\b/gi, () => "start"],
+    [/\bcommenced\b/gi, () => "started"],
+    [/\bterminate\b/gi, () => "end"],
+    [/\bterminated\b/gi, () => "ended"],
+    [/\bpurchase\b/gi, () => pick(["buy", "get"])],
+    [/\bpurchased\b/gi, () => pick(["bought", "got"])],
+    [/\bsufficient\b/gi, () => "enough"],
+    [/\binsufficient\b/gi, () => "not enough"],
+    [/\bnumerous\b/gi, () => pick(["many", "a lot of", "plenty of"])],
+    [/\bsubstantial(?:ly)?\b/gi, () => pick(["big", "large", "significant", "a lot"])],
+    [/\bdemonstrate(?:s|d)?\b/gi, () => pick(["show", "prove", "make clear"])],
+    [/\bdemonstrating\b/gi, () => pick(["showing", "proving"])],
+    [/\bpossess(?:es)?\b/gi, () => pick(["have", "own", "hold"])],
+    [/\bpossessing\b/gi, () => "having"],
+    [/\brequire(?:s|d)?\b/gi, () => "need"],
+    [/\brequiring\b/gi, () => "needing"],
+    [/\bobtain(?:s|ed)?\b/gi, () => "get"],
+    [/\bobtaining\b/gi, () => "getting"],
+    [/\bprovide(?:s|d)?\b/gi, () => pick(["give", "offer", "supply"])],
+    [/\bproviding\b/gi, () => pick(["giving", "offering"])],
+    [/\bassist(?:s|ed)?\b/gi, () => "help"],
+    [/\bassisting\b/gi, () => "helping"],
+    [/\bexhibit(?:s|ed)?\b/gi, () => "show"],
+    [/\bindividuals\b/gi, () => "people"],
+    [/\bendeavor(?:s)?\b/gi, () => pick(["effort", "try", "attempt"])],
+    [/\bprior to\b/gi, () => "before"],
+    [/\bsubsequent to\b/gi, () => "after"],
+    [/\bmodify\b/gi, () => "change"],
+    [/\bmodified\b/gi, () => "changed"],
+    [/\bmodifying\b/gi, () => "changing"],
+    [/\binitiate(?:s|d)?\b/gi, () => "start"],
+    [/\binitiating\b/gi, () => "starting"],
+    [/\bformulate(?:s|d)?\b/gi, () => pick(["come up with", "create", "make"])],
+    [/\bformulating\b/gi, () => pick(["coming up with", "creating"])],
+    [/\bascertain\b/gi, () => pick(["find out", "figure out", "determine"])],
+    [/\bencompass(?:es)?\b/gi, () => pick(["include", "cover", "involve"])],
+    [/\bencompassing\b/gi, () => "including"],
+    [/\bdiminish(?:es|ed)?\b/gi, () => pick(["reduce", "shrink", "lessen"])],
+    [/\baugment(?:s|ed)?\b/gi, () => pick(["boost", "increase", "add to"])],
+    [/\bpertaining to\b/gi, () => "about"],
+    [/\bin lieu of\b/gi, () => "instead of"],
+    [/\bnotwithstanding\b/gi, () => "despite"],
+    [/\bwherein\b/gi, () => "where"],
+    [/\bthereby\b/gi, () => pick(["so", "which means"])],
+    [/\bhereby\b/gi, () => ""],
+    [/\bhenceforth\b/gi, () => "from now on"],
+    [/\baforementioned\b/gi, () => pick(["mentioned", "previous", "earlier"])],
+    [/\bnevertheless\b/gi, () => pick(["still", "even so", "but"])],
+    [/\bfurthermore\b/gi, () => pick(["also", "plus", "and"])],
+  ];
+
+  // Academic mode: keep some formal vocabulary
+  const prob = mode === 'academic' ? Math.min(1, strength / 15) : Math.min(1, (strength + 2) / 12);
+  let result = text;
+
+  for (const [pattern, replacer] of swaps) {
+    result = result.replace(pattern, (...args) => {
+      if (Math.random() < prob) {
+        ctx.changes++;
+        return replacer();
+      }
+      return args[0];
+    });
+  }
+
+  return result;
+}
+
+
+/* ── 6. HUMAN TOUCHES ── */
+function addHumanTouches(text, strength, ctx) {
+  let sentences = splitSentences(text);
+  const result = [];
+
+  for (let i = 0; i < sentences.length; i++) {
+    let s = sentences[i].trim();
+    if (!s) continue;
+
+    // Occasionally add a casual interjection at the start (low probability)
+    if (i > 0 && Math.random() < 0.08 * (strength / 10)) {
+      const interjections = [
+        "Honestly, ", "Look, ", "I mean, ", "The thing is, ",
+        "Here's the deal — ", "Truth is, "
+      ];
+      s = pick(interjections) + s.charAt(0).toLowerCase() + s.slice(1);
+      ctx.changes++;
+    }
+
+    // Occasionally end with emphasis
+    if (Math.random() < 0.04 * (strength / 10) && s.endsWith('.')) {
+      s = s.slice(0, -1) + pick([" — and that matters.", " — seriously.", "."]);
+      ctx.changes++;
+    }
+
+    result.push(s);
+  }
+
+  return result.join(' ');
+}
+
+
+/* ── 7. FIX PUNCTUATION ── */
+function fixPunctuation(text, ctx) {
+  let result = text;
+
+  // Remove double spaces
+  result = result.replace(/  +/g, ' ');
+
+  // Fix spaces before punctuation
+  result = result.replace(/ ([.,;:!?])/g, '$1');
+
+  // Fix missing space after punctuation
+  result = result.replace(/([.,;:!?])([A-Za-z])/g, '$1 $2');
+
+  // Remove excessive exclamation marks
+  result = result.replace(/!{2,}/g, '!');
+
+  // Trim leading/trailing whitespace per line
+  result = result.split('\n').map(l => l.trim()).join('\n');
+
+  return result;
+}
+
+
+/* ── 8. HUMANIZE TRANSITIONS ── */
+function humanizeTransitions(text, ctx) {
+  // Remove overly structured transition patterns
+  let result = text;
+
+  // "First, ... Second, ... Third, ..." → more natural
+  let counter = 0;
+  result = result.replace(/\b(First|Firstly),?\s/gi, () => {
+    if (Math.random() < 0.6) { ctx.changes++; return pick(["For starters, ", "To start, ", "First off, "]); }
+    return "First, ";
+  });
+  result = result.replace(/\b(Second|Secondly),?\s/gi, () => {
+    if (Math.random() < 0.6) { ctx.changes++; return pick(["Next, ", "Then, ", "Also, ", "On top of that, "]); }
+    return "Second, ";
+  });
+  result = result.replace(/\b(Third|Thirdly),?\s/gi, () => {
+    if (Math.random() < 0.6) { ctx.changes++; return pick(["And then, ", "Another thing — ", "Plus, "]); }
+    return "Third, ";
+  });
+  result = result.replace(/\b(Finally|Lastly),?\s/gi, () => {
+    if (Math.random() < 0.6) { ctx.changes++; return pick(["And lastly, ", "Last but not least, ", "One more thing — "]); }
+    return "Finally, ";
+  });
+
+  return result;
+}
+
+
+/* ── 9. BULLET POINT FORMALITY ── */
+function removeBulletPointFormality(text, mode, ctx) {
+  if (mode === 'academic') return text;
+
+  // If text has numbered lists or bullet-like patterns, soften them
+  let result = text;
+
+  // Soften "1. 2. 3." numbering to more natural flow if present
+  // (This is a light touch — we don't want to destroy actual lists)
+
+  return result;
+}
+
+
+/* ── FINAL CLEANUP ── */
+function finalCleanup(text) {
+  let result = text;
+
+  // Fix double spaces
+  result = result.replace(/  +/g, ' ');
+
+  // Fix awkward double punctuation
+  result = result.replace(/\.\./g, '.');
+  result = result.replace(/,,/g, ',');
+  result = result.replace(/\. ,/g, ',');
+  result = result.replace(/, \./g, '.');
+
+  // Fix capitalization after periods
+  result = result.replace(/\. ([a-z])/g, (m, c) => '. ' + c.toUpperCase());
+  result = result.replace(/\? ([a-z])/g, (m, c) => '? ' + c.toUpperCase());
+  result = result.replace(/! ([a-z])/g, (m, c) => '! ' + c.toUpperCase());
+
+  // Fix double connectors like "Also, also,"
+  result = result.replace(/(\b\w+,)\s+\1/gi, '$1');
+
+  // Fix empty sentence starts
+  result = result.replace(/\.\s+\./g, '.');
+
+  // Trim
+  result = result.trim();
+
+  return result;
+}
+
+
+/* ═══════════════════════════════════════════════
+   UTILITY FUNCTIONS
+   ═══════════════════════════════════════════════ */
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function splitSentences(text) {
+  // Split on sentence boundaries but keep abbreviations intact
+  const parts = [];
+  let current = '';
+  const chars = text.split('');
+
+  for (let i = 0; i < chars.length; i++) {
+    current += chars[i];
+    if ((chars[i] === '.' || chars[i] === '!' || chars[i] === '?') &&
+        i + 1 < chars.length && /\s/.test(chars[i + 1])) {
+      // Check it's not an abbreviation (e.g., "Dr.", "U.S.", "etc.")
+      const lastWord = current.match(/(\w+)\.\s*$/);
+      if (lastWord) {
+        const w = lastWord[1];
+        const abbrevs = ['mr','mrs','ms','dr','prof','sr','jr','st','vs','etc','inc','ltd','co','eg','ie'];
+        if (abbrevs.includes(w.toLowerCase()) || (w.length <= 2 && /^[A-Z]$/.test(w))) {
+          continue;
+        }
+      }
+      parts.push(current.trim());
+      current = '';
+    }
+  }
+  if (current.trim()) parts.push(current.trim());
+  return parts;
+}
+
+function breakLongSentence(sentence) {
+  // Try to break at natural points: conjunctions, commas
+  const breakPoints = [
+    /,\s+(and|but|or|so|yet|while|whereas|although|because|since|which|that)\s/i,
+    /;\s/,
+    /\s+(however|therefore|thus|hence|moreover|furthermore|additionally)\s/i,
+  ];
+
+  for (const bp of breakPoints) {
+    const match = sentence.match(bp);
+    if (match && match.index > 15) {
+      const idx = match.index;
+      let first = sentence.substring(0, idx + 1).trim();
+      let second = sentence.substring(idx + 1).trim();
+
+      // Clean up
+      if (!first.match(/[.!?]$/)) first += '.';
+      second = second.replace(/^,\s*/, '');
+      second = second.charAt(0).toUpperCase() + second.slice(1);
+
+      return [first, second];
+    }
+  }
+
+  return [sentence];
+}
+
+
+/* ── READABILITY SCORE ── */
+function calcReadability(text) {
+  const words = text.trim().split(/\s+/);
+  const sentences = splitSentences(text);
+  const syllables = words.reduce((sum, w) => sum + countSyllables(w), 0);
+
+  if (sentences.length === 0 || words.length === 0) return 'N/A';
+
+  // Flesch Reading Ease
+  const wordsPerSent = words.length / sentences.length;
+  const syllPerWord = syllables / words.length;
+  const score = 206.835 - (1.015 * wordsPerSent) - (84.6 * syllPerWord);
+  const clamped = Math.max(0, Math.min(100, Math.round(score)));
+
+  if (clamped >= 80) return clamped + ' (Easy)';
+  if (clamped >= 60) return clamped + ' (Standard)';
+  if (clamped >= 40) return clamped + ' (Moderate)';
+  return clamped + ' (Complex)';
+}
+
+function countSyllables(word) {
+  word = word.toLowerCase().replace(/[^a-z]/g, '');
+  if (word.length <= 3) return 1;
+  word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+  word = word.replace(/^y/, '');
+  const matches = word.match(/[aeiouy]{1,2}/g);
+  return matches ? matches.length : 1;
+}
+
+
+/* ── HUMAN SCORE ESTIMATOR ── */
+function estimateHumanScore(text) {
+  let score = 50; // Start at 50%
+
+  // Check for contractions (human-like)
+  const contractionCount = (text.match(/'(m|s|t|re|ve|ll|d)\b/gi) || []).length;
+  const wordCount = text.split(/\s+/).length;
+  const contractionRate = contractionCount / wordCount;
+  score += Math.min(15, contractionRate * 300);
+
+  // Sentence length variation (human-like)
+  const sents = splitSentences(text);
+  if (sents.length >= 3) {
+    const lengths = sents.map(s => s.split(/\s+/).length);
+    const avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;
+    const variance = lengths.reduce((a, l) => a + Math.pow(l - avg, 2), 0) / lengths.length;
+    const cv = Math.sqrt(variance) / avg; // coefficient of variation
+    score += Math.min(10, cv * 20);
+  }
+
+  // Penalize AI-typical words that remain
+  const aiWords = ['furthermore', 'moreover', 'additionally', 'consequently',
+    'nevertheless', 'utilize', 'leverage', 'facilitate', 'delve',
+    'paradigm', 'synergy', 'holistic', 'robust', 'seamless',
+    'it is worth noting', 'it is important to', 'in the realm of',
+    'tapestry', 'testament', 'embark'];
+  const lower = text.toLowerCase();
+  let aiPenalty = 0;
+  for (const w of aiWords) {
+    if (lower.includes(w)) aiPenalty += 3;
+  }
+  score -= Math.min(20, aiPenalty);
+
+  // Reward casual language
+  const casualMarkers = ["honestly", "basically", "pretty much", "kind of",
+    "sort of", "i mean", "you know", "actually", "really",
+    "like,", "though", "anyway"];
+  let casualBonus = 0;
+  for (const m of casualMarkers) {
+    if (lower.includes(m)) casualBonus += 2;
+  }
+  score += Math.min(10, casualBonus);
+
+  // Average sentence length (too uniform = AI-like)
+  if (sents.length >= 2) {
+    const avgLen = wordCount / sents.length;
+    if (avgLen > 20 && avgLen < 30) {
+      score -= 5; // AI tends to write uniformly medium-long sentences
+    }
+  }
+
+  // Varied paragraph length is more human
+  score += Math.min(5, Math.random() * 8);
+
+  return Math.max(15, Math.min(98, Math.round(score)));
+}
+
+function showMeter(score) {
+  const wrap = document.getElementById('meterWrap');
+  const fill = document.getElementById('meterFill');
+  const label = document.getElementById('meterLabel');
+
+  wrap.style.display = 'block';
+
+  let color, text;
+  if (score >= 80) {
+    color = '#4caf50'; text = `${score}% — Highly Human-like`;
+  } else if (score >= 60) {
+    color = '#8bc34a'; text = `${score}% — Mostly Human-like`;
+  } else if (score >= 40) {
+    color = '#ff9800'; text = `${score}% — Mixed Detection Risk`;
+  } else {
+    color = '#f44336'; text = `${score}% — Likely AI-Detected`;
+  }
+
+  fill.style.width = score + '%';
+  fill.style.background = color;
+  label.textContent = text;
+  label.style.color = color;
+}
+</script>
+
+</body>
+</html>
