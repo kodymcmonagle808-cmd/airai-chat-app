@@ -1299,6 +1299,30 @@ function handleGuest() {
       // Populate modal
       document.getElementById('sessionCode').textContent = code;
       document.getElementById('codeUsername').textContent = username;
+
+      // Add copy button if missing
+      var countdownEl = document.getElementById('countdown');
+      if (countdownEl && !document.getElementById('copySessionCodeBtn')) {
+        var copyBtn = document.createElement('button');
+        copyBtn.id = 'copySessionCodeBtn';
+        copyBtn.textContent = 'Copy Member Key';
+        copyBtn.onclick = copySessionCode;
+        copyBtn.style.cssText = 'padding:10px 16px;background:#12371f;border:1px solid #2e7d32;border-radius:8px;color:#c8e6c9;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-bottom:8px;';
+        copyBtn.onmouseover = function() { this.style.background = '#1a4a2a'; };
+        copyBtn.onmouseout = function() { this.style.background = '#12371f'; };
+
+        var copyStatus = document.createElement('div');
+        copyStatus.id = 'copySessionCodeStatus';
+        copyStatus.style.cssText = 'color:#81c784;font-size:12px;min-height:16px;';
+
+        countdownEl.parentNode.insertBefore(copyBtn, countdownEl);
+        countdownEl.parentNode.insertBefore(copyStatus, countdownEl);
+      }
+
+      var copyStatusEl = document.getElementById('copySessionCodeStatus');
+      if (copyStatusEl) {
+        copyStatusEl.textContent = '';
+      }
       
       // Handle countdown
       if (expiresIn && !isGuest) {
@@ -1320,6 +1344,43 @@ function handleGuest() {
       
       document.body.appendChild(modal);
       return modal;
+    }
+
+    function copySessionCode() {
+      var codeEl = document.getElementById('sessionCode');
+      var statusEl = document.getElementById('copySessionCodeStatus');
+      var code = codeEl ? codeEl.textContent.trim() : '';
+      if (!code) {
+        if (statusEl) statusEl.textContent = 'No code to copy.';
+        return;
+      }
+
+      function setStatus(msg) {
+        if (statusEl) statusEl.textContent = msg;
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(code).then(
+          function() { setStatus('Copied to clipboard.'); },
+          function() { setStatus('Copy failed.'); }
+        );
+        return;
+      }
+
+      var temp = document.createElement('textarea');
+      temp.value = code;
+      temp.setAttribute('readonly', '');
+      temp.style.position = 'absolute';
+      temp.style.left = '-9999px';
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        var ok = document.execCommand('copy');
+        setStatus(ok ? 'Copied to clipboard.' : 'Copy failed.');
+      } catch (e) {
+        setStatus('Copy failed.');
+      }
+      document.body.removeChild(temp);
     }
     
     function startCountdown(seconds) {
