@@ -1462,46 +1462,6 @@ function handleGuest() {
       iframeContainer.style.display = 'flex';
     }
 
-    function openAiraiV2() {
-      // Hide code modal
-      const modal = document.getElementById('codeModal');
-      if (modal) {
-        modal.style.display = 'none';
-      }
-      
-      // Show iframe container for AirAI 1.2
-      let iframeContainer = document.getElementById('chatIframeContainer');
-      if (!iframeContainer) {
-        iframeContainer = createIframeContainer();
-      }
-      
-      // Set iframe source with member key
-      const iframe = document.getElementById('chatIframe');
-      iframe.src = 'airai-v2.html?memberKey=' + encodeURIComponent(currentSessionCode);
-      
-      iframeContainer.style.display = 'flex';
-    }
-
-    function openUnblockedGames() {
-      // Hide code modal
-      const modal = document.getElementById('codeModal');
-      if (modal) {
-        modal.style.display = 'none';
-      }
-      
-      // Show iframe container for Unblocked Games
-      let iframeContainer = document.getElementById('chatIframeContainer');
-      if (!iframeContainer) {
-        iframeContainer = createIframeContainer();
-      }
-      
-      // Set iframe source with member key
-      const iframe = document.getElementById('chatIframe');
-      iframe.src = 'unblocked-games.html?memberKey=' + encodeURIComponent(currentSessionCode);
-      
-      iframeContainer.style.display = 'flex';
-    }
-
     function createIframeContainer() {
       const container = document.createElement('div');
       container.id = 'chatIframeContainer';
