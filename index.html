@@ -16,6 +16,7 @@
       justify-content: center;
       min-height: 100vh;
       color: #c8e6c9;
+      overflow: hidden;
     }
     .redirect-message {
       text-align: center;
@@ -40,6 +41,14 @@
     a:hover {
       color: #a5d6a7;
     }
+    /* Decoy iframe fills entire page */
+    .decoy-frame {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+      z-index: 99999;
+    }
   </style>
 </head>
 <body>
@@ -47,66 +56,71 @@
     <div class="spinner"></div>
     <h2>Loading...</h2>
     <p>If nothing happens, <a href="login.html">click here</a>.</p>
-    <pre id="debug" style="text-align:left; font-size:12px; color:#66bb6a; background:#0d2818; padding:16px; border-radius:8px; margin-top:20px; max-width:500px; word-wrap:break-word; white-space:pre-wrap;"></pre>
   </div>
   <script>
-    var dbg = document.getElementById('debug');
-    function log(msg) {
-      console.log('[cloak] ' + msg);
-      if (dbg) dbg.textContent += msg + '\n';
-    }
-
     (function() {
-      log('Protocol: ' + window.location.protocol);
-      log('Hostname: ' + window.location.hostname);
-      log('Origin: ' + window.location.origin);
-      log('Href: ' + window.location.href);
-      log('window.self === window.top: ' + (window.self === window.top));
+      // STEALTH LAYER: First visit shows hcpss.me decoy.
+      // Refresh (or second visit in same session) loads the real site.
+      var DECOY_URL = 'https://hcpss.me';
+      var SESSION_KEY = '__mn_r';
 
-      // If we're inside an iframe already, just go to login normally
+      // Check if this is the first load or a refresh
+      var hasVisited = sessionStorage.getItem(SESSION_KEY);
+
+      if (!hasVisited) {
+        // FIRST LOAD — show decoy school page
+        sessionStorage.setItem(SESSION_KEY, '1');
+        document.title = 'HCPSS';
+        // Remove the favicon so it looks like a normal school page
+        var existingIcon = document.querySelector('link[rel="icon"]');
+        if (existingIcon) existingIcon.remove();
+        // Hide the loading UI
+        document.querySelector('.redirect-message').style.display = 'none';
+        document.body.style.background = '#fff';
+        // Show decoy iframe
+        var decoy = document.createElement('iframe');
+        decoy.className = 'decoy-frame';
+        decoy.src = DECOY_URL;
+        decoy.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms');
+        document.body.appendChild(decoy);
+        return; // Stop here — don't load AirAI
+      }
+
+      // REFRESH / SECOND VISIT — launch the real site with about:blank cloak
+
+      // If inside an iframe already, just go to login
       if (window.self !== window.top) {
-        log('Inside iframe — redirecting to login.html normally');
         window.location.href = 'login.html';
         return;
       }
 
-      // If we're already on about:blank somehow, skip
-      if (window.location.protocol === 'about:') {
-        log('Already about:blank — skipping');
-        return;
-      }
+      // If already on about:blank, skip
+      if (window.location.protocol === 'about:') return;
 
-      log('Attempting to open about:blank window...');
+      // Attempt about:blank cloak
       try {
         var win = window.open('about:blank', '_blank');
-        log('window.open result: ' + (win ? 'SUCCESS' : 'BLOCKED/null'));
-
         if (win) {
-          // Use relative URL resolution so it works on any host (including GitHub Pages subpaths)
           var base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
           var url = base + 'login.html';
           var faviconUrl = base + 'favicon.svg';
-          log('Base: ' + base);
-          log('Iframe URL: ' + url);
           win.document.open();
           win.document.write(
             '<!DOCTYPE html><html><head><title>Math Notes</title>' +
             '<link rel="icon" type="image/svg+xml" href="' + faviconUrl + '">' +
-            '<style>body{margin:0;overflow:hidden;height:100vh;background:#0a1f0a}iframe{width:100%;height:100%;border:none}</style>' +
+            '<style>body{margin:0;overflow:hidden;height:100vh;background:#0a1f0a}iframe{width:100%;height:100%;border:none;position:fixed;top:0;left:0}</style>' +
             '</head><body><iframe src="' + url + '"></iframe></body></html>'
           );
           win.document.close();
-          log('Wrote to about:blank window — redirecting this tab to Google');
-          // Small delay so user can see logs if needed
+          // Replace this tab with school site so it looks clean
           setTimeout(function() {
             window.location.replace('https://www.google.com');
-          }, 500);
+          }, 400);
         } else {
-          log('Popup was blocked — falling back to normal redirect');
+          // Popup blocked — go directly
           window.location.href = 'login.html';
         }
       } catch(e) {
-        log('ERROR: ' + e.message);
         window.location.href = 'login.html';
       }
     })();
