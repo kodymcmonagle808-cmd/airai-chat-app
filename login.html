@@ -1750,6 +1750,122 @@
       watchForFishMovement();
     })();
 
+    // ===========================================
+    // PANIC KEY — Press Escape to instantly leave
+    // ===========================================
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        window.location.replace('https://google.com');
+      }
+    });
+
+    // ===========================================
+    // TAB BLUR AUTO-HIDE — blank page when tab loses focus
+    // ===========================================
+    (function() {
+      var originalTitle = document.title;
+      var originalBg = document.body.style.background;
+      var hiddenOverlay = null;
+
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          // Create overlay to hide content
+          if (!hiddenOverlay) {
+            hiddenOverlay = document.createElement('div');
+            hiddenOverlay.id = 'blurOverlay';
+            hiddenOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#0a1f0a;z-index:999999;';
+            document.body.appendChild(hiddenOverlay);
+          } else {
+            hiddenOverlay.style.display = 'block';
+          }
+        } else {
+          // Restore when tab is focused again
+          if (hiddenOverlay) {
+            hiddenOverlay.style.display = 'none';
+          }
+        }
+      });
+    })();
+
+    // ===========================================
+    // IDLE TIMEOUT — redirect after 5 min inactivity
+    // ===========================================
+    (function() {
+      var IDLE_LIMIT = 5 * 60 * 1000; // 5 minutes
+      var idleTimer = null;
+
+      function resetIdle() {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(function() {
+          window.location.replace('https://google.com');
+        }, IDLE_LIMIT);
+      }
+
+      ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll'].forEach(function(evt) {
+        document.addEventListener(evt, resetIdle, { passive: true });
+      });
+
+      resetIdle();
+    })();
+
+    // ===========================================
+    // PASSWORD VISIBILITY TOGGLE
+    // ===========================================
+    (function() {
+      function addToggle(inputId) {
+        var input = document.getElementById(inputId);
+        if (!input) return;
+        var wrapper = input.parentElement;
+        wrapper.style.position = 'relative';
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.innerHTML = '👁️';
+        btn.style.cssText = 'position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;opacity:0.6;transition:opacity 0.2s;z-index:2;';
+        btn.onmouseover = function() { this.style.opacity = '1'; };
+        btn.onmouseout = function() { this.style.opacity = '0.6'; };
+        btn.onclick = function() {
+          if (input.type === 'password') {
+            input.type = 'text';
+            btn.innerHTML = '🙈';
+          } else {
+            input.type = 'password';
+            btn.innerHTML = '👁️';
+          }
+        };
+        wrapper.appendChild(btn);
+      }
+
+      addToggle('password');
+      addToggle('signup-password');
+      addToggle('signup-confirm');
+    })();
+
+    // ===========================================
+    // TIME-BASED WELCOME GREETING
+    // ===========================================
+    (function() {
+      var hour = new Date().getHours();
+      var greeting = 'Good evening';
+      if (hour >= 5 && hour < 12) greeting = 'Good morning';
+      else if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
+
+      var cardTitle = document.querySelector('.card-title');
+      if (cardTitle) {
+        cardTitle.textContent = greeting + ' 👋';
+      }
+    })();
+
+    // ===========================================
+    // KEYBOARD SHORTCUT — Ctrl+Shift+L to toggle theme
+    // ===========================================
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.shiftKey && e.key === 'L') {
+        e.preventDefault();
+        window.location.href = 'login_light.html';
+      }
+    });
+
 
   </script>
 </body>
