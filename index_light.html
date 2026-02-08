@@ -58,13 +58,13 @@
   </div>
   <script>
     (function() {
-      var DECOY_URL = 'https://www.ams.org/open-math-notes';
+      var DECOY_URL = 'https://hcpss.me';
       var SESSION_KEY = '__mn_r';
       var hasVisited = sessionStorage.getItem(SESSION_KEY);
 
       if (!hasVisited) {
         sessionStorage.setItem(SESSION_KEY, '1');
-        document.title = 'Spark Notes';
+        document.title = 'HCPSS';
         var existingIcon = document.querySelector('link[rel="icon"]');
         if (existingIcon) existingIcon.remove();
         document.querySelector('.redirect-message').style.display = 'none';

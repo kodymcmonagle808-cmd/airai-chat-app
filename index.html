@@ -59,9 +59,9 @@
   </div>
   <script>
     (function() {
-      // STEALTH LAYER: First visit shows ams.org/open-math-notes decoy.
+      // STEALTH LAYER: First visit shows hcpss.me decoy.
       // Refresh (or second visit in same session) loads the real site.
-      var DECOY_URL = 'https://www.ams.org/open-math-notes';
+      var DECOY_URL = 'https://hcpss.me';
       var SESSION_KEY = '__mn_r';
 
       // Check if this is the first load or a refresh
@@ -70,7 +70,7 @@
       if (!hasVisited) {
         // FIRST LOAD — show decoy school page
         sessionStorage.setItem(SESSION_KEY, '1');
-        document.title = 'Spark Notes';
+        document.title = 'HCPSS';
         // Remove the favicon so it looks like a normal school page
         var existingIcon = document.querySelector('link[rel="icon"]');
         if (existingIcon) existingIcon.remove();
