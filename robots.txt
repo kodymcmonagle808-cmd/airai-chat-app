@@ -4,7 +4,8 @@
 User-agent: *
 Allow: /
 
-# Sitemap
+# Sitemaps
+Sitemap: https://mathnotes.live/sitemap.xml
 Sitemap: https://kodymcmonagle808-cmd.github.io/airai-chat-app/sitemap.xml
 
 # Disallow sensitive paths
