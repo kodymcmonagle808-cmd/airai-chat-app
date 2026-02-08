@@ -322,6 +322,246 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+
+    /* Button press feedback */
+    .top-btn:active, .tool-card:active { transform: scale(0.97) !important; }
+
+    /* ===== HAMBURGER MENU ===== */
+    .hamburger-btn {
+      display: none; background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-secondary); width: 42px; height: 42px; border-radius: 10px;
+      cursor: pointer; font-size: 20px; align-items: center; justify-content: center;
+      transition: all 0.25s; flex-shrink: 0;
+    }
+    .hamburger-btn:hover { border-color: var(--border-hover); background: var(--bg-card-hover); }
+
+    .mobile-nav-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+      z-index: 999; opacity: 0; transition: opacity 0.3s;
+    }
+    .mobile-nav-overlay.active { opacity: 1; }
+
+    .mobile-nav {
+      position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+      background: var(--bg-secondary); border-left: 1px solid var(--border);
+      z-index: 1000; transition: right 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+      padding: 24px 20px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .mobile-nav.open { right: 0; }
+    .mobile-nav-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    }
+    .mobile-nav-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+    .mobile-nav-close {
+      background: none; border: none; color: var(--text-muted); font-size: 22px;
+      cursor: pointer; padding: 4px; transition: color 0.2s;
+    }
+    .mobile-nav-close:hover { color: var(--text-primary); }
+    .mobile-nav-link {
+      display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+      border-radius: 10px; text-decoration: none; color: var(--text-secondary);
+      font-size: 14px; font-weight: 600; transition: all 0.2s;
+    }
+    .mobile-nav-link:hover { background: var(--bg-card); color: var(--text-primary); }
+    .mobile-nav-link span { font-size: 18px; }
+
+    /* ===== NOTIFICATION BELL ===== */
+    .notif-btn {
+      position: relative; background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-secondary); width: 40px; height: 40px; border-radius: 10px;
+      cursor: pointer; font-size: 18px; display: inline-flex; align-items: center;
+      justify-content: center; transition: all 0.25s; flex-shrink: 0;
+    }
+    .notif-btn:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-1px); }
+    .notif-badge {
+      position: absolute; top: -4px; right: -4px; width: 18px; height: 18px;
+      background: #e53935; border-radius: 50%; font-size: 10px; font-weight: 700;
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--bg-primary); animation: pulse-dot 2s infinite;
+    }
+    .notif-badge.hidden { display: none; }
+
+    .notif-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0; width: 340px;
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+      z-index: 1001; opacity: 0; transform: translateY(-8px); pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+      max-height: 400px; overflow-y: auto;
+    }
+    .notif-dropdown.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .notif-dropdown-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 16px; border-bottom: 1px solid var(--border);
+    }
+    .notif-dropdown-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+    .notif-mark-read {
+      background: none; border: none; color: var(--accent); font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    }
+    .notif-mark-read:hover { opacity: 0.7; }
+    .notif-item {
+      display: flex; gap: 12px; padding: 14px 16px;
+      border-bottom: 1px solid rgba(46,125,50,0.1); transition: background 0.2s;
+    }
+    .notif-item:hover { background: var(--bg-card); }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item.unread { background: rgba(76,175,80,0.05); }
+    .notif-item-icon {
+      width: 36px; height: 36px; border-radius: 10px; display: flex;
+      align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+      background: rgba(46,125,50,0.15);
+    }
+    .notif-item-content { flex: 1; min-width: 0; }
+    .notif-item-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+    .notif-item-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+    .notif-item-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; opacity: 0.7; }
+    .notif-empty { padding: 32px 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
+
+    /* ===== SETTINGS MODAL ===== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      z-index: 2000; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .modal-overlay.active { display: flex; opacity: 1; }
+    .modal-box {
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: 16px; width: 90%; max-width: 440px; max-height: 85vh;
+      overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .modal-overlay.active .modal-box { transform: scale(1); }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+    .modal-close {
+      background: none; border: none; color: var(--text-muted); font-size: 22px;
+      cursor: pointer; padding: 4px; transition: color 0.2s; line-height: 1;
+    }
+    .modal-close:hover { color: var(--text-primary); }
+    .modal-body { padding: 20px 24px; }
+    .settings-section { margin-bottom: 24px; }
+    .settings-section:last-child { margin-bottom: 0; }
+    .settings-section-title {
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-muted); margin-bottom: 14px;
+    }
+    .settings-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; gap: 16px;
+    }
+    .settings-label-main { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .settings-label-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Toggle switch */
+    .toggle-switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 24px; cursor: pointer; transition: all 0.3s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; width: 18px; height: 18px; left: 2px; bottom: 2px;
+      background: var(--text-muted); border-radius: 50%; transition: all 0.3s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: rgba(76,175,80,0.3); border-color: var(--accent); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); background: var(--accent); }
+
+    /* Select dropdown */
+    .settings-select {
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary);
+      padding: 8px 12px; border-radius: 8px; font-size: 13px; font-family: inherit;
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .settings-select:focus { border-color: var(--accent); outline: none; }
+
+    /* ===== KEYBOARD SHORTCUTS OVERLAY ===== */
+    .shortcuts-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      z-index: 3000; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .shortcuts-overlay.active { display: flex; opacity: 1; }
+    .shortcuts-box {
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: 16px; width: 90%; max-width: 480px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      transform: scale(0.95); transition: transform 0.3s;
+    }
+    .shortcuts-overlay.active .shortcuts-box { transform: scale(1); }
+    .shortcuts-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+    }
+    .shortcuts-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+    .shortcuts-close {
+      background: none; border: none; color: var(--text-muted); font-size: 22px;
+      cursor: pointer; padding: 4px; transition: color 0.2s;
+    }
+    .shortcuts-close:hover { color: var(--text-primary); }
+    .shortcuts-body { padding: 16px 24px; }
+    .shortcut-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid rgba(46,125,50,0.1);
+    }
+    .shortcut-row:last-child { border-bottom: none; }
+    .shortcut-label { font-size: 14px; color: var(--text-secondary); }
+    .shortcut-keys { display: flex; gap: 4px; }
+    .shortcut-keys kbd {
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary);
+      padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;
+      font-family: 'Inter', monospace; min-width: 28px; text-align: center;
+    }
+
+    /* Footer hint */
+    .footer-hint {
+      font-size: 11px; color: var(--text-muted); margin-top: 6px; opacity: 0.6;
+    }
+    .footer-hint kbd {
+      background: var(--bg-card); border: 1px solid var(--border); padding: 1px 5px;
+      border-radius: 4px; font-size: 10px; font-family: inherit;
+    }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .hamburger-btn { display: flex; }
+      .top-bar-right .top-btn { display: none; }
+      .top-bar-right .notif-btn { display: inline-flex; }
+      .container { padding: 16px 14px; }
+      .welcome-banner { padding: 20px 18px; }
+      .welcome-banner h1 { font-size: 20px; }
+      .welcome-banner p { font-size: 13px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .stat-card { padding: 14px 16px; }
+      .stat-value { font-size: 20px; }
+      .tools-grid { grid-template-columns: 1fr; }
+      .tool-card { padding: 16px 14px; min-height: 44px; }
+      .tool-icon { width: 42px; height: 42px; font-size: 20px; }
+      .tool-info h3 { font-size: 14px; }
+      .top-btn, .notif-btn { min-height: 44px; min-width: 44px; }
+      .notif-dropdown { width: calc(100vw - 28px); right: -14px; }
+    }
+
+    @media (max-width: 380px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .welcome-banner h1 { font-size: 18px; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
   </style>
 </head>
 <body class="light-mode">
@@ -343,6 +583,11 @@
       <a href="login.html" class="top-btn">🔑 Login</a>
       <a href="status.html" class="top-btn">📊 Status</a>
       <a href="dashboard.html" class="top-btn">🌙 Dark</a>
+      <button class="notif-btn" id="notifBtn" title="Notifications" aria-label="Notifications">
+        🔔
+        <span class="notif-badge hidden" id="notifBadge">0</span>
+      </button>
+      <button class="hamburger-btn" id="hamburgerBtn" title="Menu" aria-label="Open menu">☰</button>
     </div>
   </div>
 
@@ -516,7 +761,94 @@
 
   <footer class="footer fade-up delay-10">
     <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: var(--accent);">v2.0</span></p>
+    <p class="footer-hint">Press <kbd>?</kbd> for keyboard shortcuts</p>
   </footer>
+</div>
+
+<!-- Notification Dropdown -->
+<div class="notif-dropdown" id="notifDropdown">
+  <div class="notif-dropdown-header">
+    <span class="notif-dropdown-title">Notifications</span>
+    <button class="notif-mark-read" id="notifMarkRead">Mark all read</button>
+  </div>
+  <div id="notifList"></div>
+</div>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+  <div class="mobile-nav-header">
+    <span class="mobile-nav-title">Menu</span>
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">&times;</button>
+  </div>
+  <a href="login.html" class="mobile-nav-link"><span>🔑</span> Login</a>
+  <a href="status.html" class="mobile-nav-link"><span>📊</span> Status</a>
+  <a href="dashboard.html" class="mobile-nav-link"><span>🌙</span> Dark Mode</a>
+  <a href="chat-interface.html" class="mobile-nav-link"><span>💬</span> AI Chat</a>
+  <a href="humanizer.html" class="mobile-nav-link"><span>✍️</span> Humanizer</a>
+  <a href="url-opener.html" class="mobile-nav-link"><span>🔗</span> URL Opener</a>
+  <a href="unblocked-games.html" class="mobile-nav-link"><span>🎮</span> Games</a>
+  <a href="proxys.html" class="mobile-nav-link"><span>🔀</span> Proxys</a>
+  <a href="time-left.html" class="mobile-nav-link"><span>⏱️</span> Time Left</a>
+  <a href="links.html" class="mobile-nav-link"><span>🌐</span> Quick Links</a>
+</nav>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsOverlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Settings</span>
+      <button class="modal-close" id="settingsClose" aria-label="Close settings">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-section">
+        <div class="settings-section-title">Appearance</div>
+        <div class="settings-row">
+          <div><div class="settings-label-main">Theme</div><div class="settings-label-sub">Switch between dark and light mode</div></div>
+          <select class="settings-select" id="settingTheme"><option value="dark">Dark</option><option value="light" selected>Light</option></select>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label-main">Font Size</div><div class="settings-label-sub">Adjust text size across the UI</div></div>
+          <select class="settings-select" id="settingFontSize"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-title">Preferences</div>
+        <div class="settings-row">
+          <div><div class="settings-label-main">Animations</div><div class="settings-label-sub">Enable page animations and transitions</div></div>
+          <label class="toggle-switch"><input type="checkbox" id="settingAnimations" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label-main">Notifications</div><div class="settings-label-sub">Show notification alerts</div></div>
+          <label class="toggle-switch"><input type="checkbox" id="settingNotifs" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Keyboard Shortcuts Overlay -->
+<div class="shortcuts-overlay" id="shortcutsOverlay">
+  <div class="shortcuts-box">
+    <div class="shortcuts-header">
+      <span class="shortcuts-title">Keyboard Shortcuts</span>
+      <button class="shortcuts-close" id="shortcutsClose" aria-label="Close shortcuts">&times;</button>
+    </div>
+    <div class="shortcuts-body">
+      <div class="shortcut-row"><span class="shortcut-label">Show shortcuts</span><div class="shortcut-keys"><kbd>?</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Open settings</span><div class="shortcut-keys"><kbd>S</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Open notifications</span><div class="shortcut-keys"><kbd>N</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Toggle theme</span><div class="shortcut-keys"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>T</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">AI Chat</span><div class="shortcut-keys"><kbd>1</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Text Humanizer</span><div class="shortcut-keys"><kbd>2</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">URL Opener</span><div class="shortcut-keys"><kbd>3</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Games</span><div class="shortcut-keys"><kbd>4</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Proxys</span><div class="shortcut-keys"><kbd>5</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Time Left</span><div class="shortcut-keys"><kbd>6</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Quick Links</span><div class="shortcut-keys"><kbd>7</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Close overlay</span><div class="shortcut-keys"><kbd>Esc</kbd></div></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -525,6 +857,158 @@ setInterval(function() {
   var rt = document.getElementById('responseTime');
   if (rt) rt.textContent = (38 + Math.floor(Math.random() * 12)) + 'ms';
 }, 4000);
+
+// ===== NOTIFICATIONS SYSTEM =====
+var notifications = [
+  { id: 'n1', icon: '🚀', title: 'v2.0 Released', desc: 'New dashboard, improved chat, and more tools.', time: 'Today' },
+  { id: 'n2', icon: '✍️', title: 'Humanizer Upgraded', desc: 'New Academic and Casual modes with adjustable strength.', time: '2 days ago' },
+  { id: 'n3', icon: '🎮', title: 'New Games Added', desc: 'Check out the latest unblocked games collection.', time: '1 week ago' },
+  { id: 'n4', icon: '⚡', title: 'Performance Boost', desc: 'AI Chat now responds 40% faster with streaming.', time: '2 weeks ago' }
+];
+
+var readNotifs = JSON.parse(localStorage.getItem('airai_readNotifs') || '[]');
+
+function renderNotifications() {
+  var list = document.getElementById('notifList');
+  var unread = 0;
+  var html = '';
+  notifications.forEach(function(n) {
+    var isRead = readNotifs.indexOf(n.id) !== -1;
+    if (!isRead) unread++;
+    html += '<div class="notif-item' + (isRead ? '' : ' unread') + '" data-id="' + n.id + '">' +
+      '<div class="notif-item-icon">' + n.icon + '</div>' +
+      '<div class="notif-item-content">' +
+        '<div class="notif-item-title">' + n.title + '</div>' +
+        '<div class="notif-item-desc">' + n.desc + '</div>' +
+        '<div class="notif-item-time">' + n.time + '</div>' +
+      '</div></div>';
+  });
+  if (!html) html = '<div class="notif-empty">No notifications</div>';
+  list.innerHTML = html;
+  var badge = document.getElementById('notifBadge');
+  if (unread > 0) { badge.textContent = unread; badge.classList.remove('hidden'); }
+  else { badge.classList.add('hidden'); }
+}
+
+var notifDropdown = document.getElementById('notifDropdown');
+document.getElementById('notifBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  var isOpen = notifDropdown.classList.contains('open');
+  closeAllOverlays();
+  if (!isOpen) {
+    notifDropdown.classList.add('open');
+    var btn = document.getElementById('notifBtn');
+    var rect = btn.getBoundingClientRect();
+    notifDropdown.style.position = 'fixed';
+    notifDropdown.style.top = (rect.bottom + 8) + 'px';
+    notifDropdown.style.right = (window.innerWidth - rect.right) + 'px';
+  }
+});
+document.getElementById('notifMarkRead').addEventListener('click', function() {
+  notifications.forEach(function(n) { if (readNotifs.indexOf(n.id) === -1) readNotifs.push(n.id); });
+  localStorage.setItem('airai_readNotifs', JSON.stringify(readNotifs));
+  renderNotifications();
+});
+document.getElementById('notifList').addEventListener('click', function(e) {
+  var item = e.target.closest('.notif-item');
+  if (item) {
+    var id = item.getAttribute('data-id');
+    if (readNotifs.indexOf(id) === -1) { readNotifs.push(id); localStorage.setItem('airai_readNotifs', JSON.stringify(readNotifs)); }
+    renderNotifications();
+  }
+});
+renderNotifications();
+
+// ===== HAMBURGER MENU =====
+var mobileNav = document.getElementById('mobileNav');
+var mobileNavOverlay = document.getElementById('mobileNavOverlay');
+document.getElementById('hamburgerBtn').addEventListener('click', function() {
+  mobileNav.classList.add('open'); mobileNavOverlay.classList.add('active');
+  mobileNavOverlay.style.display = 'block';
+  setTimeout(function() { mobileNavOverlay.classList.add('active'); }, 10);
+});
+function closeMobileNav() {
+  mobileNav.classList.remove('open'); mobileNavOverlay.classList.remove('active');
+  setTimeout(function() { mobileNavOverlay.style.display = 'none'; }, 300);
+}
+document.getElementById('mobileNavClose').addEventListener('click', closeMobileNav);
+mobileNavOverlay.addEventListener('click', closeMobileNav);
+
+// ===== SETTINGS MODAL =====
+var settingsOverlay = document.getElementById('settingsOverlay');
+function openSettings() { closeAllOverlays(); settingsOverlay.classList.add('active'); loadSettings(); }
+function closeSettings() { settingsOverlay.classList.remove('active'); saveSettings(); }
+document.getElementById('settingsClose').addEventListener('click', closeSettings);
+settingsOverlay.addEventListener('click', function(e) { if (e.target === settingsOverlay) closeSettings(); });
+
+function loadSettings() {
+  var fontSize = localStorage.getItem('airai_fontSize') || 'medium';
+  var anims = localStorage.getItem('airai_animations') !== 'false';
+  var notifs = localStorage.getItem('airai_notifs') !== 'false';
+  document.getElementById('settingFontSize').value = fontSize;
+  document.getElementById('settingAnimations').checked = anims;
+  document.getElementById('settingNotifs').checked = notifs;
+}
+function saveSettings() {
+  localStorage.setItem('airai_fontSize', document.getElementById('settingFontSize').value);
+  localStorage.setItem('airai_animations', document.getElementById('settingAnimations').checked);
+  localStorage.setItem('airai_notifs', document.getElementById('settingNotifs').checked);
+  applySettings();
+}
+function applySettings() {
+  var fontSize = localStorage.getItem('airai_fontSize') || 'medium';
+  var sizes = { small: '13px', medium: '15px', large: '17px' };
+  document.documentElement.style.fontSize = sizes[fontSize] || '15px';
+  var anims = localStorage.getItem('airai_animations') !== 'false';
+  if (!anims) document.body.style.setProperty('--orb-opacity', '0');
+  else document.body.style.removeProperty('--orb-opacity');
+}
+document.getElementById('settingTheme').addEventListener('change', function() {
+  window.location.href = this.value === 'light' ? 'dashboard_light.html' : 'dashboard.html';
+});
+
+// ===== KEYBOARD SHORTCUTS =====
+var shortcutsOverlay = document.getElementById('shortcutsOverlay');
+function openShortcuts() { closeAllOverlays(); shortcutsOverlay.classList.add('active'); }
+function closeShortcuts() { shortcutsOverlay.classList.remove('active'); }
+document.getElementById('shortcutsClose').addEventListener('click', closeShortcuts);
+shortcutsOverlay.addEventListener('click', function(e) { if (e.target === shortcutsOverlay) closeShortcuts(); });
+
+var toolUrls = [
+  'chat-interface.html', 'humanizer.html', 'url-opener.html',
+  'unblocked-games.html', 'proxys.html', 'time-left.html', 'links.html'
+];
+
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); openShortcuts(); return; }
+  if (e.key === 'Escape') { closeAllOverlays(); return; }
+  if (e.key === 's' || e.key === 'S') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openSettings(); return; } }
+  if (e.key === 'n' || e.key === 'N') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); document.getElementById('notifBtn').click(); return; } }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 't' || e.key === 'T')) {
+    e.preventDefault(); window.location.href = 'dashboard.html'; return;
+  }
+  var num = parseInt(e.key);
+  if (num >= 1 && num <= 7 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    e.preventDefault(); window.location.href = toolUrls[num - 1]; return;
+  }
+});
+
+// ===== CLOSE ALL OVERLAYS HELPER =====
+function closeAllOverlays() {
+  notifDropdown.classList.remove('open');
+  settingsOverlay.classList.remove('active');
+  shortcutsOverlay.classList.remove('active');
+  closeMobileNav();
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#notifDropdown') && !e.target.closest('#notifBtn')) {
+    notifDropdown.classList.remove('open');
+  }
+});
+
+applySettings();
 </script>
 
 </body>
