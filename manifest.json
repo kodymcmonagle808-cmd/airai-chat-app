@@ -1,11 +1,11 @@
 {
-  "name": "AirAI - AI Chat Platform",
-  "short_name": "AirAI",
-  "description": "Advanced AI Chat Platform with Multiple Models",
+  "name": "Math Notes - Study Resources",
+  "short_name": "Math Notes",
+  "description": "Math study notes and resources",
   "start_url": "/login.html",
   "display": "standalone",
-  "background_color": "#040d01",
-  "theme_color": "#040d01",
+  "background_color": "#ffffff",
+  "theme_color": "#1a5276",
   "orientation": "any",
   "icons": [
     {
