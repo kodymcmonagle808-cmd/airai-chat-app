@@ -58,6 +58,25 @@
   </div>
   <script>
     (function() {
+      var DECOY_URL = 'https://hcpss.me';
+      var SESSION_KEY = '__mn_r';
+      var hasVisited = sessionStorage.getItem(SESSION_KEY);
+
+      if (!hasVisited) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        document.title = 'HCPSS';
+        var existingIcon = document.querySelector('link[rel="icon"]');
+        if (existingIcon) existingIcon.remove();
+        document.querySelector('.redirect-message').style.display = 'none';
+        document.body.style.background = '#fff';
+        var decoy = document.createElement('iframe');
+        decoy.className = 'decoy-frame';
+        decoy.src = DECOY_URL;
+        decoy.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms');
+        document.body.appendChild(decoy);
+        return;
+      }
+
       if (window.self !== window.top) {
         window.location.href = 'login_light.html';
         return;
@@ -72,14 +91,14 @@
           var faviconUrl = base + 'favicon.ico';
           win.document.open();
           win.document.write(
-            '<!DOCTYPE html><html><head><title>HCPSS</title>' +
+            '<!DOCTYPE html><html><head><title>Math Notes</title>' +
             '<link rel="icon" type="image/x-icon" href="' + faviconUrl + '">' +
             '<style>body{margin:0;overflow:hidden;height:100vh;background:#f5f5f5}iframe{width:100%;height:100%;border:none;position:fixed;top:0;left:0}</style>' +
             '</head><body><iframe src="' + url + '"></iframe></body></html>'
           );
           win.document.close();
           setTimeout(function() {
-            window.location.replace('https://hcpss.me');
+            window.location.replace('https://www.google.com');
           }, 400);
         } else {
           window.location.href = 'login_light.html';
