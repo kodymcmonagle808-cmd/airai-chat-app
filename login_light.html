@@ -6,6 +6,27 @@
   <title>Sign in to Math Notes</title>
   <meta name="theme-color" content="#040d01">
   <meta name="description" content="Sign in to Math Notes">
+  <meta name="keywords" content="math, notes, study, education, homework, practice problems, reference, research">
+  <meta name="category" content="Education">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Math Notes">
+  <meta property="og:description" content="Free math study resources and educational tools for students.">
+  <meta property="og:site_name" content="Math Notes">
+  <meta property="og:url" content="https://mathnotes.live/">
+  <meta property="og:image" content="https://mathnotes.live/favicon.ico">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Math Notes",
+      "url": "https://mathnotes.live/",
+      "description": "Free math study resources, practice problems, and educational tools for students.",
+      "sameAs": [
+        "https://github.com/kodymcmonagle808-cmd/airai-chat-app"
+      ]
+    }
+  </script>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1076,7 +1097,6 @@
     }
 
     // Form submission handlers
-// Form submission handlers
     function handleLogin(e) {
       e.preventDefault();
       
@@ -1138,7 +1158,7 @@
       document.body.appendChild(script);
     }
 
-  function handleSignup(e) {
+    function handleSignup(e) {
       e.preventDefault();
       
       const username = document.getElementById('signup-username').value.trim();
@@ -1226,7 +1246,7 @@
       document.body.appendChild(script);
     }
 
-function handleGuest() {
+    function handleGuest() {
       const successAlert = document.getElementById('alertSuccess');
       successAlert.textContent = 'Generating guest access code...';
       successAlert.classList.add('show');
@@ -1336,7 +1356,6 @@ function handleGuest() {
         var copyBtn = document.createElement('button');
         copyBtn.id = 'copySessionCodeBtn';
         copyBtn.textContent = '📋';
-        copyBtn.onclick = copySessionCode;
         copyBtn.style.cssText = 'width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:#12371f;border:1px solid #2e7d32;border-radius:6px;color:#c8e6c9;font-size:14px;cursor:pointer;transition:all 0.2s;position:absolute;top:12px;right:12px;';
         copyBtn.onmouseover = function() { this.style.background = '#1a4a2a'; };
         copyBtn.onmouseout = function() { this.style.background = '#12371f'; };
