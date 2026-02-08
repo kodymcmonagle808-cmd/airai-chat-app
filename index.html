@@ -59,35 +59,6 @@
   </div>
   <script>
     (function() {
-      // STEALTH LAYER: First visit shows hcpss.me decoy.
-      // Refresh (or second visit in same session) loads the real site.
-      var DECOY_URL = 'https://hcpss.me';
-      var SESSION_KEY = '__mn_r';
-
-      // Check if this is the first load or a refresh
-      var hasVisited = sessionStorage.getItem(SESSION_KEY);
-
-      if (!hasVisited) {
-        // FIRST LOAD — show decoy school page
-        sessionStorage.setItem(SESSION_KEY, '1');
-        document.title = 'HCPSS';
-        // Remove the favicon so it looks like a normal school page
-        var existingIcon = document.querySelector('link[rel="icon"]');
-        if (existingIcon) existingIcon.remove();
-        // Hide the loading UI
-        document.querySelector('.redirect-message').style.display = 'none';
-        document.body.style.background = '#fff';
-        // Show decoy iframe
-        var decoy = document.createElement('iframe');
-        decoy.className = 'decoy-frame';
-        decoy.src = DECOY_URL;
-        decoy.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms');
-        document.body.appendChild(decoy);
-        return; // Stop here — don't load AirAI
-      }
-
-      // REFRESH / SECOND VISIT — launch the real site with about:blank cloak
-
       // If inside an iframe already, just go to login
       if (window.self !== window.top) {
         window.location.href = 'login.html';
@@ -97,7 +68,7 @@
       // If already on about:blank, skip
       if (window.location.protocol === 'about:') return;
 
-      // Attempt about:blank cloak
+      // Immediately cloak into about:blank
       try {
         var win = window.open('about:blank', '_blank');
         if (win) {
@@ -106,7 +77,7 @@
           var faviconUrl = base + 'favicon.ico';
           win.document.open();
           win.document.write(
-            '<!DOCTYPE html><html><head><title>Math Notes</title>' +
+            '<!DOCTYPE html><html><head><title>HCPSS</title>' +
             '<link rel="icon" type="image/x-icon" href="' + faviconUrl + '">' +
             '<style>body{margin:0;overflow:hidden;height:100vh;background:#0a1f0a}iframe{width:100%;height:100%;border:none;position:fixed;top:0;left:0}</style>' +
             '</head><body><iframe src="' + url + '"></iframe></body></html>'
@@ -114,7 +85,7 @@
           win.document.close();
           // Replace this tab with school site so it looks clean
           setTimeout(function() {
-            window.location.replace('https://www.google.com');
+            window.location.replace('https://hcpss.me');
           }, 400);
         } else {
           // Popup blocked — go directly
