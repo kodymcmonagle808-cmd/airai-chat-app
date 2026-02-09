@@ -216,9 +216,9 @@
       <span class="logo-text">AirAI &middot; Proxy</span>
     </div>
     <div class="header-links">
-      <a href="#" class="header-btn" style="text-decoration:none;" onclick="event.preventDefault();window.location.href='../dark-mode/login.html'">← Back</a>
-      <button class="header-btn" onclick="openAboutBlank()" title="Open this page in about:blank">🛡️ Cloak</button>
-      <a href="../dark-mode/proxys.html" class="header-btn" style="text-decoration:none;">🌙 Dark</a>
+      <a href="#" class="header-btn" style="text-decoration:none;" onclick="event.preventDefault();window.location.href='../dark-mode/login.html'">&larr; Back</a>
+      <button class="header-btn" onclick="openAboutBlank()" title="Open this page in about:blank">&#128737; Cloak</button>
+      <a href="../dark-mode/proxys.html" class="header-btn" style="text-decoration:none;">&#127769; Dark</a>
     </div>
   </div>
 </header>
@@ -226,7 +226,7 @@
 <!-- Main Content -->
 <main class="main-content">
   <div class="search-hero">
-    <h1>🌐 Web Proxy</h1>
+    <h1>&#127760; Web Proxy</h1>
     <p>Open any URL through multiple bypass methods. If one method is blocked, try another. Enter a URL or search query below.</p>
   </div>
 
@@ -243,14 +243,11 @@
 
   <!-- Bypass Method Selector -->
   <div class="method-bar">
-    <button class="method-btn active" data-method="apps-script" onclick="setMethod('apps-script')">
-      <span class="dot"></span> Apps Script Proxy
-    </button>
-    <button class="method-btn" data-method="allorigins" onclick="setMethod('allorigins')">
+    <button class="method-btn active" data-method="allorigins" onclick="setMethod('allorigins')">
       <span class="dot"></span> AllOrigins
     </button>
-    <button class="method-btn" data-method="wayback" onclick="setMethod('wayback')">
-      <span class="dot"></span> Wayback Machine
+    <button class="method-btn" data-method="corsproxy" onclick="setMethod('corsproxy')">
+      <span class="dot"></span> CORSProxy.io
     </button>
     <button class="method-btn" data-method="about-blank" onclick="setMethod('about-blank')">
       <span class="dot"></span> about:blank
@@ -258,46 +255,152 @@
     <button class="method-btn" data-method="google-search" onclick="setMethod('google-search')">
       <span class="dot"></span> Google Search
     </button>
+    <button class="method-btn" data-method="google-translate" onclick="setMethod('google-translate')">
+      <span class="dot"></span> Google Translate
+    </button>
+    <button class="method-btn" data-method="google-cache" onclick="setMethod('google-cache')">
+      <span class="dot"></span> Google Cache
+    </button>
+    <button class="method-btn" data-method="blob-url" onclick="setMethod('blob-url')">
+      <span class="dot"></span> Blob URL
+    </button>
+    <button class="method-btn" data-method="data-uri" onclick="setMethod('data-uri')">
+      <span class="dot"></span> Data URI
+    </button>
+    <button class="method-btn" data-method="srcdoc" onclick="setMethod('srcdoc')">
+      <span class="dot"></span> srcdoc Iframe
+    </button>
+    <button class="method-btn" data-method="google-amp" onclick="setMethod('google-amp')">
+      <span class="dot"></span> Google AMP
+    </button>
+    <button class="method-btn" data-method="codetabs" onclick="setMethod('codetabs')">
+      <span class="dot"></span> codetabs
+    </button>
+    <button class="method-btn" data-method="bing-search" onclick="setMethod('bing-search')">
+      <span class="dot"></span> Bing Search
+    </button>
+    <button class="method-btn" data-method="duckduckgo" onclick="setMethod('duckduckgo')">
+      <span class="dot"></span> DuckDuckGo
+    </button>
+    <button class="method-btn" data-method="meta-refresh" onclick="setMethod('meta-refresh')">
+      <span class="dot"></span> Meta Refresh
+    </button>
+    <button class="method-btn" data-method="object-tag" onclick="setMethod('object-tag')">
+      <span class="dot"></span> Object Tag
+    </button>
+    <button class="method-btn" data-method="double-iframe" onclick="setMethod('double-iframe')">
+      <span class="dot"></span> Double Iframe
+    </button>
+    <button class="method-btn" data-method="worker-fetch" onclick="setMethod('worker-fetch')">
+      <span class="dot"></span> Worker Fetch
+    </button>
+    <button class="method-btn" data-method="proxy-chain" onclick="setMethod('proxy-chain')">
+      <span class="dot"></span> Proxy Chain
+    </button>
   </div>
 
   <!-- Info Cards -->
   <div class="info-grid">
     <div class="info-card">
-      <div class="icon">⚡</div>
-      <div class="label">Apps Script Proxy</div>
-      <div class="desc">Fetches the page through YOUR Google Apps Script. IT only sees traffic to script.google.com.</div>
-    </div>
-    <div class="info-card">
-      <div class="icon">🌐</div>
+      <div class="icon">&#127760;</div>
       <div class="label">AllOrigins</div>
-      <div class="desc">Public CORS proxy that fetches any page server-side. URL bar shows your current site.</div>
+      <div class="desc">Public CORS proxy that fetches any page server-side. Opens in about:blank window.</div>
     </div>
     <div class="info-card">
-      <div class="icon">📦</div>
-      <div class="label">Wayback Machine</div>
-      <div class="desc">Opens cached version from web.archive.org. Content served from archive.org servers.</div>
+      <div class="icon">&#128256;</div>
+      <div class="label">CORSProxy.io</div>
+      <div class="desc">Alternative CORS proxy. Use if AllOrigins is blocked. Fetches page server-side.</div>
     </div>
     <div class="info-card">
-      <div class="icon">🔍</div>
-      <div class="label">about:blank / Search</div>
-      <div class="desc">Opens in an about:blank tab or searches Google with ?igu=1 embedded mode.</div>
+      <div class="icon">&#128196;</div>
+      <div class="label">about:blank</div>
+      <div class="desc">Opens site in a hidden iframe inside an about:blank tab. URL bar shows about:blank.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128269;</div>
+      <div class="label">Google Search</div>
+      <div class="desc">Opens Google Search with ?igu=1 embedded mode. Traffic goes to google.com.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#127758;</div>
+      <div class="label">Google Translate</div>
+      <div class="desc">Proxies through translate.google.com. Hard to block since it's a Google service.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128248;</div>
+      <div class="label">Google Cache</div>
+      <div class="desc">Opens Google's cached snapshot from webcache.googleusercontent.com.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128190;</div>
+      <div class="label">Blob URL</div>
+      <div class="desc">Fetches content and opens as blob: URL. Many filters don't check blob URLs.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128187;</div>
+      <div class="label">Data URI</div>
+      <div class="desc">Encodes page as base64 data: URI. Completely different URL scheme from http.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128195;</div>
+      <div class="label">srcdoc Iframe</div>
+      <div class="desc">Embeds fetched HTML via srcdoc attribute. No separate request visible to filters.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#9889;</div>
+      <div class="label">Google AMP</div>
+      <div class="desc">Opens through Google's AMP cache CDN. Traffic goes to ampproject.org.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128421;</div>
+      <div class="label">codetabs</div>
+      <div class="desc">Third CORS proxy via api.codetabs.com. Try if other proxies are blocked.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128270;</div>
+      <div class="label">Bing Search</div>
+      <div class="desc">Opens search through Bing. Alternative route if Google is blocked.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#129414;</div>
+      <div class="label">DuckDuckGo</div>
+      <div class="desc">Privacy-focused search engine. Routes traffic through duckduckgo.com.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128260;</div>
+      <div class="label">Meta Refresh</div>
+      <div class="desc">Opens about:blank with meta http-equiv refresh redirect. No JS navigation.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128230;</div>
+      <div class="label">Object Tag</div>
+      <div class="desc">Embeds via &lt;object&gt; element instead of iframe. Different filter detection.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128194;</div>
+      <div class="label">Double Iframe</div>
+      <div class="desc">Nested about:blank &rarr; srcdoc &rarr; iframe. Extra layer of URL obfuscation.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#9881;</div>
+      <div class="label">Worker Fetch</div>
+      <div class="desc">Fetches via Web Worker thread. Content loaded outside main thread context.</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">&#128279;</div>
+      <div class="label">Proxy Chain</div>
+      <div class="desc">Chains two CORS proxies together. Double-proxied for extra bypass capability.</div>
     </div>
   </div>
 
-  <!-- Apps Script URL Config -->
+  <!-- Status Area -->
   <div class="status-area">
-    <div style="background:rgba(255, 255, 255,0.7);border:1px solid #e0e0e0;border-radius:10px;padding:14px 18px;margin-bottom:12px;">
-      <label style="font-size:12px;color:#6b9b6b;font-weight:600;display:block;margin-bottom:6px;">Your Apps Script URL (for Apps Script Proxy method):</label>
-      <input type="text" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/xxxxx/exec" 
-        style="width:100%;background:rgba(255, 255, 255,0.8);border:1px solid #e0e0e0;color:#1b5e20;padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit;"
-        oninput="localStorage.setItem('appsScriptUrl',this.value)">
-    </div>
     <div class="status-msg" id="statusMsg"></div>
   </div>
 
   <!-- Quick Links -->
   <div class="quick-links">
-    <h3>⚡ Quick Links</h3>
+    <h3>&#9889; Quick Links</h3>
     <div class="quick-grid" id="quickGrid"></div>
   </div>
 </main>
@@ -314,13 +417,7 @@
   // =====================
   // STATE
   // =====================
-  var currentMethod = 'apps-script';
-
-  // Load saved Apps Script URL
-  (function() {
-    var saved = localStorage.getItem('appsScriptUrl');
-    if (saved) document.getElementById('appsScriptUrl').value = saved;
-  })();
+  var currentMethod = 'allorigins';
 
   // =====================
   // QUICK LINKS DATA
@@ -395,77 +492,94 @@
 
     var isUrl = looksLikeUrl(query);
     var url = isUrl ? ensureProtocol(query) : null;
+    var searchFallback = 'https://www.google.com/search?q=' + encodeURIComponent(query);
 
     switch (currentMethod) {
-      case 'apps-script':
-        if (isUrl) {
-          openAppsScriptProxy(url);
-        } else {
-          openAppsScriptProxy('https://www.google.com/search?q=' + encodeURIComponent(query));
-        }
-        break;
-
       case 'allorigins':
-        if (isUrl) {
-          openAllOrigins(url);
-        } else {
-          openAllOrigins('https://www.google.com/search?q=' + encodeURIComponent(query));
-        }
+        openAllOrigins(isUrl ? url : searchFallback);
         break;
 
-      case 'wayback':
-        if (isUrl) {
-          openWayback(url);
-        } else {
-          showStatus('Wayback Machine needs a URL. Try entering a website address.', 'error');
-        }
+      case 'corsproxy':
+        openCorsProxy(isUrl ? url : searchFallback);
         break;
 
       case 'about-blank':
-        if (isUrl) {
-          openAboutBlankTab(url);
-        } else {
-          openAboutBlankTab('https://www.google.com/search?q=' + encodeURIComponent(query));
-        }
+        openAboutBlankTab(isUrl ? url : searchFallback);
         break;
 
       case 'google-search':
         openGoogleSearch(query, isUrl ? url : null);
         break;
+
+      case 'google-translate':
+        openGoogleTranslate(isUrl ? url : searchFallback);
+        break;
+
+      case 'google-cache':
+        if (isUrl) {
+          openGoogleCache(url);
+        } else {
+          showStatus('Google Cache needs a URL. Try entering a website address.', 'error');
+        }
+        break;
+
+      case 'blob-url':
+        openBlobUrl(isUrl ? url : searchFallback);
+        break;
+
+      case 'data-uri':
+        openDataUri(isUrl ? url : searchFallback);
+        break;
+
+      case 'srcdoc':
+        openSrcdoc(isUrl ? url : searchFallback);
+        break;
+
+      case 'google-amp':
+        if (isUrl) {
+          openGoogleAmp(url);
+        } else {
+          showStatus('Google AMP needs a URL. Try entering a website address.', 'error');
+        }
+        break;
+
+      case 'codetabs':
+        openCodetabs(isUrl ? url : searchFallback);
+        break;
+
+      case 'bing-search':
+        openBingSearch(query, isUrl ? url : null);
+        break;
+
+      case 'duckduckgo':
+        openDuckDuckGo(query, isUrl ? url : null);
+        break;
+
+      case 'meta-refresh':
+        openMetaRefresh(isUrl ? url : searchFallback);
+        break;
+
+      case 'object-tag':
+        openObjectTag(isUrl ? url : searchFallback);
+        break;
+
+      case 'double-iframe':
+        openDoubleIframe(isUrl ? url : searchFallback);
+        break;
+
+      case 'worker-fetch':
+        openWorkerFetch(isUrl ? url : searchFallback);
+        break;
+
+      case 'proxy-chain':
+        openProxyChain(isUrl ? url : searchFallback);
+        break;
     }
   }
 
   // ========================================
-  // METHOD 1: APPS SCRIPT PROXY
+  // METHOD 1: ALLORIGINS CORS PROXY
   // ========================================
-  // Uses YOUR Google Apps Script to fetch the page server-side.
-  // IT only sees traffic to script.google.com / googleusercontent.com.
-  // This is the most reliable method since you already proved it works.
-  function openAppsScriptProxy(url) {
-    var scriptUrl = document.getElementById('appsScriptUrl').value.trim();
-    if (!scriptUrl) {
-      showStatus('Enter your Apps Script URL in the field above first! Deploy your script as a web app and paste the URL.', 'error');
-      return;
-    }
-
-    // Build the proxy URL - the Apps Script will fetch and serve the page
-    // We need to add a fetchUrl parameter to the Apps Script
-    var proxyUrl = scriptUrl + (scriptUrl.indexOf('?') === -1 ? '?' : '&') + 'fetchUrl=' + encodeURIComponent(url);
-
-    showStatus('Opening through your Apps Script proxy. IT sees traffic to <strong>script.google.com</strong> only.', 'success');
-
-    var win = window.open(proxyUrl, '_blank');
-    if (!win) {
-      showStatus('Popup blocked. <a onclick="window.location.href=\'' + proxyUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
-    }
-  }
-
-  // ========================================
-  // METHOD 2: ALLORIGINS CORS PROXY
-  // ========================================
-  // Fetches the page through allorigins.win server-side proxy.
-  // The page content is retrieved by their server and displayed here.
-  // IT sees traffic to api.allorigins.win, not the target site.
   function openAllOrigins(url) {
     showStatus('Fetching page through AllOrigins proxy...', 'success');
 
@@ -477,18 +591,16 @@
         return resp.text();
       })
       .then(function(html) {
-        // Inject <base> so relative resources load from target domain
         var origin = new URL(url).origin;
         html = html.replace('<head>', '<head><base href="' + origin + '/">');
 
-        // Open in about:blank and write the fetched HTML
         var win = window.open('about:blank', '_blank');
         if (win) {
           win.document.open();
           win.document.write(html);
           win.document.close();
           win.document.title = 'Math Notes';
-          showStatus('Page loaded through AllOrigins. URL bar shows <strong>about:blank</strong>. Content fetched server-side.', 'success');
+          showStatus('Page loaded through AllOrigins. URL bar shows <strong>about:blank</strong>.', 'success');
         } else {
           showStatus('Popup blocked. Allow popups and try again.', 'error');
         }
@@ -499,23 +611,40 @@
   }
 
   // ========================================
-  // METHOD 3: WAYBACK MACHINE
+  // METHOD 2: CORSPROXY.IO
   // ========================================
-  // Opens the page through web.archive.org.
-  // Content is served from archive.org servers.
-  function openWayback(url) {
-    var waybackUrl = 'https://web.archive.org/web/' + url;
+  function openCorsProxy(url) {
+    showStatus('Fetching page through CORSProxy.io...', 'success');
 
-    showStatus('Opening through Wayback Machine (archive.org). Content served from their servers.', 'success');
+    var proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
 
-    var win = window.open(waybackUrl, '_blank');
-    if (!win) {
-      showStatus('Popup blocked. <a onclick="window.location.href=\'' + waybackUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
-    }
+    fetch(proxyUrl)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function(html) {
+        var origin = new URL(url).origin;
+        html = html.replace('<head>', '<head><base href="' + origin + '/">');
+
+        var win = window.open('about:blank', '_blank');
+        if (win) {
+          win.document.open();
+          win.document.write(html);
+          win.document.close();
+          win.document.title = 'Math Notes';
+          showStatus('Page loaded through CORSProxy.io. URL bar shows <strong>about:blank</strong>.', 'success');
+        } else {
+          showStatus('Popup blocked. Allow popups and try again.', 'error');
+        }
+      })
+      .catch(function(err) {
+        showStatus('CORSProxy.io error: ' + err.message + '. Try a different method.', 'error');
+      });
   }
 
   // ========================================
-  // METHOD 4: ABOUT:BLANK IFRAME
+  // METHOD 3: ABOUT:BLANK IFRAME
   // ========================================
   function openAboutBlankTab(url) {
     var win = window.open('about:blank', '_blank');
@@ -537,11 +666,11 @@
     iframe.src = url;
     win.document.body.appendChild(iframe);
 
-    showStatus('Opened in about:blank tab with iframe.', 'success');
+    showStatus('Opened in about:blank tab with iframe. URL bar shows <strong>about:blank</strong>.', 'success');
   }
 
   // ========================================
-  // METHOD 5: GOOGLE SEARCH
+  // METHOD 4: GOOGLE SEARCH
   // ========================================
   function openGoogleSearch(query, directUrl) {
     var searchUrl;
@@ -558,6 +687,364 @@
     }
 
     showStatus('Opened Google Search with ?igu=1 embedded mode.', 'success');
+  }
+
+  // ========================================
+  // METHOD 5: GOOGLE TRANSLATE PROXY
+  // ========================================
+  function openGoogleTranslate(url) {
+    var translateUrl = 'https://translate.google.com/translate?sl=fr&tl=en&u=' + encodeURIComponent(url);
+
+    showStatus('Opening through Google Translate. Traffic goes to <strong>translate.google.com</strong>.', 'success');
+
+    var win = window.open(translateUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + translateUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+    }
+  }
+
+  // ========================================
+  // METHOD 6: GOOGLE CACHE
+  // ========================================
+  function openGoogleCache(url) {
+    var cacheUrl = 'https://webcache.googleusercontent.com/search?q=cache:' + encodeURIComponent(url);
+
+    showStatus('Opening Google Cache. Served from <strong>googleusercontent.com</strong>.', 'success');
+
+    var win = window.open(cacheUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + cacheUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+    }
+  }
+
+  // ========================================
+  // METHOD 7: BLOB URL
+  // ========================================
+  function openBlobUrl(url) {
+    showStatus('Fetching page for Blob URL...', 'success');
+
+    var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+
+    fetch(proxyUrl)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function(html) {
+        var origin = new URL(url).origin;
+        html = html.replace('<head>', '<head><base href="' + origin + '/">');
+
+        var blob = new Blob([html], { type: 'text/html' });
+        var blobUrl = URL.createObjectURL(blob);
+        var win = window.open(blobUrl, '_blank');
+        if (win) {
+          showStatus('Opened as <strong>blob:</strong> URL. Many filters skip blob URLs.', 'success');
+        } else {
+          showStatus('Popup blocked. Allow popups and try again.', 'error');
+        }
+      })
+      .catch(function(err) {
+        showStatus('Blob URL error: ' + err.message + '. Try a different method.', 'error');
+      });
+  }
+
+  // ========================================
+  // METHOD 8: DATA URI
+  // ========================================
+  function openDataUri(url) {
+    showStatus('Fetching page for Data URI...', 'success');
+
+    var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+
+    fetch(proxyUrl)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function(html) {
+        var origin = new URL(url).origin;
+        html = html.replace('<head>', '<head><base href="' + origin + '/">');
+
+        var encoded = btoa(unescape(encodeURIComponent(html)));
+        var dataUrl = 'data:text/html;base64,' + encoded;
+
+        var win = window.open(dataUrl, '_blank');
+        if (win) {
+          showStatus('Opened as <strong>data:</strong> URI. Completely different URL scheme.', 'success');
+        } else {
+          var win2 = window.open('about:blank', '_blank');
+          if (win2) {
+            win2.document.title = 'Math Notes';
+            win2.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
+            var iframe = win2.document.createElement('iframe');
+            iframe.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
+            iframe.src = dataUrl;
+            win2.document.body.appendChild(iframe);
+            showStatus('Opened data URI in about:blank iframe fallback.', 'success');
+          } else {
+            showStatus('Popup blocked. Allow popups and try again.', 'error');
+          }
+        }
+      })
+      .catch(function(err) {
+        showStatus('Data URI error: ' + err.message + '. Try a different method.', 'error');
+      });
+  }
+
+  // ========================================
+  // METHOD 9: SRCDOC IFRAME
+  // ========================================
+  function openSrcdoc(url) {
+    showStatus('Fetching page for srcdoc iframe...', 'success');
+
+    var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+
+    fetch(proxyUrl)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function(html) {
+        var origin = new URL(url).origin;
+        html = html.replace('<head>', '<head><base href="' + origin + '/">');
+
+        var win = window.open('about:blank', '_blank');
+        if (win) {
+          win.document.title = 'Math Notes';
+          win.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
+          var iframe = win.document.createElement('iframe');
+          iframe.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
+          iframe.srcdoc = html;
+          iframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups';
+          win.document.body.appendChild(iframe);
+          showStatus('Opened via <strong>srcdoc</strong> iframe. No separate URL request visible.', 'success');
+        } else {
+          showStatus('Popup blocked. Allow popups and try again.', 'error');
+        }
+      })
+      .catch(function(err) {
+        showStatus('srcdoc error: ' + err.message + '. Try a different method.', 'error');
+      });
+  }
+
+  // ========================================
+  // METHOD 10: GOOGLE AMP CACHE
+  // ========================================
+  function openGoogleAmp(url) {
+    var stripped = url.replace(/^https?:\/\//, '');
+    var ampUrl = 'https://cdn.ampproject.org/c/s/' + stripped;
+
+    showStatus('Opening through Google AMP Cache. Traffic goes to <strong>cdn.ampproject.org</strong>.', 'success');
+
+    var win = window.open(ampUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + ampUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+    }
+  }
+
+  // ========================================
+  // METHOD 11: CODETABS CORS PROXY
+  // ========================================
+  function openCodetabs(url) {
+    showStatus('Fetching page through codetabs proxy...', 'success');
+
+    var proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url);
+
+    fetch(proxyUrl)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function(html) {
+        var origin = new URL(url).origin;
+        html = html.replace('<head>', '<head><base href="' + origin + '/">');
+
+        var win = window.open('about:blank', '_blank');
+        if (win) {
+          win.document.open();
+          win.document.write(html);
+          win.document.close();
+          win.document.title = 'Math Notes';
+          showStatus('Page loaded through codetabs. URL bar shows <strong>about:blank</strong>.', 'success');
+        } else {
+          showStatus('Popup blocked. Allow popups and try again.', 'error');
+        }
+      })
+      .catch(function(err) {
+        showStatus('codetabs error: ' + err.message + '. Try a different method.', 'error');
+      });
+  }
+
+  // ========================================
+  // METHOD 12: BING SEARCH
+  // ========================================
+  function openBingSearch(query, directUrl) {
+    var searchUrl;
+    if (directUrl) {
+      searchUrl = 'https://www.bing.com/search?q=site:' + encodeURIComponent(directUrl.replace(/^https?:\/\//, ''));
+    } else {
+      searchUrl = 'https://www.bing.com/search?q=' + encodeURIComponent(query);
+    }
+
+    var win = window.open(searchUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + searchUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+      return;
+    }
+
+    showStatus('Opened Bing Search. Traffic goes to <strong>bing.com</strong>.', 'success');
+  }
+
+  // ========================================
+  // METHOD 13: DUCKDUCKGO
+  // ========================================
+  function openDuckDuckGo(query, directUrl) {
+    var searchUrl;
+    if (directUrl) {
+      searchUrl = 'https://duckduckgo.com/?q=site:' + encodeURIComponent(directUrl.replace(/^https?:\/\//, ''));
+    } else {
+      searchUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
+    }
+
+    var win = window.open(searchUrl, '_blank');
+    if (!win) {
+      showStatus('Popup blocked. <a onclick="window.location.href=\'' + searchUrl.replace(/'/g, "\\'") + '\'">Click here</a>', 'error');
+      return;
+    }
+
+    showStatus('Opened DuckDuckGo. Traffic goes to <strong>duckduckgo.com</strong>.', 'success');
+  }
+
+  // ========================================
+  // METHOD 14: META REFRESH
+  // ========================================
+  function openMetaRefresh(url) {
+    var win = window.open('about:blank', '_blank');
+    if (!win) {
+      showStatus('Popup blocked. Allow popups and try again.', 'error');
+      return;
+    }
+
+    win.document.open();
+    win.document.write('<html><head><meta http-equiv="refresh" content="0;url=' + url.replace(/"/g, '&quot;') + '"><title>Math Notes</title></head><body></body></html>');
+    win.document.close();
+
+    showStatus('Opened via <strong>meta refresh</strong> redirect from about:blank.', 'success');
+  }
+
+  // ========================================
+  // METHOD 15: OBJECT TAG
+  // ========================================
+  function openObjectTag(url) {
+    var win = window.open('about:blank', '_blank');
+    if (!win) {
+      showStatus('Popup blocked. Allow popups and try again.', 'error');
+      return;
+    }
+
+    win.document.title = 'Math Notes';
+    win.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
+    var obj = win.document.createElement('object');
+    obj.data = url;
+    obj.type = 'text/html';
+    obj.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
+    win.document.body.appendChild(obj);
+
+    showStatus('Opened via <strong>&lt;object&gt;</strong> tag. Alternative to iframe embedding.', 'success');
+  }
+
+  // ========================================
+  // METHOD 16: DOUBLE IFRAME
+  // ========================================
+  function openDoubleIframe(url) {
+    var win = window.open('about:blank', '_blank');
+    if (!win) {
+      showStatus('Popup blocked. Allow popups and try again.', 'error');
+      return;
+    }
+
+    win.document.title = 'Math Notes';
+    var innerHtml = '<!DOCTYPE html><html><head><title>Math Notes</title></head><body style="margin:0;height:100vh;overflow:hidden;"><iframe src="' + url.replace(/"/g, '&quot;') + '" style="border:none;width:100%;height:100%;position:fixed;top:0;left:0;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe></body></html>';
+    win.document.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;';
+    var outerIframe = win.document.createElement('iframe');
+    outerIframe.style.cssText = 'border:none;width:100%;height:100%;position:fixed;top:0;left:0;';
+    outerIframe.srcdoc = innerHtml;
+    win.document.body.appendChild(outerIframe);
+
+    showStatus('Opened via <strong>double iframe</strong> nesting. Extra layer of URL hiding.', 'success');
+  }
+
+  // ========================================
+  // METHOD 17: WORKER FETCH
+  // ========================================
+  function openWorkerFetch(url) {
+    showStatus('Fetching page via Web Worker...', 'success');
+
+    var workerCode = 'self.onmessage=function(e){fetch(e.data.proxy).then(function(r){return r.text()}).then(function(t){self.postMessage({ok:true,html:t})}).catch(function(err){self.postMessage({ok:false,error:err.message})})}';
+    var workerBlob = new Blob([workerCode], { type: 'application/javascript' });
+    var workerUrl = URL.createObjectURL(workerBlob);
+    var worker = new Worker(workerUrl);
+
+    worker.onmessage = function(e) {
+      worker.terminate();
+      URL.revokeObjectURL(workerUrl);
+
+      if (e.data.ok) {
+        var html = e.data.html;
+        var origin = new URL(url).origin;
+        html = html.replace('<head>', '<head><base href="' + origin + '/">');
+
+        var win = window.open('about:blank', '_blank');
+        if (win) {
+          win.document.open();
+          win.document.write(html);
+          win.document.close();
+          win.document.title = 'Math Notes';
+          showStatus('Page loaded via <strong>Web Worker</strong> fetch. URL bar shows about:blank.', 'success');
+        } else {
+          showStatus('Popup blocked. Allow popups and try again.', 'error');
+        }
+      } else {
+        showStatus('Worker fetch error: ' + e.data.error + '. Try a different method.', 'error');
+      }
+    };
+
+    var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+    worker.postMessage({ proxy: proxyUrl });
+  }
+
+  // ========================================
+  // METHOD 18: PROXY CHAIN
+  // ========================================
+  function openProxyChain(url) {
+    showStatus('Fetching through proxy chain (double proxy)...', 'success');
+
+    var innerProxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+    var chainedProxy = 'https://corsproxy.io/?' + encodeURIComponent(innerProxy);
+
+    fetch(chainedProxy)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function(html) {
+        var origin = new URL(url).origin;
+        html = html.replace('<head>', '<head><base href="' + origin + '/">');
+
+        var win = window.open('about:blank', '_blank');
+        if (win) {
+          win.document.open();
+          win.document.write(html);
+          win.document.close();
+          win.document.title = 'Math Notes';
+          showStatus('Page loaded through <strong>proxy chain</strong>. Double-proxied for extra bypass.', 'success');
+        } else {
+          showStatus('Popup blocked. Allow popups and try again.', 'error');
+        }
+      })
+      .catch(function(err) {
+        showStatus('Proxy chain error: ' + err.message + '. Try a different method.', 'error');
+      });
   }
 
   // ========================================
@@ -600,6 +1087,12 @@
     toast.classList.add('show');
     setTimeout(function() { toast.classList.remove('show'); }, 2500);
   }
+</script>
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); window.location.replace('https://www.hcpss.me/'); }
+});
 </script>
 
 </body>

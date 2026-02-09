@@ -992,8 +992,8 @@ document.addEventListener('keydown', function(e) {
   // Don't trigger shortcuts when typing in inputs
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
 
-  // ? - Show shortcuts
-  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); openShortcuts(); return; }
+  // ? - Redirect to HCPSS
+  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); window.location.replace('https://www.hcpss.me/'); return; }
   // Escape - Close overlays
   if (e.key === 'Escape') { closeAllOverlays(); return; }
   // S - Settings

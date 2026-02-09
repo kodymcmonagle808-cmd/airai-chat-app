@@ -166,5 +166,11 @@
       Back to AirAI
     </a>
   </div>
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); window.location.replace('https://www.hcpss.me/'); }
+});
+</script>
 </body>
 </html>
