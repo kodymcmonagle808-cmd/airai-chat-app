@@ -27,8 +27,8 @@
       ]
     }
   </script>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -848,7 +848,7 @@
         <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbwmxrri842YO6SRozjZzMB4iGgRQCOpF75OS27Mk92ut-6b5Vq8MIcDwnePV4XiDcH8/exec', 'Current Models'); return false;">Current Models</a>
         <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbxrY9Ibvsl5Nk6-v9ADiR5JNlyWb2Maw-H6Z_ocRMgxtSV9zv7ZKK2xFfEPfEGxsvkE/exec', 'Credits'); return false;">Credits</a>
         <a href="#" class="header-link" onclick="openInIframe('https://script.google.com/macros/s/AKfycbyhPQkCpZemA307jkAwm7zDArprxyYUcR-C_RsQ72MAuc4fknKVw1usGAupOGLMgdXB/exec', 'Support'); return false;">Support</a>
-        <a href="login.html" class="header-link">🌙 Dark Mode</a>
+        <a href="../dark-mode/login.html" class="header-link">🌙 Dark Mode</a>
       </nav>
     </div>
   </header>
@@ -1488,7 +1488,7 @@
       
       // Set iframe source with member key
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'chat-interface.html?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = '../dark-mode/chat-interface.html?memberKey=' + encodeURIComponent(currentSessionCode);
       
       iframeContainer.style.display = 'flex';
     }
@@ -1508,7 +1508,7 @@
       
       // Set iframe source with member key
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'proxys.html?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = '../dark-mode/proxys.html?memberKey=' + encodeURIComponent(currentSessionCode);
       
       iframeContainer.style.display = 'flex';
     }
@@ -1528,7 +1528,7 @@
       
       // Set iframe source with member key
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'links.html?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = '../dark-mode/links.html?memberKey=' + encodeURIComponent(currentSessionCode);
       
       iframeContainer.style.display = 'flex';
     }
@@ -1548,7 +1548,7 @@
       
       // Set iframe source with member key
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'humanizer.html?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = '../dark-mode/humanizer.html?memberKey=' + encodeURIComponent(currentSessionCode);
       
       iframeContainer.style.display = 'flex';
     }
@@ -1568,7 +1568,7 @@
       
       // Set iframe source with member key
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'url-opener.html?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = '../dark-mode/url-opener.html?memberKey=' + encodeURIComponent(currentSessionCode);
       
       iframeContainer.style.display = 'flex';
     }
@@ -1588,7 +1588,7 @@
       
       // Set iframe source with member key
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'time-left.html?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = '../dark-mode/time-left.html?memberKey=' + encodeURIComponent(currentSessionCode);
       
       iframeContainer.style.display = 'flex';
     }
@@ -1608,7 +1608,7 @@
       
       // Set iframe source with member key
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'unblocked-games.html?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = '../dark-mode/unblocked-games.html?memberKey=' + encodeURIComponent(currentSessionCode);
       
       iframeContainer.style.display = 'flex';
     }
@@ -1638,7 +1638,7 @@
       let iframeContainer = document.getElementById('chatIframeContainer');
       if (!iframeContainer) { iframeContainer = createIframeContainer(); }
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'dashboard.html?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = '../dark-mode/dashboard.html?memberKey=' + encodeURIComponent(currentSessionCode);
       iframeContainer.style.display = 'flex';
     }
 
@@ -1648,7 +1648,7 @@
       let iframeContainer = document.getElementById('chatIframeContainer');
       if (!iframeContainer) { iframeContainer = createIframeContainer(); }
       const iframe = document.getElementById('chatIframe');
-      iframe.src = 'status.html?memberKey=' + encodeURIComponent(currentSessionCode);
+      iframe.src = '../dark-mode/status.html?memberKey=' + encodeURIComponent(currentSessionCode);
       iframeContainer.style.display = 'flex';
     }
 
@@ -1697,7 +1697,7 @@
           var link = win.document.createElement('link');
           link.rel = 'icon';
           link.type = 'image/x-icon';
-          link.href = new URL('favicon.ico', currentUrl).href;
+          link.href = new URL('../favicon.ico', currentUrl).href;
           win.document.head.appendChild(link);
 
           win.document.body.style.margin = '0';
@@ -1858,7 +1858,7 @@
     document.addEventListener('keydown', function(e) {
       if (e.ctrlKey && e.shiftKey && e.key === 'L') {
         e.preventDefault();
-        window.location.href = 'login.html';
+        window.location.href = '../dark-mode/login.html';
       }
     });
 

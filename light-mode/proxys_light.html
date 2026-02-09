@@ -6,8 +6,8 @@
   <title>Math Notes - Search</title>
   <meta name="theme-color" content="#040d01">
   <meta name="description" content="Web Proxy - AirAI Platform">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,11 +16,11 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a1f0a;
+      background: #f5f5f5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      color: #e8f5e9;
+      color: #1a1a1a;
       position: relative;
       overflow-x: hidden;
     }
@@ -34,9 +34,9 @@
       position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
       animation: float 20s infinite ease-in-out;
     }
-    .bg-gradient-1 { width: 500px; height: 500px; background: radial-gradient(circle, #2e7d32, #1b5e20); top: -10%; left: -10%; }
-    .bg-gradient-2 { width: 400px; height: 400px; background: radial-gradient(circle, #1b5e20, #0d2818); top: 50%; right: -5%; animation-delay: 7s; }
-    .bg-gradient-3 { width: 600px; height: 600px; background: radial-gradient(circle, #2e7d32, #0a1f0a); bottom: -15%; left: 30%; animation-delay: 14s; }
+    .bg-gradient-1 { width: 500px; height: 500px; background: radial-gradient(circle, #4caf50, #66bb6a); top: -10%; left: -10%; }
+    .bg-gradient-2 { width: 400px; height: 400px; background: radial-gradient(circle, #66bb6a, #ffffff); top: 50%; right: -5%; animation-delay: 7s; }
+    .bg-gradient-3 { width: 600px; height: 600px; background: radial-gradient(circle, #4caf50, #f5f5f5); bottom: -15%; left: 30%; animation-delay: 14s; }
     .grid-pattern {
       position: absolute; width: 100%; height: 100%;
       background-image: linear-gradient(rgba(46,125,50,0.03) 1px, transparent 1px),
@@ -53,7 +53,7 @@
 
     /* Header */
     .header {
-      background: #0d2818; border-bottom: 1px solid #1a3d2e; padding: 16px 0;
+      background: #ffffff; border-bottom: 1px solid #e0e0e0; padding: 16px 0;
     }
     .header-content {
       max-width: 1200px; margin: 0 auto; padding: 0 24px;
@@ -62,19 +62,19 @@
     .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: default; }
     .logo-icon {
       width: 32px; height: 32px;
-      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      background: linear-gradient(135deg, #4caf50, #66bb6a);
       border-radius: 8px; display: flex; align-items: center; justify-content: center;
       box-shadow: 0 0 20px rgba(46,125,50,0.4);
     }
-    .logo-icon svg { width: 18px; height: 18px; color: #c8e6c9; }
-    .logo-text { font-size: 20px; font-weight: 700; color: #c8e6c9; }
+    .logo-icon svg { width: 18px; height: 18px; color: #2d2d2d; }
+    .logo-text { font-size: 20px; font-weight: 700; color: #2d2d2d; }
     .header-links { display: flex; gap: 12px; align-items: center; }
     .header-btn {
-      background: rgba(46,125,50,0.15); border: 1px solid #2e7d32; color: #81c784;
+      background: rgba(46,125,50,0.15); border: 1px solid #4caf50; color: #2e7d32;
       padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
       cursor: pointer; font-family: inherit; transition: all 0.2s;
     }
-    .header-btn:hover { background: #2e7d32; color: #c8e6c9; }
+    .header-btn:hover { background: #4caf50; color: #2d2d2d; }
 
     /* Search hero */
     .search-hero {
@@ -82,30 +82,30 @@
     }
     .search-hero h1 {
       font-size: 32px; font-weight: 800;
-      background: linear-gradient(135deg, #a5d6a7, #4caf50, #81c784);
+      background: linear-gradient(135deg, #1b5e20, #2e7d32, #2e7d32);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 8px;
     }
-    .search-hero p { color: #81c784; font-size: 14px; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+    .search-hero p { color: #2e7d32; font-size: 14px; max-width: 600px; margin: 0 auto; line-height: 1.6; }
 
     /* Search Container */
     .search-container { max-width: 700px; margin: 24px auto; padding: 0 24px; animation: fadeUp 0.7s ease; }
     .search-wrapper { display: flex; gap: 0; }
     .search-input {
-      flex: 1; background: rgba(13,40,24,0.8); border: 2px solid #1a3d2e;
+      flex: 1; background: rgba(255, 255, 255,0.8); border: 2px solid #e0e0e0;
       border-right: none; border-radius: 12px 0 0 12px;
-      padding: 14px 20px; color: #e8f5e9; font-size: 15px; font-family: inherit;
+      padding: 14px 20px; color: #1a1a1a; font-size: 15px; font-family: inherit;
       outline: none; transition: border-color 0.2s;
     }
-    .search-input:focus { border-color: #2e7d32; }
-    .search-input::placeholder { color: #4a7a4a; }
+    .search-input:focus { border-color: #4caf50; }
+    .search-input::placeholder { color: #757575; }
     .search-btn {
-      background: linear-gradient(135deg, #2e7d32, #1b5e20); border: 2px solid #2e7d32;
-      border-radius: 0 12px 12px 0; padding: 14px 24px; color: #c8e6c9;
+      background: linear-gradient(135deg, #4caf50, #66bb6a); border: 2px solid #4caf50;
+      border-radius: 0 12px 12px 0; padding: 14px 24px; color: #2d2d2d;
       font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
       display: flex; align-items: center; gap: 8px; transition: all 0.2s; white-space: nowrap;
     }
-    .search-btn:hover { background: linear-gradient(135deg, #388e3c, #2e7d32); }
+    .search-btn:hover { background: linear-gradient(135deg, #388e3c, #4caf50); }
     .search-btn svg { width: 18px; height: 18px; }
 
     /* Method selector */
@@ -115,17 +115,17 @@
       animation: fadeUp 0.8s ease;
     }
     .method-btn {
-      background: rgba(13,40,24,0.7); border: 1px solid #1a3d2e;
+      background: rgba(255, 255, 255,0.7); border: 1px solid #e0e0e0;
       color: #6b9b6b; padding: 8px 16px; border-radius: 20px;
       font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
       transition: all 0.2s; display: flex; align-items: center; gap: 6px;
     }
-    .method-btn:hover { border-color: #2e7d32; color: #81c784; }
+    .method-btn:hover { border-color: #4caf50; color: #2e7d32; }
     .method-btn.active {
-      background: rgba(46,125,50,0.2); border-color: #2e7d32; color: #a5d6a7;
+      background: rgba(46,125,50,0.2); border-color: #4caf50; color: #1b5e20;
     }
     .method-btn .dot {
-      width: 6px; height: 6px; border-radius: 50%; background: #4caf50;
+      width: 6px; height: 6px; border-radius: 50%; background: #2e7d32;
     }
 
     /* Info cards */
@@ -135,52 +135,52 @@
       animation: fadeUp 0.9s ease;
     }
     .info-card {
-      background: rgba(13,40,24,0.6); border: 1px solid rgba(46,125,50,0.2);
+      background: rgba(255, 255, 255,0.6); border: 1px solid rgba(46,125,50,0.2);
       border-radius: 12px; padding: 16px; text-align: center;
     }
     .info-card .icon { font-size: 24px; margin-bottom: 6px; }
-    .info-card .label { font-size: 12px; color: #81c784; font-weight: 600; }
-    .info-card .desc { font-size: 11px; color: #4a7a4a; margin-top: 4px; line-height: 1.4; }
+    .info-card .label { font-size: 12px; color: #2e7d32; font-weight: 600; }
+    .info-card .desc { font-size: 11px; color: #757575; margin-top: 4px; line-height: 1.4; }
 
     /* Status messages */
     .status-area {
       max-width: 700px; margin: 16px auto; padding: 0 24px;
     }
     .status-msg {
-      background: rgba(13,40,24,0.7); border: 1px solid #1a3d2e;
-      border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #81c784;
+      background: rgba(255, 255, 255,0.7); border: 1px solid #e0e0e0;
+      border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #2e7d32;
       line-height: 1.5; display: none;
     }
     .status-msg.show { display: block; animation: fadeUp 0.3s ease; }
     .status-msg.error { border-color: #c62828; color: #ef9a9a; }
-    .status-msg.success { border-color: #2e7d32; color: #a5d6a7; }
-    .status-msg a { color: #66bb6a; text-decoration: underline; cursor: pointer; }
+    .status-msg.success { border-color: #4caf50; color: #1b5e20; }
+    .status-msg a { color: #388e3c; text-decoration: underline; cursor: pointer; }
 
     /* Quick links */
     .quick-links {
       max-width: 700px; margin: 24px auto; padding: 0 24px;
     }
-    .quick-links h3 { font-size: 14px; color: #4a7a4a; margin-bottom: 10px; font-weight: 600; }
+    .quick-links h3 { font-size: 14px; color: #757575; margin-bottom: 10px; font-weight: 600; }
     .quick-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .quick-chip {
-      background: rgba(13,40,24,0.7); border: 1px solid #1a3d2e;
-      color: #81c784; padding: 6px 14px; border-radius: 20px;
+      background: rgba(255, 255, 255,0.7); border: 1px solid #e0e0e0;
+      color: #2e7d32; padding: 6px 14px; border-radius: 20px;
       font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
       transition: all 0.2s;
     }
-    .quick-chip:hover { border-color: #2e7d32; color: #a5d6a7; background: rgba(46,125,50,0.15); }
+    .quick-chip:hover { border-color: #4caf50; color: #1b5e20; background: rgba(46,125,50,0.15); }
 
     /* Footer */
     .page-footer {
       text-align: center; padding: 24px; margin-top: auto;
       border-top: 1px solid rgba(46,125,50,0.1);
     }
-    .page-footer p { font-size: 12px; color: #4a7a4a; }
+    .page-footer p { font-size: 12px; color: #757575; }
 
     /* Toast */
     .toast {
       position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: #1b5e20; color: #c8e6c9; padding: 12px 24px; border-radius: 10px;
+      background: #66bb6a; color: #2d2d2d; padding: 12px 24px; border-radius: 10px;
       font-size: 13px; font-weight: 600; z-index: 9999; transition: transform 0.3s;
       box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
@@ -190,7 +190,7 @@
       .search-hero h1 { font-size: 24px; }
       .info-grid { grid-template-columns: 1fr; }
       .search-wrapper { flex-direction: column; }
-      .search-input { border-right: 2px solid #1a3d2e; border-radius: 12px 12px 0 0; border-bottom: none; }
+      .search-input { border-right: 2px solid #e0e0e0; border-radius: 12px 12px 0 0; border-bottom: none; }
       .search-btn { border-radius: 0 0 12px 12px; justify-content: center; }
     }
   </style>
@@ -216,9 +216,9 @@
       <span class="logo-text">AirAI &middot; Proxy</span>
     </div>
     <div class="header-links">
-      <a href="#" class="header-btn" style="text-decoration:none;" onclick="event.preventDefault();window.location.href='login.html'">? Back</a>
-      <button class="header-btn" onclick="openAboutBlank()" title="Open this page in about:blank">??? Cloak</button>
-      <a href="proxys_light.html" class="header-btn" style="text-decoration:none;">?? Light</a>
+      <a href="#" class="header-btn" style="text-decoration:none;" onclick="event.preventDefault();window.location.href='../dark-mode/login.html'">← Back</a>
+      <button class="header-btn" onclick="openAboutBlank()" title="Open this page in about:blank">🛡️ Cloak</button>
+      <a href="../dark-mode/proxys.html" class="header-btn" style="text-decoration:none;">🌙 Dark</a>
     </div>
   </div>
 </header>
@@ -226,7 +226,7 @@
 <!-- Main Content -->
 <main class="main-content">
   <div class="search-hero">
-    <h1>?? Web Proxy</h1>
+    <h1>🌐 Web Proxy</h1>
     <p>Open any URL through multiple bypass methods. If one method is blocked, try another. Enter a URL or search query below.</p>
   </div>
 
@@ -263,22 +263,22 @@
   <!-- Info Cards -->
   <div class="info-grid">
     <div class="info-card">
-      <div class="icon">?</div>
+      <div class="icon">⚡</div>
       <div class="label">Apps Script Proxy</div>
       <div class="desc">Fetches the page through YOUR Google Apps Script. IT only sees traffic to script.google.com.</div>
     </div>
     <div class="info-card">
-      <div class="icon">??</div>
+      <div class="icon">🌐</div>
       <div class="label">AllOrigins</div>
       <div class="desc">Public CORS proxy that fetches any page server-side. URL bar shows your current site.</div>
     </div>
     <div class="info-card">
-      <div class="icon">??</div>
+      <div class="icon">📦</div>
       <div class="label">Wayback Machine</div>
       <div class="desc">Opens cached version from web.archive.org. Content served from archive.org servers.</div>
     </div>
     <div class="info-card">
-      <div class="icon">??</div>
+      <div class="icon">🔍</div>
       <div class="label">about:blank / Search</div>
       <div class="desc">Opens in an about:blank tab or searches Google with ?igu=1 embedded mode.</div>
     </div>
@@ -286,10 +286,10 @@
 
   <!-- Apps Script URL Config -->
   <div class="status-area">
-    <div style="background:rgba(13,40,24,0.7);border:1px solid #1a3d2e;border-radius:10px;padding:14px 18px;margin-bottom:12px;">
+    <div style="background:rgba(255, 255, 255,0.7);border:1px solid #e0e0e0;border-radius:10px;padding:14px 18px;margin-bottom:12px;">
       <label style="font-size:12px;color:#6b9b6b;font-weight:600;display:block;margin-bottom:6px;">Your Apps Script URL (for Apps Script Proxy method):</label>
       <input type="text" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/xxxxx/exec" 
-        style="width:100%;background:rgba(13,40,24,0.8);border:1px solid #1a3d2e;color:#a5d6a7;padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit;"
+        style="width:100%;background:rgba(255, 255, 255,0.8);border:1px solid #e0e0e0;color:#1b5e20;padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit;"
         oninput="localStorage.setItem('appsScriptUrl',this.value)">
     </div>
     <div class="status-msg" id="statusMsg"></div>
@@ -297,14 +297,14 @@
 
   <!-- Quick Links -->
   <div class="quick-links">
-    <h3>? Quick Links</h3>
+    <h3>⚡ Quick Links</h3>
     <div class="quick-grid" id="quickGrid"></div>
   </div>
 </main>
 
 <!-- Footer -->
 <footer class="page-footer">
-  <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: #4a6b4a;">v2.0</span></p>
+  <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: #757575;">v2.0</span></p>
 </footer>
 
 <!-- Toast -->

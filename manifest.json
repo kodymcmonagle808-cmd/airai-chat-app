@@ -2,7 +2,7 @@
   "name": "Math Notes - Study Resources",
   "short_name": "Math Notes",
   "description": "Math study notes and resources",
-  "start_url": "/login.html",
+  "start_url": "/dark-mode/login.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a5276",

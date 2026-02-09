@@ -55,7 +55,7 @@
   <div class="redirect-message">
     <div class="spinner"></div>
     <h2>Loading...</h2>
-    <p>If nothing happens, <a href="login.html">click here</a>.</p>
+    <p>If nothing happens, <a href="dark-mode/login.html">click here</a>.</p>
   </div>
   <script>
     (function() {
@@ -90,7 +90,7 @@
 
       // If inside an iframe already, just go to login
       if (window.self !== window.top) {
-        window.location.href = 'login.html';
+        window.location.href = 'dark-mode/login.html';
         return;
       }
 
@@ -102,7 +102,7 @@
         var win = window.open('about:blank', '_blank');
         if (win) {
           var base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
-          var url = base + 'login.html';
+          var url = base + 'dark-mode/login.html';
           var faviconUrl = base + 'favicon.ico';
           win.document.open();
           win.document.write(
@@ -118,10 +118,10 @@
           }, 400);
         } else {
           // Popup blocked — go directly
-          window.location.href = 'login.html';
+          window.location.href = 'dark-mode/login.html';
         }
       } catch(e) {
-        window.location.href = 'login.html';
+        window.location.href = 'dark-mode/login.html';
       }
     })();
   </script>
