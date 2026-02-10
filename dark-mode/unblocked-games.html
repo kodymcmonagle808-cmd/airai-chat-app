@@ -418,5 +418,6 @@ document.addEventListener('keydown', function(e) {
   if (e.key === '/' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); var r = localStorage.getItem('airai-return-url'); if (r) { localStorage.removeItem('airai-return-url'); window.location.href = r; } }
 });
 </script>
+<script>(function(){var r=localStorage.getItem('airai-return-url');if(r&&r!==window.location.href){localStorage.removeItem('airai-return-url');window.location.href=r;}else if(r){localStorage.removeItem('airai-return-url');}})();</script>
 </body>
 </html>
