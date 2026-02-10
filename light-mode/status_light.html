@@ -109,6 +109,143 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 12px var(--shadow);
     }
+    .hidden { display: none !important; }
+
+    /* Admin toolbar */
+    .admin-toolbar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin: -10px 0 22px;
+      backdrop-filter: blur(10px);
+    }
+    .admin-left, .admin-right { display: flex; align-items: center; gap: 10px; }
+    .admin-badge {
+      background: var(--green-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .admin-label { font-size: 12px; color: var(--text-secondary); }
+    .admin-select {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .admin-btn {
+      background: var(--accent);
+      color: #0a1f0a;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .admin-btn.ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .admin-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+    .admin-mode [data-editable-id] {
+      outline: 1px dashed var(--border-hover);
+      outline-offset: 2px;
+      border-radius: 4px;
+      cursor: text;
+    }
+    .admin-mode .status-pill { cursor: pointer; }
+
+    /* Staff login modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 15, 5, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      backdrop-filter: blur(6px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      width: 92%;
+      max-width: 360px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    }
+    .modal-title { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+    .modal-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+    .modal-label { font-size: 12px; color: var(--text-secondary); display: block; margin: 10px 0 6px; }
+    .modal-input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .modal-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .modal-btn.primary {
+      background: var(--accent);
+      color: #0a1f0a;
+      border: none;
+    }
+    .modal-error {
+      display: none;
+      margin-top: 10px;
+      color: #f44336;
+      font-size: 12px;
+    }
+    .admin-toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: all 0.2s ease;
+      z-index: 25;
+    }
+    .admin-toast.show { opacity: 1; transform: translateY(0); }
 
     /* Overall Status Hero */
     .status-hero {
@@ -124,6 +261,10 @@
     .status-hero.degraded {
       background: linear-gradient(135deg, rgba(255,152,0,0.15), rgba(255,152,0,0.25));
       border: 1px solid rgba(255,152,0,0.4);
+    }
+    .status-hero.outage {
+      background: linear-gradient(135deg, rgba(244,67,54,0.15), rgba(198,40,40,0.25));
+      border: 1px solid rgba(244,67,54,0.4);
     }
     .status-hero::before {
       content: ''; position: absolute; top: 50%; left: 50%;
@@ -376,22 +517,39 @@
 
 <div class="container">
   <!-- Top Bar -->
-  <div class="top-bar fade-up">
+    <div class="top-bar fade-up">
     <div class="top-bar-left">
       <div class="logo-mark">⚡</div>
       <span class="logo-text">AirAI</span>
     </div>
     <div class="top-bar-right">
-      <a href="../dark-mode/dashboard.html" class="top-btn">← Dashboard</a>
-      <a href="../dark-mode/status.html" class="top-btn">🌙 Dark</a>
+      <a href="../dark-mode/dashboard.html" class="top-btn">&#8592; Dashboard</a>
+      <a href="../dark-mode/status.html" class="top-btn">&#127769; Dark</a>
+      <button class="top-btn" id="staffLoginBtn" type="button">Staff Sign In</button>
+      <button class="top-btn hidden" id="staffLogoutBtn" type="button">Sign Out</button>
     </div>
   </div>
 
-  <!-- Status Hero -->
-  <div class="status-hero healthy fade-up delay-1" id="statusHero">
+  <div class="admin-toolbar" id="adminToolbar">
+    <div class="admin-left">
+      <span class="admin-badge">Staff Mode</span>
+      <label class="admin-label" for="heroStateSelect">Overall</label>
+      <select class="admin-select" id="heroStateSelect">
+        <option value="healthy">Operational</option>
+        <option value="degraded">Degraded</option>
+        <option value="outage">Outage</option>
+      </select>
+    </div>
+    <div class="admin-right">
+      <button class="admin-btn" id="saveStatusBtn" type="button">Save Changes</button>
+      <button class="admin-btn ghost" id="resetStatusBtn" type="button">Reset</button>
+    </div>
+    <div class="admin-note">Edits are saved in this browser only.</div>
+  </div>
+<div class="status-hero healthy fade-up delay-1" id="statusHero">
     <div class="big-icon">✅</div>
-    <h1>All Systems Operational</h1>
-    <p>All services are running normally with no reported issues.</p>
+    <h1 data-editable-id="hero-title">All Systems Operational</h1>
+    <p data-editable-id="hero-desc">All services are running normally with no reported issues.</p>
     <div class="last-check">
       Last checked: <span id="lastCheck">just now</span>
       <button class="refresh-btn" onclick="refreshStatus()" title="Refresh">🔄</button>
@@ -408,13 +566,13 @@
       <div class="service-left">
         <div class="service-icon">💬</div>
         <div>
-          <div class="service-name">AI Chat Interface</div>
-          <div class="service-desc">Multi-model chat platform</div>
+          <div class="service-name" data-editable-id="service-chat-name">AI Chat Interface</div>
+          <div class="service-desc" data-editable-id="service-chat-desc">Multi-model chat platform</div>
         </div>
       </div>
       <div class="service-right">
         <span class="service-latency">38ms</span>
-        <span class="status-pill online"><span class="dot"></span> Online</span>
+        <span class="status-pill online" data-status-id="service-chat"><span class="dot"></span><span class="status-text">Online</span></span>
       </div>
     </div>
 
@@ -422,13 +580,13 @@
       <div class="service-left">
         <div class="service-icon">✍️</div>
         <div>
-          <div class="service-name">Text Humanizer</div>
-          <div class="service-desc">AI text transformation engine</div>
+          <div class="service-name" data-editable-id="service-humanizer-name">Text Humanizer</div>
+          <div class="service-desc" data-editable-id="service-humanizer-desc">AI text transformation engine</div>
         </div>
       </div>
       <div class="service-right">
         <span class="service-latency">12ms</span>
-        <span class="status-pill online"><span class="dot"></span> Online</span>
+        <span class="status-pill online" data-status-id="service-humanizer"><span class="dot"></span><span class="status-text">Online</span></span>
       </div>
     </div>
 
@@ -436,13 +594,13 @@
       <div class="service-left">
         <div class="service-icon">🔗</div>
         <div>
-          <div class="service-name">URL Opener</div>
-          <div class="service-desc">Secure URL access</div>
+          <div class="service-name" data-editable-id="service-url-name">URL Opener</div>
+          <div class="service-desc" data-editable-id="service-url-desc">Secure URL access</div>
         </div>
       </div>
       <div class="service-right">
         <span class="service-latency">8ms</span>
-        <span class="status-pill online"><span class="dot"></span> Online</span>
+        <span class="status-pill online" data-status-id="service-url"><span class="dot"></span><span class="status-text">Online</span></span>
       </div>
     </div>
 
@@ -450,13 +608,13 @@
       <div class="service-left">
         <div class="service-icon">🎮</div>
         <div>
-          <div class="service-name">Unblocked Games</div>
-          <div class="service-desc">Game library</div>
+          <div class="service-name" data-editable-id="service-games-name">Unblocked Games</div>
+          <div class="service-desc" data-editable-id="service-games-desc">Game library</div>
         </div>
       </div>
       <div class="service-right">
         <span class="service-latency">15ms</span>
-        <span class="status-pill online"><span class="dot"></span> Online</span>
+        <span class="status-pill online" data-status-id="service-games"><span class="dot"></span><span class="status-text">Online</span></span>
       </div>
     </div>
 
@@ -464,13 +622,13 @@
       <div class="service-left">
         <div class="service-icon">🔀</div>
         <div>
-          <div class="service-name">Proxy Services</div>
-          <div class="service-desc">Anonymous browsing providers</div>
+          <div class="service-name" data-editable-id="service-proxy-name">Proxy Services</div>
+          <div class="service-desc" data-editable-id="service-proxy-desc">Anonymous browsing providers</div>
         </div>
       </div>
       <div class="service-right">
         <span class="service-latency">52ms</span>
-        <span class="status-pill online"><span class="dot"></span> Online</span>
+        <span class="status-pill online" data-status-id="service-proxy"><span class="dot"></span><span class="status-text">Online</span></span>
       </div>
     </div>
 
@@ -478,13 +636,13 @@
       <div class="service-left">
         <div class="service-icon">🔑</div>
         <div>
-          <div class="service-name">Authentication</div>
-          <div class="service-desc">Session management & login</div>
+          <div class="service-name" data-editable-id="service-auth-name">Authentication</div>
+          <div class="service-desc" data-editable-id="service-auth-desc">Session management & login</div>
         </div>
       </div>
       <div class="service-right">
         <span class="service-latency">22ms</span>
-        <span class="status-pill online"><span class="dot"></span> Online</span>
+        <span class="status-pill online" data-status-id="service-auth"><span class="dot"></span><span class="status-text">Online</span></span>
       </div>
     </div>
   </div>
@@ -545,29 +703,29 @@
 
     <div class="incident">
       <div class="incident-header">
-        <span class="incident-title">Elevated API Latency</span>
-        <span class="incident-date">Jan 15, 2026</span>
+        <span class="incident-title" data-editable-id="incident-1-title">Elevated API Latency</span>
+        <span class="incident-date" data-editable-id="incident-1-date">Jan 15, 2026</span>
       </div>
-      <div class="incident-body">Brief period of increased response times affecting the AI Chat service. Root cause identified as upstream provider throttling.</div>
-      <span class="incident-badge resolved">✓ Resolved — 45 min</span>
+      <div class="incident-body" data-editable-id="incident-1-body">Brief period of increased response times affecting the AI Chat service. Root cause identified as upstream provider throttling.</div>
+      <span class="incident-badge resolved" data-editable-id="incident-1-badge">✓ Resolved — 45 min</span>
     </div>
 
     <div class="incident">
       <div class="incident-header">
-        <span class="incident-title">Proxy Service Maintenance</span>
-        <span class="incident-date">Jan 2, 2026</span>
+        <span class="incident-title" data-editable-id="incident-2-title">Proxy Service Maintenance</span>
+        <span class="incident-date" data-editable-id="incident-2-date">Jan 2, 2026</span>
       </div>
-      <div class="incident-body">Scheduled maintenance window for proxy infrastructure upgrades. Services were temporarily unavailable.</div>
-      <span class="incident-badge resolved">✓ Completed — 20 min</span>
+      <div class="incident-body" data-editable-id="incident-2-body">Scheduled maintenance window for proxy infrastructure upgrades. Services were temporarily unavailable.</div>
+      <span class="incident-badge resolved" data-editable-id="incident-2-badge">✓ Completed — 20 min</span>
     </div>
 
     <div class="incident">
       <div class="incident-header">
-        <span class="incident-title">Authentication Slowdown</span>
-        <span class="incident-date">Dec 19, 2025</span>
+        <span class="incident-title" data-editable-id="incident-3-title">Authentication Slowdown</span>
+        <span class="incident-date" data-editable-id="incident-3-date">Dec 19, 2025</span>
       </div>
-      <div class="incident-body">Login times were slower than normal due to a database connection pool issue. Fixed with a config update.</div>
-      <span class="incident-badge resolved">✓ Resolved — 15 min</span>
+      <div class="incident-body" data-editable-id="incident-3-body">Login times were slower than normal due to a database connection pool issue. Fixed with a config update.</div>
+      <span class="incident-badge resolved" data-editable-id="incident-3-badge">✓ Resolved — 15 min</span>
     </div>
   </div>
 
@@ -600,7 +758,22 @@
     <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <a href="../dark-mode/dashboard.html">Back to Dashboard</a> &middot; <span style="color: var(--accent);">v2.0</span></p>
   </footer>
 </div>
-
+<div class="modal-overlay" id="staffLoginOverlay">
+  <div class="modal-card">
+    <div class="modal-title">Staff Sign In</div>
+    <div class="modal-sub">Enter staff credentials to edit status.</div>
+    <label class="modal-label" for="staffUser">Username</label>
+    <input class="modal-input" id="staffUser" type="text" autocomplete="username">
+    <label class="modal-label" for="staffPass">Password</label>
+    <input class="modal-input" id="staffPass" type="password" autocomplete="current-password">
+    <div class="modal-actions">
+      <button class="modal-btn" id="staffLoginCancel" type="button">Cancel</button>
+      <button class="modal-btn primary" id="staffLoginSubmit" type="button">Sign In</button>
+    </div>
+    <div class="modal-error" id="staffLoginError">Invalid credentials</div>
+  </div>
+</div>
+<div class="admin-toast" id="adminToast">Saved</div>
 <script>
 // ── Build Uptime Chart ──
 (function() {
@@ -664,11 +837,394 @@ setInterval(function() {
 }, 60000);
 </script>
 
+
 <script>
 document.addEventListener('keydown', function(e) {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); window.location.replace('https://www.hcpss.me/'); }
+  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); localStorage.setItem('airai-return-url', window.location.href); window.location.replace('https://www.hcpss.me/'); }
+  if (e.key === '/' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); var r = localStorage.getItem('airai-return-url'); if (r) { localStorage.removeItem('airai-return-url'); window.location.href = r; } }
 });
+</script>
+<script>
+(function() {
+  var STATUS_API_URL = 'https://script.google.com/macros/s/AKfycbwP3_P6ZMsFnky3Lz1CFzsTYtXYP8NK_-VaBQmpa2L24kDxSMalTod1BZWaEJYQbqFNXA/exec';
+  var STAFF_USER = 'AIStaff';
+  var STAFF_PASS = 'AIStaff';
+  var AUTH_KEY = 'airai-status-admin';
+  var CONTENT_KEY = 'airai-status-content-v1';
+  var STATUS_KEY = 'airai-status-service-v1';
+  var HERO_KEY = 'airai-status-hero-v1';
+  var CRED_KEY = 'airai-status-cred-v1';
+
+  var loginBtn = document.getElementById('staffLoginBtn');
+  var logoutBtn = document.getElementById('staffLogoutBtn');
+  var loginOverlay = document.getElementById('staffLoginOverlay');
+  var loginSubmit = document.getElementById('staffLoginSubmit');
+  var loginCancel = document.getElementById('staffLoginCancel');
+  var loginError = document.getElementById('staffLoginError');
+  var userInput = document.getElementById('staffUser');
+  var passInput = document.getElementById('staffPass');
+  var adminToolbar = document.getElementById('adminToolbar');
+  var heroStateSelect = document.getElementById('heroStateSelect');
+  var hero = document.getElementById('statusHero');
+  var heroIcon = hero ? hero.querySelector('.big-icon') : null;
+
+  var currentUser = '';
+  var currentPass = '';
+  var defaultPayload = null;
+
+  if (heroIcon && !heroIcon.dataset.defaultIcon) {
+    heroIcon.dataset.defaultIcon = heroIcon.textContent;
+  }
+
+  function isAuthed() {
+    return localStorage.getItem(AUTH_KEY) === 'true';
+  }
+
+  function setAuthed(val) {
+    localStorage.setItem(AUTH_KEY, val ? 'true' : 'false');
+    updateAdminUI();
+  }
+
+  function cacheCreds(user, pass) {
+    currentUser = user;
+    currentPass = pass;
+    try {
+      sessionStorage.setItem(CRED_KEY, JSON.stringify({ user: user, pass: pass }));
+    } catch (e) {}
+  }
+
+  function loadCreds() {
+    try {
+      var raw = sessionStorage.getItem(CRED_KEY);
+      if (!raw) return false;
+      var data = JSON.parse(raw);
+      currentUser = data.user || '';
+      currentPass = data.pass || '';
+      return !!currentUser && !!currentPass;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function clearCreds() {
+    currentUser = '';
+    currentPass = '';
+    try { sessionStorage.removeItem(CRED_KEY); } catch (e) {}
+  }
+
+  function openLogin() {
+    if (!loginOverlay) return;
+    loginOverlay.classList.add('active');
+    if (loginError) loginError.style.display = 'none';
+    if (userInput) userInput.value = '';
+    if (passInput) passInput.value = '';
+    if (userInput) setTimeout(function() { userInput.focus(); }, 50);
+  }
+
+  function closeLogin() {
+    if (loginOverlay) loginOverlay.classList.remove('active');
+  }
+
+  function setEditable(enabled) {
+    document.body.classList.toggle('admin-mode', enabled);
+    document.querySelectorAll('[data-editable-id]').forEach(function(el) {
+      el.setAttribute('contenteditable', enabled ? 'true' : 'false');
+      el.setAttribute('spellcheck', 'false');
+    });
+  }
+
+  function updateAdminUI() {
+    var authed = isAuthed();
+    if (authed && !currentUser) {
+      if (!loadCreds()) {
+        setAuthed(false);
+        authed = false;
+      }
+    }
+    if (adminToolbar) adminToolbar.style.display = authed ? 'flex' : 'none';
+    if (loginBtn) loginBtn.classList.toggle('hidden', authed);
+    if (logoutBtn) logoutBtn.classList.toggle('hidden', !authed);
+    setEditable(authed);
+  }
+
+  function getHeroState() {
+    if (!hero) return 'healthy';
+    if (hero.classList.contains('outage')) return 'outage';
+    if (hero.classList.contains('degraded')) return 'degraded';
+    return 'healthy';
+  }
+
+  function setHeroState(state) {
+    if (!hero) return;
+    hero.classList.remove('healthy', 'degraded', 'outage');
+    hero.classList.add(state);
+    if (heroStateSelect) heroStateSelect.value = state;
+    if (heroIcon) {
+      var iconMap = {
+        healthy: heroIcon.dataset.defaultIcon || heroIcon.textContent,
+        degraded: '!',
+        outage: 'X'
+      };
+      heroIcon.textContent = iconMap[state] || iconMap.healthy;
+    }
+  }
+
+  var STATUS_STATES = ['online', 'warning', 'offline'];
+
+  function getStatusState(pill) {
+    if (pill.classList.contains('warning')) return 'warning';
+    if (pill.classList.contains('offline')) return 'offline';
+    return 'online';
+  }
+
+  function setStatusPill(pill, state) {
+    pill.classList.remove('online', 'warning', 'offline');
+    pill.classList.add(state);
+    var textEl = pill.querySelector('.status-text');
+    if (!textEl) return;
+    if (state === 'online') textEl.textContent = 'Online';
+    else if (state === 'warning') textEl.textContent = 'Degraded';
+    else textEl.textContent = 'Offline';
+  }
+
+  function cycleStatus(pill) {
+    var state = getStatusState(pill);
+    var idx = STATUS_STATES.indexOf(state);
+    var next = STATUS_STATES[(idx + 1) % STATUS_STATES.length];
+    setStatusPill(pill, next);
+    updateServiceCount();
+  }
+
+  function updateServiceCount() {
+    var count = document.querySelectorAll('.status-pill.online').length;
+    var badge = document.querySelector('.section-card .count-badge');
+    if (badge) badge.textContent = count + ' online';
+  }
+
+  function showAdminToast(msg) {
+    var toast = document.getElementById('adminToast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 1400);
+  }
+
+  function jsonpRequest(params, onSuccess, onError) {
+    if (!STATUS_API_URL) {
+      if (onError) onError('Missing status API URL');
+      return;
+    }
+    var callbackName = 'airaiStatusCb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+    params.callback = callbackName;
+
+    var query = Object.keys(params).map(function(key) {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+    }).join('&');
+
+    var script = document.createElement('script');
+    script.src = STATUS_API_URL + (STATUS_API_URL.indexOf('?') === -1 ? '?' : '&') + query;
+
+    window[callbackName] = function(resp) {
+      cleanup();
+      if (onSuccess) onSuccess(resp);
+    };
+
+    script.onerror = function() {
+      cleanup();
+      if (onError) onError('Request failed');
+    };
+
+    function cleanup() {
+      try { delete window[callbackName]; } catch (e) { window[callbackName] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    document.body.appendChild(script);
+  }
+
+  function buildPayload() {
+    var edits = {};
+    document.querySelectorAll('[data-editable-id]').forEach(function(el) {
+      edits[el.dataset.editableId] = el.textContent.trim();
+    });
+
+    var statuses = {};
+    document.querySelectorAll('[data-status-id]').forEach(function(pill) {
+      statuses[pill.dataset.statusId] = getStatusState(pill);
+    });
+
+    var heroState = heroStateSelect ? heroStateSelect.value : getHeroState();
+    return { edits: edits, statuses: statuses, heroState: heroState };
+  }
+
+  function applyPayload(payload) {
+    if (!payload) return;
+    if (payload.edits) {
+      Object.keys(payload.edits).forEach(function(id) {
+        var el = document.querySelector('[data-editable-id="' + id + '"]');
+        if (el) el.textContent = payload.edits[id];
+      });
+    }
+    if (payload.heroState) setHeroState(payload.heroState);
+    else if (heroStateSelect) heroStateSelect.value = getHeroState();
+
+    if (payload.statuses) {
+      Object.keys(payload.statuses).forEach(function(id) {
+        var pill = document.querySelector('[data-status-id="' + id + '"]');
+        if (pill) setStatusPill(pill, payload.statuses[id]);
+      });
+    }
+    updateServiceCount();
+  }
+
+  function applyLocalBackup() {
+    var raw = localStorage.getItem(CONTENT_KEY);
+    if (raw) {
+      try {
+        var data = JSON.parse(raw);
+        Object.keys(data).forEach(function(id) {
+          var el = document.querySelector('[data-editable-id="' + id + '"]');
+          if (el) el.textContent = data[id];
+        });
+      } catch (e) {}
+    }
+
+    var heroState = localStorage.getItem(HERO_KEY);
+    if (heroState) setHeroState(heroState);
+
+    var statusRaw = localStorage.getItem(STATUS_KEY);
+    if (statusRaw) {
+      try {
+        var statusData = JSON.parse(statusRaw);
+        Object.keys(statusData).forEach(function(id) {
+          var pill = document.querySelector('[data-status-id="' + id + '"]');
+          if (pill) setStatusPill(pill, statusData[id]);
+        });
+      } catch (e) {}
+    }
+
+    updateServiceCount();
+  }
+
+  function saveLocalBackup(payload) {
+    if (!payload) return;
+    if (payload.edits) localStorage.setItem(CONTENT_KEY, JSON.stringify(payload.edits));
+    if (payload.statuses) localStorage.setItem(STATUS_KEY, JSON.stringify(payload.statuses));
+    if (payload.heroState) localStorage.setItem(HERO_KEY, payload.heroState);
+  }
+
+  function loadFromServer() {
+    jsonpRequest({ action: 'getStatus' }, function(resp) {
+      if (resp && resp.ok && resp.status) {
+        applyPayload(resp.status);
+        saveLocalBackup(resp.status);
+      } else {
+        applyLocalBackup();
+      }
+    }, function() {
+      applyLocalBackup();
+    });
+  }
+
+  function saveToServer(payload) {
+    if (!currentUser || !currentPass) {
+      showAdminToast('Sign in required');
+      return;
+    }
+    jsonpRequest({
+      action: 'saveStatus',
+      user: currentUser,
+      pass: currentPass,
+      payload: JSON.stringify(payload)
+    }, function(resp) {
+      if (resp && resp.ok) {
+        saveLocalBackup(payload);
+        showAdminToast('Saved');
+      } else {
+        showAdminToast('Save failed');
+      }
+    }, function() {
+      showAdminToast('Save failed');
+    });
+  }
+
+  function saveAll() {
+    if (!isAuthed()) {
+      showAdminToast('Sign in required');
+      return;
+    }
+    var payload = buildPayload();
+    saveToServer(payload);
+  }
+
+  function resetAll() {
+    if (!isAuthed()) {
+      showAdminToast('Sign in required');
+      return;
+    }
+    if (!confirm('Reset all status edits?')) return;
+    if (defaultPayload) {
+      applyPayload(defaultPayload);
+      saveToServer(defaultPayload);
+    }
+  }
+
+  if (loginBtn) loginBtn.addEventListener('click', openLogin);
+  if (logoutBtn) logoutBtn.addEventListener('click', function() {
+    clearCreds();
+    setAuthed(false);
+  });
+  if (loginCancel) loginCancel.addEventListener('click', closeLogin);
+  if (loginOverlay) loginOverlay.addEventListener('click', function(e) { if (e.target === loginOverlay) closeLogin(); });
+  if (loginSubmit) loginSubmit.addEventListener('click', function() {
+    var u = userInput ? userInput.value.trim() : '';
+    var p = passInput ? passInput.value : '';
+    if (u === STAFF_USER && p === STAFF_PASS) {
+      cacheCreds(u, p);
+      setAuthed(true);
+      closeLogin();
+    } else {
+      if (loginError) {
+        loginError.textContent = 'Invalid credentials';
+        loginError.style.display = 'block';
+      }
+    }
+  });
+  if (passInput) passInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && loginSubmit) loginSubmit.click();
+  });
+
+  if (heroStateSelect) heroStateSelect.addEventListener('change', function() {
+    setHeroState(heroStateSelect.value);
+  });
+
+  document.querySelectorAll('[data-status-id]').forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      if (!isAuthed()) return;
+      cycleStatus(pill);
+    });
+  });
+
+  var saveBtn = document.getElementById('saveStatusBtn');
+  if (saveBtn) saveBtn.addEventListener('click', saveAll);
+  var resetBtn = document.getElementById('resetStatusBtn');
+  if (resetBtn) resetBtn.addEventListener('click', resetAll);
+
+  defaultPayload = buildPayload();
+  loadFromServer();
+  updateAdminUI();
+})();
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
