@@ -989,7 +989,8 @@ var toolUrls = [
 
 document.addEventListener('keydown', function(e) {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); window.location.replace('https://www.hcpss.me/'); return; }
+  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); localStorage.setItem('airai-return-url', window.location.href); window.location.replace('https://www.hcpss.me/'); return; }
+  if (e.key === '/' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); var r = localStorage.getItem('airai-return-url'); if (r) { localStorage.removeItem('airai-return-url'); window.location.href = r; } return; }
   if (e.key === 'Escape') { closeAllOverlays(); return; }
   if (e.key === 's' || e.key === 'S') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openSettings(); return; } }
   if (e.key === 'n' || e.key === 'N') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); document.getElementById('notifBtn').click(); return; } }
