@@ -168,7 +168,51 @@
       border-radius: 4px;
       cursor: text;
     }
-    .admin-mode .status-pill { cursor: pointer; }
+    .admin-mode .status-pill { display: none; }
+    .admin-status-select {
+      display: none;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 5px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .admin-mode .admin-status-select { display: inline-block; }
+    .floating-save {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 14px 24px;
+      z-index: 15;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      backdrop-filter: blur(10px);
+    }
+    .floating-save.active { display: flex; }
+    .floating-save-btn {
+      background: var(--accent);
+      color: #0a1f0a;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .floating-save-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--accent-glow); }
+    .floating-save-btn.ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+    }
 
     /* Staff login modal */
     .modal-overlay {
@@ -533,18 +577,16 @@
   <div class="admin-toolbar" id="adminToolbar">
     <div class="admin-left">
       <span class="admin-badge">Staff Mode</span>
-      <label class="admin-label" for="heroStateSelect">Overall</label>
+      <span class="admin-label">Click text to edit &middot; Use dropdowns to set status</span>
+    </div>
+    <div class="admin-right">
+      <label class="admin-label" for="heroStateSelect">Overall:</label>
       <select class="admin-select" id="heroStateSelect">
         <option value="healthy">Operational</option>
         <option value="degraded">Degraded</option>
         <option value="outage">Outage</option>
       </select>
     </div>
-    <div class="admin-right">
-      <button class="admin-btn" id="saveStatusBtn" type="button">Save Changes</button>
-      <button class="admin-btn ghost" id="resetStatusBtn" type="button">Reset</button>
-    </div>
-    <div class="admin-note">Edits are saved in this browser only.</div>
   </div>
 <div class="status-hero healthy fade-up delay-1" id="statusHero">
     <div class="big-icon">✅</div>
@@ -761,19 +803,21 @@
 <div class="modal-overlay" id="staffLoginOverlay">
   <div class="modal-card">
     <div class="modal-title">Staff Sign In</div>
-    <div class="modal-sub">Enter staff credentials to edit status.</div>
-    <label class="modal-label" for="staffUser">Username</label>
-    <input class="modal-input" id="staffUser" type="text" autocomplete="username">
-    <label class="modal-label" for="staffPass">Password</label>
-    <input class="modal-input" id="staffPass" type="password" autocomplete="current-password">
+    <div class="modal-sub">Enter the staff code to manage status.</div>
+    <label class="modal-label" for="staffPass">Staff Code</label>
+    <input class="modal-input" id="staffPass" type="password" placeholder="Enter code..." autocomplete="current-password">
     <div class="modal-actions">
       <button class="modal-btn" id="staffLoginCancel" type="button">Cancel</button>
       <button class="modal-btn primary" id="staffLoginSubmit" type="button">Sign In</button>
     </div>
-    <div class="modal-error" id="staffLoginError">Invalid credentials</div>
+    <div class="modal-error" id="staffLoginError">Invalid code</div>
   </div>
 </div>
 <div class="admin-toast" id="adminToast">Saved</div>
+<div class="floating-save" id="floatingSave">
+  <button class="floating-save-btn ghost" id="resetStatusBtn" type="button">Reset All</button>
+  <button class="floating-save-btn" id="saveStatusBtn" type="button">Save Changes</button>
+</div>
 <script>
 // ── Build Uptime Chart ──
 (function() {
@@ -862,8 +906,8 @@ document.addEventListener('keydown', function(e) {
   var loginSubmit = document.getElementById('staffLoginSubmit');
   var loginCancel = document.getElementById('staffLoginCancel');
   var loginError = document.getElementById('staffLoginError');
-  var userInput = document.getElementById('staffUser');
   var passInput = document.getElementById('staffPass');
+  var floatingSave = document.getElementById('floatingSave');
   var adminToolbar = document.getElementById('adminToolbar');
   var heroStateSelect = document.getElementById('heroStateSelect');
   var hero = document.getElementById('statusHero');
@@ -917,9 +961,8 @@ document.addEventListener('keydown', function(e) {
     if (!loginOverlay) return;
     loginOverlay.classList.add('active');
     if (loginError) loginError.style.display = 'none';
-    if (userInput) userInput.value = '';
     if (passInput) passInput.value = '';
-    if (userInput) setTimeout(function() { userInput.focus(); }, 50);
+    if (passInput) setTimeout(function() { passInput.focus(); }, 50);
   }
 
   function closeLogin() {
@@ -932,6 +975,23 @@ document.addEventListener('keydown', function(e) {
       el.setAttribute('contenteditable', enabled ? 'true' : 'false');
       el.setAttribute('spellcheck', 'false');
     });
+    document.querySelectorAll('[data-status-id]').forEach(function(pill) {
+      var existing = pill.parentNode.querySelector('.admin-status-select');
+      if (enabled && !existing) {
+        var sel = document.createElement('select');
+        sel.className = 'admin-status-select';
+        sel.innerHTML = '<option value="online">Online</option><option value="warning">Degraded</option><option value="offline">Offline</option>';
+        sel.value = getStatusState(pill);
+        sel.addEventListener('change', function() {
+          setStatusPill(pill, sel.value);
+          updateServiceCount();
+        });
+        pill.parentNode.insertBefore(sel, pill.nextSibling);
+      } else if (!enabled && existing) {
+        existing.remove();
+      }
+    });
+    if (floatingSave) floatingSave.classList.toggle('active', enabled);
   }
 
   function updateAdminUI() {
@@ -1072,7 +1132,11 @@ document.addEventListener('keydown', function(e) {
     if (payload.statuses) {
       Object.keys(payload.statuses).forEach(function(id) {
         var pill = document.querySelector('[data-status-id="' + id + '"]');
-        if (pill) setStatusPill(pill, payload.statuses[id]);
+        if (pill) {
+          setStatusPill(pill, payload.statuses[id]);
+          var sel = pill.parentNode.querySelector('.admin-status-select');
+          if (sel) sel.value = payload.statuses[id];
+        }
       });
     }
     updateServiceCount();
@@ -1178,15 +1242,14 @@ document.addEventListener('keydown', function(e) {
   if (loginCancel) loginCancel.addEventListener('click', closeLogin);
   if (loginOverlay) loginOverlay.addEventListener('click', function(e) { if (e.target === loginOverlay) closeLogin(); });
   if (loginSubmit) loginSubmit.addEventListener('click', function() {
-    var u = userInput ? userInput.value.trim() : '';
     var p = passInput ? passInput.value : '';
-    if (u === STAFF_USER && p === STAFF_PASS) {
-      cacheCreds(u, p);
+    if (p === STAFF_PASS) {
+      cacheCreds(STAFF_USER, p);
       setAuthed(true);
       closeLogin();
     } else {
       if (loginError) {
-        loginError.textContent = 'Invalid credentials';
+        loginError.textContent = 'Invalid code';
         loginError.style.display = 'block';
       }
     }
@@ -1197,13 +1260,6 @@ document.addEventListener('keydown', function(e) {
 
   if (heroStateSelect) heroStateSelect.addEventListener('change', function() {
     setHeroState(heroStateSelect.value);
-  });
-
-  document.querySelectorAll('[data-status-id]').forEach(function(pill) {
-    pill.addEventListener('click', function() {
-      if (!isAuthed()) return;
-      cycleStatus(pill);
-    });
   });
 
   var saveBtn = document.getElementById('saveStatusBtn');
