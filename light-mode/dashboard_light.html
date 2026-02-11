@@ -51,8 +51,6 @@
       --orb-opacity: 0.15;
     }
 
-
-
     body {
       font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
       background: var(--bg-primary);
@@ -605,7 +603,7 @@
     <p>Access all your tools, monitor system health, and manage your AirAI experience from one place.</p>
     <div class="version-pill">
       <span class="dot"></span>
-      v2.1 &middot; All systems operational
+      <span data-version>v2.1</span> &middot; All systems operational
     </div>
   </div>
 
@@ -781,7 +779,7 @@
   </div>
 
   <footer class="footer fade-up delay-10">
-    <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: var(--accent);">v2.1</span></p>
+    <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: var(--accent);" data-version>v2.1</span></p>
     <p class="footer-hint">Press <kbd>?</kbd> for keyboard shortcuts</p>
   </footer>
 </div>
@@ -898,7 +896,7 @@ setInterval(function() {
 
 // ===== NOTIFICATIONS SYSTEM =====
 var notifications = [
-  { id: 'n1', icon: '🚀', title: 'v2.1 Released', desc: 'New dashboard, improved chat, and more tools.', time: 'Today' },
+  { id: 'n1', icon: '🚀', title: APP_VERSION + ' Released', desc: 'New dashboard, improved chat, and more tools.', time: 'Today' },
   { id: 'n2', icon: '✍️', title: 'Humanizer Upgraded', desc: 'New Academic and Casual modes with adjustable strength.', time: '2 days ago' },
   { id: 'n3', icon: '🎮', title: 'New Games Added', desc: 'Check out the latest unblocked games collection.', time: '1 week ago' },
   { id: 'n4', icon: '⚡', title: 'Performance Boost', desc: 'AI Chat now responds 40% faster with streaming.', time: '2 weeks ago' }
@@ -1059,10 +1057,6 @@ document.addEventListener('click', function(e) {
 applySettings();
 </script>
 
-<script>
-var _panicActive=false;var _panicPopHandler=null;
-function panicEngage(){if(_panicActive)return;_panicActive=true;var els=document.body.children;for(var i=0;i<els.length;i++){if(els[i].className!=='panic-cover'){els[i].setAttribute('data-ph',els[i].style.display||'');els[i].style.display='none';}}var f=document.createElement('iframe');f.className='panic-cover';f.src=localStorage.getItem('airai_cloakUrl')||'https://www.hcpss.me/';f.style.cssText='border:none;width:100vw;height:100vh;position:fixed;top:0;left:0;z-index:999999;background:#fff;';document.body.appendChild(f);document.title=localStorage.getItem('airai_cloakTitle')||'HCPSS';history.pushState(null,'',window.location.href);_panicPopHandler=function(){history.pushState(null,'',window.location.href);};window.addEventListener('popstate',_panicPopHandler);}
-function panicDisengage(){if(!_panicActive)return;var c=document.querySelector('.panic-cover');if(c)c.remove();var els=document.querySelectorAll('[data-ph]');for(var i=0;i<els.length;i++){els[i].style.display=els[i].getAttribute('data-ph');els[i].removeAttribute('data-ph');}document.title=localStorage.getItem('airai_cloakRestoreTitle')||'Math Notes';if(_panicPopHandler){window.removeEventListener('popstate',_panicPopHandler);_panicPopHandler=null;}_panicActive=false;}
-</script>
+<script src="../config.js"></script>
 </body>
 </html>

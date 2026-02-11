@@ -26,8 +26,6 @@
       --orb-opacity: 0.15;
     }
 
-
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -250,7 +248,6 @@
   <div class="orb"></div><div class="orb"></div><div class="orb"></div>
 </div>
 
-
 <div class="container">
   <div style="text-align:left;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
     <a href="#" class="back-link" onclick="event.preventDefault();window.location.href='../dark-mode/login.html'">← Back to Login</a>
@@ -317,7 +314,7 @@
   </div>
 
   <footer class="page-footer">
-    <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: var(--text-muted);">v2.1</span></p>
+    <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <span style="color: var(--text-muted);" data-version>v2.1</span></p>
   </footer>
 </div>
 
@@ -409,7 +406,6 @@ function humanize() {
   }, 400 + Math.random() * 300);
 }
 
-
 /* ── MAIN PIPELINE ── */
 function runHumanizer(text, ctx) {
   const s = ctx.strength;
@@ -464,7 +460,6 @@ function runHumanizer(text, ctx) {
 
   return result;
 }
-
 
 /* ── 1. CONTRACTIONS ── */
 function applyContractions(text, strength, ctx) {
@@ -532,7 +527,6 @@ function applyContractions(text, strength, ctx) {
   }
   return result;
 }
-
 
 /* ── 2. AI-TYPICAL PHRASE REPLACEMENT ── */
 function replaceAIPhrases(text, strength, mode, ctx) {
@@ -665,7 +659,6 @@ function replaceAIPhrases(text, strength, mode, ctx) {
   return result;
 }
 
-
 /* ── 3. SENTENCE STRUCTURE VARIATION ── */
 function varySentenceStructure(text, strength, mode, ctx) {
   let sentences = splitSentences(text);
@@ -713,7 +706,6 @@ function varySentenceStructure(text, strength, mode, ctx) {
 
   return result.join(' ');
 }
-
 
 /* ── 4. REDUCE REPETITIVE SENTENCE STARTERS ── */
 function reduceRepetitiveStarters(text, ctx) {
@@ -771,7 +763,6 @@ function rephraseSentenceStart(sentence) {
   const transitions = ["In fact, ", "Actually, ", "Really, ", "Honestly, "];
   return pick(transitions) + s.charAt(0).toLowerCase() + s.slice(1);
 }
-
 
 /* ── 5. VOCABULARY NATURALIZER ── */
 function naturalizeVocabulary(text, strength, mode, ctx) {
@@ -844,7 +835,6 @@ function naturalizeVocabulary(text, strength, mode, ctx) {
   return result;
 }
 
-
 /* ── 6. HUMAN TOUCHES ── */
 function addHumanTouches(text, strength, ctx) {
   let sentences = splitSentences(text);
@@ -876,7 +866,6 @@ function addHumanTouches(text, strength, ctx) {
   return result.join(' ');
 }
 
-
 /* ── 7. FIX PUNCTUATION ── */
 function fixPunctuation(text, ctx) {
   let result = text;
@@ -898,7 +887,6 @@ function fixPunctuation(text, ctx) {
 
   return result;
 }
-
 
 /* ── 8. HUMANIZE TRANSITIONS ── */
 function humanizeTransitions(text, ctx) {
@@ -927,7 +915,6 @@ function humanizeTransitions(text, ctx) {
   return result;
 }
 
-
 /* ── 9. BULLET POINT FORMALITY ── */
 function removeBulletPointFormality(text, mode, ctx) {
   if (mode === 'academic') return text;
@@ -940,7 +927,6 @@ function removeBulletPointFormality(text, mode, ctx) {
 
   return result;
 }
-
 
 /* ── FINAL CLEANUP ── */
 function finalCleanup(text) {
@@ -971,7 +957,6 @@ function finalCleanup(text) {
 
   return result;
 }
-
 
 /* ═══════════════════════════════════════════════
    UTILITY FUNCTIONS
@@ -1035,7 +1020,6 @@ function breakLongSentence(sentence) {
   return [sentence];
 }
 
-
 /* ── READABILITY SCORE ── */
 function calcReadability(text) {
   const words = text.trim().split(/\s+/);
@@ -1064,7 +1048,6 @@ function countSyllables(word) {
   const matches = word.match(/[aeiouy]{1,2}/g);
   return matches ? matches.length : 1;
 }
-
 
 /* ── HUMAN SCORE ESTIMATOR ── */
 function estimateHumanScore(text) {
@@ -1149,17 +1132,8 @@ function showMeter(score) {
 
 </script>
 
-<script>
-document.addEventListener('keydown', function(e) {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); panicEngage(); }
-  if (e.key === '/' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); panicDisengage(); }
-});
-</script>
-<script>
-var _panicActive=false;var _panicPopHandler=null;
-function panicEngage(){if(_panicActive)return;_panicActive=true;var els=document.body.children;for(var i=0;i<els.length;i++){if(els[i].className!=='panic-cover'){els[i].setAttribute('data-ph',els[i].style.display||'');els[i].style.display='none';}}var f=document.createElement('iframe');f.className='panic-cover';f.src=localStorage.getItem('airai_cloakUrl')||'https://www.hcpss.me/';f.style.cssText='border:none;width:100vw;height:100vh;position:fixed;top:0;left:0;z-index:999999;background:#fff;';document.body.appendChild(f);document.title=localStorage.getItem('airai_cloakTitle')||'HCPSS';history.pushState(null,'',window.location.href);_panicPopHandler=function(){history.pushState(null,'',window.location.href);};window.addEventListener('popstate',_panicPopHandler);}
-function panicDisengage(){if(!_panicActive)return;var c=document.querySelector('.panic-cover');if(c)c.remove();var els=document.querySelectorAll('[data-ph]');for(var i=0;i<els.length;i++){els[i].style.display=els[i].getAttribute('data-ph');els[i].removeAttribute('data-ph');}document.title=localStorage.getItem('airai_cloakRestoreTitle')||'Math Notes';if(_panicPopHandler){window.removeEventListener('popstate',_panicPopHandler);_panicPopHandler=null;}_panicActive=false;}
-</script>
+
+
+<script src="../config.js"></script>
 </body>
 </html>
