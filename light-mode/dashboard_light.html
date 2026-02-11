@@ -613,12 +613,12 @@
   <div class="stats-grid">
     <div class="stat-card fade-up delay-2">
       <div class="stat-icon">🛠️</div>
-      <div class="stat-value">7</div>
+      <div class="stat-value">8</div>
       <div class="stat-label">Tools Available</div>
     </div>
     <div class="stat-card fade-up delay-3">
       <div class="stat-icon">🟢</div>
-      <div class="stat-value">7/7</div>
+      <div class="stat-value">8/8</div>
       <div class="stat-label">Services Online</div>
     </div>
     <div class="stat-card fade-up delay-4">
@@ -733,6 +733,19 @@
       </div>
       <span class="tool-arrow">→</span>
     </a>
+
+    <a href="notepad_light.html" class="tool-card fade-up delay-8">
+      <div class="tool-icon">📝</div>
+      <div class="tool-info">
+        <h3>Notepad</h3>
+        <p>Write and organize notes with auto-save. Multiple notes, word count, and local storage.</p>
+        <div class="tool-meta">
+          <span class="tool-badge online"><span class="dot"></span> Online</span>
+          <span class="tool-badge featured">⭐ New</span>
+        </div>
+      </div>
+      <span class="tool-arrow">→</span>
+    </a>
   </div>
 
   <!-- System -->
@@ -799,6 +812,7 @@
   <a href="../dark-mode/proxys.html" class="mobile-nav-link"><span>🔀</span> Proxys</a>
   <a href="../dark-mode/time-left.html" class="mobile-nav-link"><span>⏱️</span> Time Left</a>
   <a href="../dark-mode/links.html" class="mobile-nav-link"><span>🌐</span> Quick Links</a>
+  <a href="notepad_light.html" class="mobile-nav-link"><span>📝</span> Notepad</a>
 </nav>
 
 <!-- Settings Modal -->
@@ -831,6 +845,21 @@
           <label class="toggle-switch"><input type="checkbox" id="settingNotifs" checked><span class="toggle-slider"></span></label>
         </div>
       </div>
+      <div class="settings-section">
+        <div class="settings-section-title">Tab Cloaking</div>
+        <div class="settings-row">
+          <div><div class="settings-label-main">Cloak Title</div><div class="settings-label-sub">Tab title shown during panic mode</div></div>
+          <input type="text" class="settings-select" id="settingCloakTitle" placeholder="HCPSS" style="width:150px;">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label-main">Cloak URL</div><div class="settings-label-sub">Website loaded during panic mode</div></div>
+          <input type="text" class="settings-select" id="settingCloakUrl" placeholder="https://www.hcpss.me/" style="width:150px;">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label-main">Restore Title</div><div class="settings-label-sub">Tab title when panic disengages</div></div>
+          <input type="text" class="settings-select" id="settingCloakRestore" placeholder="Math Notes" style="width:150px;">
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -854,6 +883,7 @@
       <div class="shortcut-row"><span class="shortcut-label">Proxys</span><div class="shortcut-keys"><kbd>5</kbd></div></div>
       <div class="shortcut-row"><span class="shortcut-label">Time Left</span><div class="shortcut-keys"><kbd>6</kbd></div></div>
       <div class="shortcut-row"><span class="shortcut-label">Quick Links</span><div class="shortcut-keys"><kbd>7</kbd></div></div>
+      <div class="shortcut-row"><span class="shortcut-label">Notepad</span><div class="shortcut-keys"><kbd>8</kbd></div></div>
       <div class="shortcut-row"><span class="shortcut-label">Close overlay</span><div class="shortcut-keys"><kbd>Esc</kbd></div></div>
     </div>
   </div>
@@ -956,11 +986,20 @@ function loadSettings() {
   document.getElementById('settingFontSize').value = fontSize;
   document.getElementById('settingAnimations').checked = anims;
   document.getElementById('settingNotifs').checked = notifs;
+  document.getElementById('settingCloakTitle').value = localStorage.getItem('airai_cloakTitle') || '';
+  document.getElementById('settingCloakUrl').value = localStorage.getItem('airai_cloakUrl') || '';
+  document.getElementById('settingCloakRestore').value = localStorage.getItem('airai_cloakRestoreTitle') || '';
 }
 function saveSettings() {
   localStorage.setItem('airai_fontSize', document.getElementById('settingFontSize').value);
   localStorage.setItem('airai_animations', document.getElementById('settingAnimations').checked);
   localStorage.setItem('airai_notifs', document.getElementById('settingNotifs').checked);
+  var ct = document.getElementById('settingCloakTitle').value;
+  var cu = document.getElementById('settingCloakUrl').value;
+  var cr = document.getElementById('settingCloakRestore').value;
+  if (ct) localStorage.setItem('airai_cloakTitle', ct); else localStorage.removeItem('airai_cloakTitle');
+  if (cu) localStorage.setItem('airai_cloakUrl', cu); else localStorage.removeItem('airai_cloakUrl');
+  if (cr) localStorage.setItem('airai_cloakRestoreTitle', cr); else localStorage.removeItem('airai_cloakRestoreTitle');
   applySettings();
 }
 function applySettings() {
@@ -984,7 +1023,7 @@ shortcutsOverlay.addEventListener('click', function(e) { if (e.target === shortc
 
 var toolUrls = [
   '../dark-mode/chat-interface.html', '../dark-mode/humanizer.html', '../dark-mode/url-opener.html',
-  '../dark-mode/unblocked-games.html', '../dark-mode/proxys.html', '../dark-mode/time-left.html', '../dark-mode/links.html'
+  '../dark-mode/unblocked-games.html', '../dark-mode/proxys.html', '../dark-mode/time-left.html', '../dark-mode/links.html', 'notepad_light.html'
 ];
 
 document.addEventListener('keydown', function(e) {
@@ -998,7 +1037,7 @@ document.addEventListener('keydown', function(e) {
     e.preventDefault(); window.location.href = '../dark-mode/dashboard.html'; return;
   }
   var num = parseInt(e.key);
-  if (num >= 1 && num <= 7 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+  if (num >= 1 && num <= 8 && !e.ctrlKey && !e.metaKey && !e.altKey) {
     e.preventDefault(); window.location.href = toolUrls[num - 1]; return;
   }
 });
@@ -1022,8 +1061,8 @@ applySettings();
 
 <script>
 var _panicActive=false;var _panicPopHandler=null;
-function panicEngage(){if(_panicActive)return;_panicActive=true;var els=document.body.children;for(var i=0;i<els.length;i++){if(els[i].className!=='panic-cover'){els[i].setAttribute('data-ph',els[i].style.display||'');els[i].style.display='none';}}var f=document.createElement('iframe');f.className='panic-cover';f.src='https://www.hcpss.me/';f.style.cssText='border:none;width:100vw;height:100vh;position:fixed;top:0;left:0;z-index:999999;background:#fff;';document.body.appendChild(f);document.title='HCPSS';history.pushState(null,'',window.location.href);_panicPopHandler=function(){history.pushState(null,'',window.location.href);};window.addEventListener('popstate',_panicPopHandler);}
-function panicDisengage(){if(!_panicActive)return;var c=document.querySelector('.panic-cover');if(c)c.remove();var els=document.querySelectorAll('[data-ph]');for(var i=0;i<els.length;i++){els[i].style.display=els[i].getAttribute('data-ph');els[i].removeAttribute('data-ph');}document.title='Math Notes';if(_panicPopHandler){window.removeEventListener('popstate',_panicPopHandler);_panicPopHandler=null;}_panicActive=false;}
+function panicEngage(){if(_panicActive)return;_panicActive=true;var els=document.body.children;for(var i=0;i<els.length;i++){if(els[i].className!=='panic-cover'){els[i].setAttribute('data-ph',els[i].style.display||'');els[i].style.display='none';}}var f=document.createElement('iframe');f.className='panic-cover';f.src=localStorage.getItem('airai_cloakUrl')||'https://www.hcpss.me/';f.style.cssText='border:none;width:100vw;height:100vh;position:fixed;top:0;left:0;z-index:999999;background:#fff;';document.body.appendChild(f);document.title=localStorage.getItem('airai_cloakTitle')||'HCPSS';history.pushState(null,'',window.location.href);_panicPopHandler=function(){history.pushState(null,'',window.location.href);};window.addEventListener('popstate',_panicPopHandler);}
+function panicDisengage(){if(!_panicActive)return;var c=document.querySelector('.panic-cover');if(c)c.remove();var els=document.querySelectorAll('[data-ph]');for(var i=0;i<els.length;i++){els[i].style.display=els[i].getAttribute('data-ph');els[i].removeAttribute('data-ph');}document.title=localStorage.getItem('airai_cloakRestoreTitle')||'Math Notes';if(_panicPopHandler){window.removeEventListener('popstate',_panicPopHandler);_panicPopHandler=null;}_panicActive=false;}
 </script>
 </body>
 </html>

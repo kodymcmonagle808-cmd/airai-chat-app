@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notepad - AirAI</title>
+  <meta name="theme-color" content="#040d01">
+  <meta name="description" content="Notepad - AirAI Platform">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a1f0a;
+      --bg-secondary: #0d2818;
+      --bg-card: rgba(13, 40, 24, 0.7);
+      --bg-card-hover: rgba(20, 55, 32, 0.9);
+      --border: rgba(46, 125, 50, 0.25);
+      --border-hover: rgba(76, 175, 80, 0.6);
+      --text-primary: #c8e6c9;
+      --text-secondary: #81c784;
+      --text-muted: #4a7a4a;
+      --accent: #4caf50;
+      --accent-glow: rgba(76, 175, 80, 0.4);
+      --gradient-start: #a5d6a7;
+      --gradient-end: #2e7d32;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --danger: #e53935;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Animated background */
+    .bg-animation {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.15;
+    }
+    .orb-1 { width: 500px; height: 500px; background: #2e7d32; top: -150px; left: -100px; animation: orbit1 25s ease-in-out infinite; }
+    .orb-2 { width: 400px; height: 400px; background: #1b5e20; bottom: -100px; right: -80px; animation: orbit2 30s ease-in-out infinite; }
+    .orb-3 { width: 300px; height: 300px; background: #4caf50; top: 40%; left: 60%; animation: orbit3 20s ease-in-out infinite; }
+
+    @keyframes orbit1 {
+      0%, 100% { transform: translate(0,0) scale(1); }
+      25% { transform: translate(60px, 40px) scale(1.15); }
+      50% { transform: translate(-30px, 80px) scale(0.9); }
+      75% { transform: translate(40px, -20px) scale(1.05); }
+    }
+    @keyframes orbit2 {
+      0%, 100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(-50px, -40px) scale(1.1); }
+      66% { transform: translate(30px, -60px) scale(0.95); }
+    }
+    @keyframes orbit3 {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-30%, -60%) scale(1.2); }
+    }
+
+    /* Header */
+    .header {
+      position: relative; z-index: 2;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 31, 10, 0.8);
+      backdrop-filter: blur(12px);
+    }
+    .header-content {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; color: inherit;
+    }
+    .logo-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .logo-text {
+      font-size: 18px; font-weight: 700;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-links {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .header-link {
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-secondary); padding: 8px 14px; border-radius: 10px;
+      cursor: pointer; font-size: 13px; font-weight: 600;
+      transition: all 0.25s; text-decoration: none;
+      backdrop-filter: blur(10px);
+    }
+    .header-link:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Main layout */
+    .notepad-wrap {
+      position: relative; z-index: 1;
+      flex: 1; display: flex; flex-direction: column;
+      max-width: 1400px; width: 100%; margin: 0 auto;
+      padding: 20px 24px;
+    }
+    .notepad-container {
+      flex: 1; display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    /* Sidebar */
+    .notes-sidebar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .sidebar-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-header h2 {
+      font-size: 15px; font-weight: 700; color: var(--text-secondary);
+    }
+    .btn-new {
+      background: var(--accent); color: #0a1f0a; border: none;
+      padding: 6px 14px; border-radius: 8px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-new:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--accent-glow); }
+    .notes-list {
+      flex: 1; overflow-y: auto; padding: 8px;
+    }
+    .note-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; border-radius: 8px;
+      cursor: pointer; transition: all 0.2s;
+      margin-bottom: 4px;
+    }
+    .note-item:hover { background: var(--bg-card-hover); }
+    .note-item.active {
+      background: rgba(76, 175, 80, 0.15);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+    .note-item-info { flex: 1; min-width: 0; }
+    .note-item-title {
+      font-size: 13px; font-weight: 600; color: var(--text-primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .note-item-date {
+      font-size: 11px; color: var(--text-muted); margin-top: 2px;
+    }
+    .note-item-delete {
+      background: none; border: none; color: var(--text-muted);
+      font-size: 14px; cursor: pointer; padding: 4px 6px;
+      border-radius: 6px; transition: all 0.2s;
+      opacity: 0; flex-shrink: 0;
+    }
+    .note-item:hover .note-item-delete { opacity: 1; }
+    .note-item-delete:hover { color: var(--danger); background: rgba(229, 57, 53, 0.1); }
+    .notes-empty {
+      padding: 24px; text-align: center; color: var(--text-muted);
+      font-size: 13px; line-height: 1.6;
+    }
+
+    /* Editor */
+    .editor-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .editor-toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .note-title-input {
+      flex: 1; background: none; border: none;
+      color: var(--text-primary); font-size: 16px; font-weight: 700;
+      font-family: inherit; outline: none;
+      padding: 4px 0;
+    }
+    .note-title-input::placeholder { color: var(--text-muted); }
+    .toolbar-actions {
+      display: flex; gap: 8px; flex-shrink: 0;
+    }
+    .btn-action {
+      background: var(--bg-card-hover); border: 1px solid var(--border);
+      color: var(--text-secondary); padding: 6px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; font-family: inherit;
+    }
+    .btn-action:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+    .btn-action.danger:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: rgba(229, 57, 53, 0.1);
+    }
+    .editor-textarea {
+      flex: 1; background: none; border: none;
+      color: var(--text-primary); font-size: 14px; line-height: 1.7;
+      font-family: 'Inter', system-ui, sans-serif;
+      padding: 18px 20px; resize: none; outline: none;
+      min-height: 0;
+    }
+    .editor-textarea::placeholder { color: var(--text-muted); }
+    .editor-stats {
+      display: flex; gap: 16px; align-items: center;
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--text-muted); font-weight: 500;
+    }
+    .editor-stats .saved-indicator {
+      margin-left: auto;
+      color: var(--accent);
+    }
+
+    /* Empty state */
+    .editor-empty {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; color: var(--text-muted);
+    }
+    .editor-empty-icon { font-size: 48px; opacity: 0.3; }
+    .editor-empty-text { font-size: 14px; }
+
+    /* Footer */
+    .footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 16px 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer p { font-size: 12px; color: var(--text-muted); }
+
+    /* Confirm dialog */
+    .confirm-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 5000;
+      align-items: center; justify-content: center;
+    }
+    .confirm-overlay.active { display: flex; }
+    .confirm-box {
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: 14px; padding: 24px; max-width: 360px; width: 90%;
+      text-align: center;
+    }
+    .confirm-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+    .confirm-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+    .confirm-btn {
+      padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; font-family: inherit; border: none;
+    }
+    .confirm-btn.cancel { background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border); }
+    .confirm-btn.delete { background: var(--danger); color: #fff; }
+    .confirm-btn:hover { transform: translateY(-1px); }
+
+    /* Fade-in */
+    .fade-up {
+      opacity: 0; transform: translateY(18px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .notepad-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+      .notes-sidebar { max-height: 200px; }
+      .header-link { padding: 6px 10px; font-size: 12px; }
+      .notepad-wrap { padding: 12px; }
+    }
+    @media (max-width: 480px) {
+      .header-content { flex-direction: column; gap: 10px; }
+      .toolbar-actions { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body class="light-mode">
+
+<div class="bg-animation">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<header class="header fade-up">
+  <div class="header-content">
+    <a href="dashboard_light.html" class="logo">
+      <div class="logo-icon">&#9889;</div>
+      <span class="logo-text">AirAI &middot; Notepad</span>
+    </a>
+    <nav class="header-links">
+      <a href="dashboard_light.html" class="header-link">&larr; Dashboard</a>
+      <a href="../dark-mode/notepad.html" class="header-link">&#127769; Dark Mode</a>
+    </nav>
+  </div>
+</header>
+
+<div class="notepad-wrap">
+  <div class="notepad-container fade-up delay-1">
+    <aside class="notes-sidebar">
+      <div class="sidebar-header">
+        <h2>Notes</h2>
+        <button class="btn-new" id="btnNew" type="button">+ New</button>
+      </div>
+      <div class="notes-list" id="notesList"></div>
+    </aside>
+
+    <section class="editor-panel" id="editorPanel">
+      <div class="editor-toolbar" id="editorToolbar" style="display:none;">
+        <input type="text" class="note-title-input" id="noteTitle" placeholder="Untitled" autocomplete="off" spellcheck="false">
+        <div class="toolbar-actions">
+          <button class="btn-action danger" id="btnDelete" type="button">Delete</button>
+        </div>
+      </div>
+      <textarea class="editor-textarea" id="noteContent" placeholder="Start typing..." style="display:none;"></textarea>
+      <div class="editor-stats" id="editorStats" style="display:none;">
+        <span id="statsWords">0 words</span>
+        <span id="statsChars">0 characters</span>
+        <span class="saved-indicator" id="savedIndicator">Saved</span>
+      </div>
+      <div class="editor-empty" id="editorEmpty">
+        <div class="editor-empty-icon">&#128221;</div>
+        <div class="editor-empty-text">Select a note or create a new one</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<footer class="footer fade-up delay-3">
+  <p>&copy; 2026 AirAI, Inc. All rights reserved. &middot; <a href="dashboard_light.html" style="color:var(--text-secondary);text-decoration:none;">Back to Dashboard</a> &middot; <span style="color: var(--accent);">v2.0</span></p>
+</footer>
+
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Delete Note</h3>
+    <p id="confirmMsg">Are you sure you want to delete this note?</p>
+    <div class="confirm-actions">
+      <button class="confirm-btn cancel" id="confirmCancel" type="button">Cancel</button>
+      <button class="confirm-btn delete" id="confirmDelete" type="button">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var STORAGE_KEY = 'airai_notepadNotes';
+  var notes = [];
+  var activeId = null;
+  var saveTimer = null;
+
+  var notesList = document.getElementById('notesList');
+  var noteTitle = document.getElementById('noteTitle');
+  var noteContent = document.getElementById('noteContent');
+  var editorToolbar = document.getElementById('editorToolbar');
+  var editorStats = document.getElementById('editorStats');
+  var editorEmpty = document.getElementById('editorEmpty');
+  var statsWords = document.getElementById('statsWords');
+  var statsChars = document.getElementById('statsChars');
+  var savedIndicator = document.getElementById('savedIndicator');
+  var confirmOverlay = document.getElementById('confirmOverlay');
+  var confirmMsg = document.getElementById('confirmMsg');
+  var pendingDeleteId = null;
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      notes = raw ? JSON.parse(raw) : [];
+    } catch(e) { notes = []; }
+    if (!notes.length) {
+      notes.push({
+        id: 'note_' + Date.now(),
+        title: 'Welcome',
+        content: 'Welcome to AirAI Notepad!\n\nCreate notes, organize your thoughts, and everything auto-saves.\n\nTips:\n- Click \"+ New\" to create a note\n- Click a note in the sidebar to open it\n- Hover over a note and click the X to delete it\n- All notes are saved to your browser automatically',
+        created: Date.now(),
+        modified: Date.now()
+      });
+      save();
+    }
+  }
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+  }
+
+  function formatDate(ts) {
+    var d = new Date(ts);
+    var now = new Date();
+    var diff = now - d;
+    if (diff < 60000) return 'Just now';
+    if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+    if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+    return d.toLocaleDateString();
+  }
+
+  function render() {
+    if (!notes.length) {
+      notesList.innerHTML = '<div class="notes-empty">No notes yet.<br>Click <strong>+ New</strong> to get started.</div>';
+      showEmpty();
+      return;
+    }
+    var sorted = notes.slice().sort(function(a, b) { return b.modified - a.modified; });
+    var html = '';
+    sorted.forEach(function(n) {
+      html += '<div class="note-item' + (n.id === activeId ? ' active' : '') + '" data-id="' + n.id + '">' +
+        '<div class="note-item-info">' +
+          '<div class="note-item-title">' + escapeHtml(n.title || 'Untitled') + '</div>' +
+          '<div class="note-item-date">' + formatDate(n.modified) + '</div>' +
+        '</div>' +
+        '<button class="note-item-delete" data-delete="' + n.id + '" title="Delete" type="button">&times;</button>' +
+      '</div>';
+    });
+    notesList.innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function findNote(id) {
+    for (var i = 0; i < notes.length; i++) {
+      if (notes[i].id === id) return notes[i];
+    }
+    return null;
+  }
+
+  function selectNote(id) {
+    var note = findNote(id);
+    if (!note) return;
+    activeId = id;
+    noteTitle.value = note.title;
+    noteContent.value = note.content;
+    editorToolbar.style.display = '';
+    noteContent.style.display = '';
+    editorStats.style.display = '';
+    editorEmpty.style.display = 'none';
+    updateStats();
+    render();
+  }
+
+  function showEmpty() {
+    activeId = null;
+    editorToolbar.style.display = 'none';
+    noteContent.style.display = 'none';
+    editorStats.style.display = 'none';
+    editorEmpty.style.display = '';
+  }
+
+  function createNote() {
+    var note = {
+      id: 'note_' + Date.now(),
+      title: '',
+      content: '',
+      created: Date.now(),
+      modified: Date.now()
+    };
+    notes.push(note);
+    save();
+    selectNote(note.id);
+    noteTitle.focus();
+  }
+
+  function deleteNote(id) {
+    notes = notes.filter(function(n) { return n.id !== id; });
+    save();
+    if (activeId === id) showEmpty();
+    render();
+  }
+
+  function updateStats() {
+    var text = noteContent.value;
+    var charCount = text.length;
+    var wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+    statsWords.textContent = wordCount + (wordCount === 1 ? ' word' : ' words');
+    statsChars.textContent = charCount + (charCount === 1 ? ' character' : ' characters');
+  }
+
+  function scheduleSave() {
+    savedIndicator.textContent = 'Saving...';
+    savedIndicator.style.color = 'var(--text-muted)';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function() {
+      var note = findNote(activeId);
+      if (note) {
+        note.title = noteTitle.value;
+        note.content = noteContent.value;
+        note.modified = Date.now();
+        save();
+        render();
+        savedIndicator.textContent = 'Saved';
+        savedIndicator.style.color = 'var(--accent)';
+      }
+    }, 400);
+  }
+
+  // Events
+  document.getElementById('btnNew').addEventListener('click', createNote);
+
+  noteTitle.addEventListener('input', function() { scheduleSave(); });
+  noteContent.addEventListener('input', function() { updateStats(); scheduleSave(); });
+
+  notesList.addEventListener('click', function(e) {
+    var delBtn = e.target.closest('[data-delete]');
+    if (delBtn) {
+      e.stopPropagation();
+      pendingDeleteId = delBtn.getAttribute('data-delete');
+      var note = findNote(pendingDeleteId);
+      confirmMsg.textContent = 'Delete "' + (note ? note.title || 'Untitled' : '') + '"?';
+      confirmOverlay.classList.add('active');
+      return;
+    }
+    var item = e.target.closest('.note-item');
+    if (item) selectNote(item.getAttribute('data-id'));
+  });
+
+  document.getElementById('btnDelete').addEventListener('click', function() {
+    if (!activeId) return;
+    pendingDeleteId = activeId;
+    var note = findNote(activeId);
+    confirmMsg.textContent = 'Delete "' + (note ? note.title || 'Untitled' : '') + '"?';
+    confirmOverlay.classList.add('active');
+  });
+
+  document.getElementById('confirmCancel').addEventListener('click', function() {
+    confirmOverlay.classList.remove('active');
+    pendingDeleteId = null;
+  });
+  document.getElementById('confirmDelete').addEventListener('click', function() {
+    if (pendingDeleteId) deleteNote(pendingDeleteId);
+    confirmOverlay.classList.remove('active');
+    pendingDeleteId = null;
+  });
+  confirmOverlay.addEventListener('click', function(e) {
+    if (e.target === confirmOverlay) {
+      confirmOverlay.classList.remove('active');
+      pendingDeleteId = null;
+    }
+  });
+
+  // Init
+  load();
+  render();
+  if (notes.length) {
+    var sorted = notes.slice().sort(function(a, b) { return b.modified - a.modified; });
+    selectNote(sorted[0].id);
+  }
+})();
+</script>
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  if (e.key === '?' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); panicEngage(); }
+  if (e.key === '/' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); panicDisengage(); }
+});
+</script>
+<script>
+var _panicActive=false;var _panicPopHandler=null;
+function panicEngage(){if(_panicActive)return;_panicActive=true;var els=document.body.children;for(var i=0;i<els.length;i++){if(els[i].className!=='panic-cover'){els[i].setAttribute('data-ph',els[i].style.display||'');els[i].style.display='none';}}var f=document.createElement('iframe');f.className='panic-cover';f.src=localStorage.getItem('airai_cloakUrl')||'https://www.hcpss.me/';f.style.cssText='border:none;width:100vw;height:100vh;position:fixed;top:0;left:0;z-index:999999;background:#fff;';document.body.appendChild(f);document.title=localStorage.getItem('airai_cloakTitle')||'HCPSS';history.pushState(null,'',window.location.href);_panicPopHandler=function(){history.pushState(null,'',window.location.href);};window.addEventListener('popstate',_panicPopHandler);}
+function panicDisengage(){if(!_panicActive)return;var c=document.querySelector('.panic-cover');if(c)c.remove();var els=document.querySelectorAll('[data-ph]');for(var i=0;i<els.length;i++){els[i].style.display=els[i].getAttribute('data-ph');els[i].removeAttribute('data-ph');}document.title=localStorage.getItem('airai_cloakRestoreTitle')||'Math Notes';if(_panicPopHandler){window.removeEventListener('popstate',_panicPopHandler);_panicPopHandler=null;}_panicActive=false;}
+</script>
+</body>
+</html>
