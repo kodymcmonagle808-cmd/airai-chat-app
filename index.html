@@ -97,7 +97,7 @@
       // If already on about:blank, skip
       if (window.location.protocol === 'about:') return;
 
-      // Attempt about:blank cloak
+      // Attempt about:blank cloak with real URL in address bar
       try {
         var win = window.open('about:blank', '_blank');
         if (win) {
@@ -112,6 +112,8 @@
             '</head><body><iframe src="' + url + '"></iframe></body></html>'
           );
           win.document.close();
+          // Show the real URL in the address bar while staying about:blank under the hood
+          try { win.history.replaceState({}, 'Math Notes', url); } catch(e) {}
           // Replace this tab with school site so it looks clean
           setTimeout(function() {
             window.location.replace('https://www.google.com');
