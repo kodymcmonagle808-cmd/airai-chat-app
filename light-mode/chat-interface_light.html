@@ -1317,7 +1317,7 @@ body.light-theme .chat-container {
   border-radius: 18px;
   line-height: 1.65;
   word-wrap: break-word;
-  font-size: 14.5px;
+  font-size: var(--chat-font-size, 14.5px);
   white-space: pre-wrap;
 }
 
@@ -3792,6 +3792,83 @@ code {
   font-weight: 600;
   font-size: 12px;
 }
+
+/* Settings Input Fields */
+.settings-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-top: 6px;
+}
+.settings-input:focus {
+  border-color: var(--accent-green);
+}
+.settings-input::placeholder {
+  color: var(--text-muted);
+}
+.settings-input-row {
+  padding: 8px 0;
+}
+.settings-input-label {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+}
+.settings-input-sub {
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* Settings Range Row */
+.settings-range-row {
+  padding: 12px 0;
+}
+.settings-range-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Settings Danger Buttons */
+.settings-btn-row {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+}
+.settings-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+.settings-btn:hover {
+  border-color: var(--border-secondary);
+  background: var(--bg-primary);
+}
+.settings-btn-danger {
+  border-color: rgba(244, 67, 54, 0.3);
+  color: #f44336;
+}
+.settings-btn-danger:hover {
+  background: rgba(244, 67, 54, 0.1);
+  border-color: rgba(244, 67, 54, 0.5);
+}
+
 /* Enhanced Debug Console */
 .debug-console {
   position: fixed;
@@ -6388,6 +6465,8 @@ const MODEL_CAPABILITIES = {
   let currentTheme = 'dark';
   let autoSaveDrafts = true;
   let streamingEnabled = false;
+  let enterToSend = true;
+  let chatFontSize = 14.5;
   let lastScrollPosition = 0;
   let isScrolledToBottom = true;
   
@@ -7062,6 +7141,17 @@ function updateFileUploadButton() {
     debugConsole.log(`Theme changed to ${currentTheme}`, 'info');
   }
   
+  /**
+   * Apply chat font size to all message content elements
+   */
+  function applyChatFontSize(size) {
+    document.querySelectorAll('.message-content').forEach(function(el) {
+      el.style.fontSize = size + 'px';
+    });
+    // Store for new messages via CSS custom property
+    document.documentElement.style.setProperty('--chat-font-size', size + 'px');
+  }
+
   /**
    * Apply a color theme
    */
@@ -10027,14 +10117,26 @@ function hideMemberKeyOverlay() {
   });
   
   chatInput.addEventListener('keypress', async function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      const availability = isModelAvailable(currentModel);
-      if (availability === false) {
-        showError('This model is disabled!');
-        return;
+    if (e.key === 'Enter') {
+      if (enterToSend && !e.shiftKey) {
+        // Enter to send mode: Enter sends, Shift+Enter = newline
+        e.preventDefault();
+        const availability = isModelAvailable(currentModel);
+        if (availability === false) {
+          showError('This model is disabled!');
+          return;
+        }
+        sendMessage();
+      } else if (!enterToSend && (e.ctrlKey || e.metaKey)) {
+        // Ctrl+Enter to send mode: Ctrl+Enter sends, Enter = newline
+        e.preventDefault();
+        const availability = isModelAvailable(currentModel);
+        if (availability === false) {
+          showError('This model is disabled!');
+          return;
+        }
+        sendMessage();
       }
-      sendMessage();
     }
   });
   
@@ -10171,8 +10273,12 @@ aiModelSelect.addEventListener('change', function(e) {
   // ============================================
   document.getElementById('settingsBtn').addEventListener('click', function() {
     const currentColorTheme = localStorage.getItem('colorTheme') || 'green';
+    var cloakTitle = localStorage.getItem('airai_cloakTitle') || '';
+    var cloakUrl = localStorage.getItem('airai_cloakUrl') || '';
+    var cloakRestore = localStorage.getItem('airai_cloakRestoreTitle') || '';
     showModal(
       'Settings',
+      // ── Color Theme ──
       '<div class="settings-section"><div class="settings-section-title">🎨 Color Theme</div><div class="settings-row"><div class="settings-label"><div class="settings-label-main">Interface Color</div><div class="settings-label-sub">Choose a color palette for the entire UI</div></div></div><div class="color-theme-picker" id="colorThemePicker">' +
       '<div class="color-swatch color-swatch-green' + (currentColorTheme === 'green' ? ' active' : '') + '" data-theme="green" title="Green (Default)"></div>' +
       '<div class="color-swatch color-swatch-blue' + (currentColorTheme === 'blue' ? ' active' : '') + '" data-theme="blue" title="Blue"></div>' +
@@ -10181,22 +10287,51 @@ aiModelSelect.addEventListener('change', function(e) {
       '<div class="color-swatch color-swatch-amber' + (currentColorTheme === 'amber' ? ' active' : '') + '" data-theme="amber" title="Amber"></div>' +
       '<div class="color-swatch color-swatch-teal' + (currentColorTheme === 'teal' ? ' active' : '') + '" data-theme="teal" title="Teal"></div>' +
       '</div></div>' +
-      '<div class="settings-section"><div class="settings-section-title">⚙️ Preferences</div><div class="settings-row"><div class="settings-label"><div class="settings-label-main">Auto-save Drafts</div><div class="settings-label-sub">Automatically save your messages as you type</div></div><label class="toggle-switch"><input type="checkbox" id="autoSaveSetting" ' + (autoSaveDrafts ? 'checked' : '') + '><span class="toggle-slider"></span></label></div><div class="settings-row"><div class="settings-label"><div class="settings-label-main">Streaming Responses</div><div class="settings-label-sub">Show responses as they are generated</div></div><label class="toggle-switch"><input type="checkbox" id="streamingSetting" ' + (streamingEnabled ? 'checked' : '') + '><span class="toggle-slider"></span></label></div></div>',
+      // ── Preferences ──
+      '<div class="settings-section"><div class="settings-section-title">⚙️ Preferences</div>' +
+      '<div class="settings-row"><div class="settings-label"><div class="settings-label-main">Auto-save Drafts</div><div class="settings-label-sub">Automatically save your messages as you type</div></div><label class="toggle-switch"><input type="checkbox" id="autoSaveSetting" ' + (autoSaveDrafts ? 'checked' : '') + '><span class="toggle-slider"></span></label></div>' +
+      '<div class="settings-row"><div class="settings-label"><div class="settings-label-main">Streaming Responses</div><div class="settings-label-sub">Show responses as they are generated</div></div><label class="toggle-switch"><input type="checkbox" id="streamingSetting" ' + (streamingEnabled ? 'checked' : '') + '><span class="toggle-slider"></span></label></div>' +
+      '<div class="settings-row"><div class="settings-label"><div class="settings-label-main">Enter to Send</div><div class="settings-label-sub">Press Enter to send messages. When off, use Ctrl+Enter to send</div></div><label class="toggle-switch"><input type="checkbox" id="enterToSendSetting" ' + (enterToSend ? 'checked' : '') + '><span class="toggle-slider"></span></label></div>' +
+      '<div class="settings-range-row"><div class="settings-range-header"><div class="settings-label"><div class="settings-label-main">Chat Font Size</div><div class="settings-label-sub">Adjust the size of message text</div></div><span class="range-value" id="fontSizeValue">' + chatFontSize + 'px</span></div><input type="range" class="range-slider" id="fontSizeSetting" min="12" max="20" step="0.5" value="' + chatFontSize + '"></div>' +
+      '</div>' +
+      // ── Tab Cloak ──
+      '<div class="settings-section"><div class="settings-section-title">🛡️ Tab Cloak</div>' +
+      '<div class="settings-input-row"><div class="settings-input-label">Panic Tab Title</div><div class="settings-input-sub">Title shown when you press ? to hide (default: HCPSS)</div><input type="text" class="settings-input" id="cloakTitleSetting" placeholder="HCPSS" value="' + cloakTitle.replace(/"/g, '&quot;') + '"></div>' +
+      '<div class="settings-input-row"><div class="settings-input-label">Panic Tab URL</div><div class="settings-input-sub">Website loaded when you press ? (default: hcpss.me)</div><input type="text" class="settings-input" id="cloakUrlSetting" placeholder="https://www.hcpss.me/" value="' + cloakUrl.replace(/"/g, '&quot;') + '"></div>' +
+      '<div class="settings-input-row"><div class="settings-input-label">Restore Title</div><div class="settings-input-sub">Title restored when you press / (default: Math Notes)</div><input type="text" class="settings-input" id="cloakRestoreSetting" placeholder="Math Notes" value="' + cloakRestore.replace(/"/g, '&quot;') + '"></div>' +
+      '</div>' +
+      // ── Data Management ──
+      '<div class="settings-section"><div class="settings-section-title">🗑️ Data Management</div>' +
+      '<div class="settings-btn-row"><button type="button" class="settings-btn settings-btn-danger" id="clearHistoryBtn">Clear Chat History</button><button type="button" class="settings-btn settings-btn-danger" id="resetSettingsBtn">Reset All Settings</button></div>' +
+      '</div>',
       [
         {
-          text: 'Close',
+          text: 'Save & Close',
           type: 'confirm',
           action: function() {
+            // Preferences
             autoSaveDrafts = document.getElementById('autoSaveSetting').checked;
             streamingEnabled = document.getElementById('streamingSetting').checked;
+            enterToSend = document.getElementById('enterToSendSetting').checked;
+            chatFontSize = parseFloat(document.getElementById('fontSizeSetting').value);
             localStorage.setItem('autoSaveDrafts', autoSaveDrafts);
             localStorage.setItem('streamingEnabled', streamingEnabled);
+            localStorage.setItem('enterToSend', enterToSend);
+            localStorage.setItem('chatFontSize', chatFontSize);
+            applyChatFontSize(chatFontSize);
+            // Cloak settings
+            var ct = document.getElementById('cloakTitleSetting').value.trim();
+            var cu = document.getElementById('cloakUrlSetting').value.trim();
+            var cr = document.getElementById('cloakRestoreSetting').value.trim();
+            if (ct) localStorage.setItem('airai_cloakTitle', ct); else localStorage.removeItem('airai_cloakTitle');
+            if (cu) localStorage.setItem('airai_cloakUrl', cu); else localStorage.removeItem('airai_cloakUrl');
+            if (cr) localStorage.setItem('airai_cloakRestoreTitle', cr); else localStorage.removeItem('airai_cloakRestoreTitle');
             hideModal();
           }
         }
       ]
     );
-    
+
     // Attach color swatch listeners after modal is shown
     setTimeout(function() {
       var picker = document.getElementById('colorThemePicker');
@@ -10208,6 +10343,52 @@ aiModelSelect.addEventListener('change', function(e) {
           applyColorTheme(theme);
           picker.querySelectorAll('.color-swatch').forEach(function(s) { s.classList.remove('active'); });
           swatch.classList.add('active');
+        });
+      }
+      // Font size slider live preview
+      var fontSlider = document.getElementById('fontSizeSetting');
+      var fontValue = document.getElementById('fontSizeValue');
+      if (fontSlider) {
+        fontSlider.addEventListener('input', function() {
+          fontValue.textContent = fontSlider.value + 'px';
+          applyChatFontSize(parseFloat(fontSlider.value));
+        });
+      }
+      // Clear history button
+      var clearBtn = document.getElementById('clearHistoryBtn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+          if (confirm('Clear all saved chat history? This cannot be undone.')) {
+            localStorage.removeItem('favoriteChats');
+            var historyList = document.getElementById('historyList');
+            if (historyList) historyList.innerHTML = '';
+            clearBtn.textContent = 'Cleared!';
+            setTimeout(function() { clearBtn.textContent = 'Clear Chat History'; }, 1500);
+          }
+        });
+      }
+      // Reset settings button
+      var resetBtn = document.getElementById('resetSettingsBtn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+          if (confirm('Reset all settings to defaults? This cannot be undone.')) {
+            localStorage.removeItem('colorTheme');
+            localStorage.removeItem('autoSaveDrafts');
+            localStorage.removeItem('streamingEnabled');
+            localStorage.removeItem('enterToSend');
+            localStorage.removeItem('chatFontSize');
+            localStorage.removeItem('airai_cloakTitle');
+            localStorage.removeItem('airai_cloakUrl');
+            localStorage.removeItem('airai_cloakRestoreTitle');
+            autoSaveDrafts = true;
+            streamingEnabled = false;
+            enterToSend = true;
+            chatFontSize = 14.5;
+            applyColorTheme('green');
+            applyChatFontSize(14.5);
+            resetBtn.textContent = 'Reset!';
+            setTimeout(function() { hideModal(); }, 800);
+          }
         });
       }
     }, 100);
@@ -10478,7 +10659,18 @@ window.addEventListener('load', function() {
     if (savedStreaming !== null) {
       streamingEnabled = savedStreaming === 'true';
     }
-    
+
+    const savedEnterToSend = localStorage.getItem('enterToSend');
+    if (savedEnterToSend !== null) {
+      enterToSend = savedEnterToSend === 'true';
+    }
+
+    const savedFontSize = localStorage.getItem('chatFontSize');
+    if (savedFontSize !== null) {
+      chatFontSize = parseFloat(savedFontSize);
+      applyChatFontSize(chatFontSize);
+    }
+
     // Load draft
     loadDraft();
     
