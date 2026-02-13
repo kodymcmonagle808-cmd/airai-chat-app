@@ -81,22 +81,12 @@
         window.location.href = 'login_light.html';
         return;
       }
-      if (window.location.protocol === 'about:') return;
-
+      // Open real site in new tab, replace this tab with Google
       try {
-        var win = window.open('about:blank', '_blank');
+        var base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+        var url = base + 'login_light.html';
+        var win = window.open(url, '_blank');
         if (win) {
-          var base = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
-          var url = base + 'login_light.html';
-          var faviconUrl = base + '../favicon.ico';
-          win.document.open();
-          win.document.write(
-            '<!DOCTYPE html><html><head><title>Math Notes</title>' +
-            '<link rel="icon" type="image/x-icon" href="' + faviconUrl + '">' +
-            '<style>body{margin:0;overflow:hidden;height:100vh;background:#f5f5f5}iframe{width:100%;height:100%;border:none;position:fixed;top:0;left:0}</style>' +
-            '</head><body><iframe src="' + url + '"></iframe></body></html>'
-          );
-          win.document.close();
           setTimeout(function() {
             window.location.replace('https://www.google.com');
           }, 400);
