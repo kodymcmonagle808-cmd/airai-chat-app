@@ -1,7 +1,7 @@
 /*  AirAI – Shared Config
     Edit version / cloak defaults here. Every page pulls from this file. */
 
-var APP_VERSION = 'v2.1';
+var APP_VERSION = 'v2.2';
 
 /* ── Panic / Tab-Cloak System ────────────────────────────── */
 var _panicActive = false;
