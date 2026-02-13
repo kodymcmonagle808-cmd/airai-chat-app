@@ -1409,6 +1409,14 @@
         settingsBtn.onmouseout = function() { this.style.background='rgba(46,125,50,0.08)'; this.style.borderColor='rgba(46,125,50,0.35)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'; };
         settingsBtn.innerHTML = '<span style="font-size:22px;line-height:1;">&#9881;&#65039;</span><span>Settings</span>';
         grid.appendChild(settingsBtn);
+
+        var staffBtn = document.createElement('button');
+        staffBtn.onclick = function() { openStaffSettings(); };
+        staffBtn.style.cssText = 'padding:12px 8px;background:rgba(255,152,0,0.1);border:1.5px solid rgba(255,152,0,0.4);border-radius:12px;color:#ffb74d;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;gap:8px;';
+        staffBtn.onmouseover = function() { this.style.background='rgba(255,152,0,0.2)'; this.style.borderColor='#ffa726'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255,152,0,0.25)'; };
+        staffBtn.onmouseout = function() { this.style.background='rgba(255,152,0,0.1)'; this.style.borderColor='rgba(255,152,0,0.4)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'; };
+        staffBtn.innerHTML = '<span style="font-size:22px;line-height:1;">&#128737;</span><span>Staff</span>';
+        grid.appendChild(staffBtn);
       }
       document.body.appendChild(modal);
       return modal;
@@ -1709,6 +1717,176 @@
       if (ct) { if (ct.value) localStorage.setItem('airai_cloakTitle', ct.value); else localStorage.removeItem('airai_cloakTitle'); }
       if (cu) { if (cu.value) localStorage.setItem('airai_cloakUrl', cu.value); else localStorage.removeItem('airai_cloakUrl'); }
       if (cr) { if (cr.value) localStorage.setItem('airai_cloakRestoreTitle', cr.value); else localStorage.removeItem('airai_cloakRestoreTitle'); }
+    }
+
+    // ============================================
+    // STAFF SETTINGS
+    // ============================================
+    var STAFF_CREDS = { user: 'KodyCookie', pass: 'GAME_kid-8' };
+
+    function openStaffSettings() {
+      if (sessionStorage.getItem('staffAuthenticated') === 'true') {
+        showStaffPanel();
+        return;
+      }
+      showStaffAuthPrompt();
+    }
+
+    function showStaffAuthPrompt() {
+      var existing = document.getElementById('staffAuthOverlay');
+      if (existing) existing.remove();
+
+      var overlay = document.createElement('div');
+      overlay.id = 'staffAuthOverlay';
+      overlay.style.cssText = 'display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:20000;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;';
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) { overlay.style.opacity='0'; setTimeout(function(){ overlay.remove(); },200); } });
+
+      var box = document.createElement('div');
+      box.style.cssText = 'background:linear-gradient(135deg,#0d2818 0%,#0a1f0a 100%);border:2px solid #ff9800;border-radius:16px;padding:32px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.8);text-align:center;transform:scale(0.95);transition:transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);';
+
+      box.innerHTML =
+        '<div style="width:60px;height:60px;background:linear-gradient(135deg,#ff9800,#f57c00);border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(255,152,0,0.5);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>' +
+        '<h3 style="color:#ffb74d;font-size:20px;margin:0 0 4px 0;font-weight:700;">Staff Authentication</h3>' +
+        '<p style="color:#81c784;font-size:13px;margin:0 0 20px 0;">Enter staff credentials to continue.</p>' +
+        '<input type="text" id="staffUser" placeholder="Username" autocomplete="off" style="width:100%;padding:10px 14px;background:#0a1f0a;border:1.5px solid rgba(255,152,0,0.3);border-radius:10px;color:#c8e6c9;font-size:14px;font-family:inherit;margin-bottom:10px;box-sizing:border-box;outline:none;">' +
+        '<input type="password" id="staffPass" placeholder="Password" autocomplete="off" style="width:100%;padding:10px 14px;background:#0a1f0a;border:1.5px solid rgba(255,152,0,0.3);border-radius:10px;color:#c8e6c9;font-size:14px;font-family:inherit;margin-bottom:10px;box-sizing:border-box;outline:none;">' +
+        '<div id="staffAuthErr" style="color:#f44336;font-size:12px;margin-bottom:10px;display:none;">Invalid credentials. Access denied.</div>' +
+        '<div style="display:flex;gap:10px;margin-top:6px;">' +
+        '<button id="staffAuthCancel" style="flex:1;padding:10px;background:rgba(46,125,50,0.1);border:1.5px solid rgba(46,125,50,0.3);border-radius:10px;color:#81c784;font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>' +
+        '<button id="staffAuthSubmit" style="flex:1;padding:10px;background:linear-gradient(135deg,#ff9800,#f57c00);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;">Authenticate</button>' +
+        '</div>';
+
+      overlay.appendChild(box);
+      document.body.appendChild(overlay);
+      setTimeout(function() { overlay.style.opacity='1'; box.style.transform='scale(1)'; document.getElementById('staffUser').focus(); }, 10);
+
+      document.getElementById('staffAuthCancel').onclick = function() { overlay.style.opacity='0'; setTimeout(function(){ overlay.remove(); },200); };
+      document.getElementById('staffAuthSubmit').onclick = function() { attemptStaffAuth(); };
+      document.getElementById('staffPass').addEventListener('keydown', function(e) { if (e.key === 'Enter') attemptStaffAuth(); });
+
+      function attemptStaffAuth() {
+        var u = document.getElementById('staffUser').value.trim();
+        var p = document.getElementById('staffPass').value;
+        if (u === STAFF_CREDS.user && p === STAFF_CREDS.pass) {
+          sessionStorage.setItem('staffAuthenticated', 'true');
+          overlay.style.opacity = '0';
+          setTimeout(function() { overlay.remove(); showStaffPanel(); }, 200);
+        } else {
+          document.getElementById('staffAuthErr').style.display = 'block';
+          document.getElementById('staffPass').value = '';
+          document.getElementById('staffPass').focus();
+        }
+      }
+    }
+
+    function showStaffPanel() {
+      var existing = document.getElementById('staffPanelOverlay');
+      if (existing) existing.remove();
+
+      function gs(k) { return localStorage.getItem('airai_staff_' + k); }
+      function isOn(k) { return gs(k) === 'true'; }
+
+      var overlay = document.createElement('div');
+      overlay.id = 'staffPanelOverlay';
+      overlay.style.cssText = 'display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:20000;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;';
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) closeStaffPanel(); });
+
+      var box = document.createElement('div');
+      box.style.cssText = 'background:linear-gradient(135deg,#0d2818 0%,#0a1f0a 100%);border:2px solid #ff9800;border-radius:16px;padding:0;max-width:500px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.8);max-height:88vh;overflow-y:auto;transform:scale(0.95);transition:transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);';
+
+      function togRow(id, label, sub, on) {
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;gap:12px;"><div><div style="font-size:14px;font-weight:600;color:#c8e6c9;">' + label + '</div><div style="font-size:12px;color:#81c784;margin-top:2px;">' + sub + '</div></div><label style="position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + ' style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:' + (on ? '#ff9800' : '#1a3d2e') + ';border-radius:24px;transition:0.3s;" onclick="var c=this.previousElementSibling;c.checked=!c.checked;this.style.background=c.checked?\'#ff9800\':\'#1a3d2e\';var d=this.querySelector(\'span\');d.style.transform=c.checked?\'translateX(18px)\':\'translateX(0)\';"><span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s;transform:' + (on ? 'translateX(18px)' : 'translateX(0)') + ';"></span></span></label></div>';
+      }
+      function sliderRow(id, label, sub, min, max, step, val, unit) {
+        if (val === null || val === undefined) val = min;
+        return '<div style="padding:10px 0;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div><div style="font-size:14px;font-weight:600;color:#c8e6c9;">' + label + '</div><div style="font-size:12px;color:#81c784;margin-top:2px;">' + sub + '</div></div><span id="' + id + '_val" style="color:#ffb74d;font-size:13px;font-weight:600;min-width:50px;text-align:right;">' + val + (unit||'') + '</span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '" style="width:100%;height:6px;-webkit-appearance:none;appearance:none;background:linear-gradient(90deg,#ff9800 0%,#1a3d2e 100%);border-radius:3px;outline:none;cursor:pointer;" oninput="document.getElementById(\'' + id + '_val\').textContent=this.value+\'' + (unit||'') + '\'"></div>';
+      }
+      function textRow(id, label, sub, placeholder, val) {
+        return '<div style="padding:10px 0;"><div style="font-size:14px;font-weight:600;color:#c8e6c9;">' + label + '</div><div style="font-size:12px;color:#81c784;margin-top:2px;margin-bottom:6px;">' + sub + '</div><input type="text" id="' + id + '" placeholder="' + placeholder + '" value="' + (val||'').replace(/"/g,'&quot;') + '" style="width:100%;padding:8px 12px;background:#0a1f0a;border:1px solid rgba(255,152,0,0.3);color:#c8e6c9;border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;outline:none;"></div>';
+      }
+      function selectRow(id, label, sub, options) {
+        var opts = '';
+        options.forEach(function(o) { opts += '<option value="' + o.v + '"' + (o.sel ? ' selected' : '') + '>' + o.t + '</option>'; });
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;gap:12px;"><div><div style="font-size:14px;font-weight:600;color:#c8e6c9;">' + label + '</div><div style="font-size:12px;color:#81c784;margin-top:2px;">' + sub + '</div></div><select id="' + id + '" style="background:#0a1f0a;border:1px solid rgba(255,152,0,0.3);color:#c8e6c9;padding:6px 10px;border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer;min-width:120px;">' + opts + '</select></div>';
+      }
+      function sectionTitle(emoji, title) {
+        return '<div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#ffb74d;margin-bottom:14px;margin-top:20px;display:flex;align-items:center;gap:8px;">' + emoji + ' ' + title + '</div>';
+      }
+
+      var defModel = gs('defaultModel') || 'cerebra';
+      var models = [{v:'cerebra',t:'Cerebra'},{v:'groq',t:'Groq'},{v:'gemini',t:'Gemini'},{v:'openai',t:'ChatGPT'},{v:'deepseek',t:'DeepSeek'},{v:'qwen',t:'Qwen'},{v:'mistral',t:'Mistral'},{v:'nous',t:'Nous'},{v:'tongyi',t:'Tongyi'},{v:'trinity',t:'Trinity'},{v:'glm',t:'GLM'},{v:'nova',t:'Nova'},{v:'airai',t:'AirAI'}];
+      models.forEach(function(m) { m.sel = (m.v === defModel); });
+
+      var forceTheme = gs('forceTheme') || '';
+
+      box.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid rgba(255,152,0,0.3);"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">&#128737;</span><span style="font-size:18px;font-weight:700;color:#ffb74d;">Staff Settings</span></div><button onclick="closeStaffPanel()" style="background:none;border:none;color:#81c784;font-size:22px;cursor:pointer;padding:4px;line-height:1;" onmouseover="this.style.color=\'#c8e6c9\'" onmouseout="this.style.color=\'#81c784\'">&times;</button></div>' +
+        '<div style="padding:16px 24px 24px;">' +
+        sectionTitle('&#128295;', 'Admin Controls') +
+        togRow('s_maintenanceMode', 'Maintenance Mode', 'Show maintenance page to non-staff users', isOn('maintenanceMode')) +
+        togRow('s_debugConsole', 'Debug Console', 'Show debug console panel on page load', isOn('debugConsole')) +
+        textRow('s_announcement', 'Custom Announcement', 'Banner message shown to all users', 'Enter announcement text...', gs('announcement')) +
+        sliderRow('s_maxMessages', 'Max Messages Per Session', 'Limit messages per session (0 = unlimited)', 0, 200, 10, gs('maxMessages') || 0, '') +
+        sliderRow('s_apiTimeout', 'API Timeout', 'Max seconds to wait for AI response', 5, 60, 5, gs('apiTimeout') || 30, 's') +
+        sectionTitle('&#129302;', 'AI Model Management') +
+        selectRow('s_defaultModel', 'Default AI Model', 'Model selected by default for new users', models) +
+        togRow('s_unlockStaffModels', 'Unlock Staff Models', 'Allow regular users to access staff-only models', isOn('unlockStaffModels')) +
+        sliderRow('s_maxTokens', 'Max Token Limit', 'Maximum tokens per AI response', 100, 4096, 100, gs('maxTokens') || 1024, '') +
+        sliderRow('s_temperature', 'Temperature Override', 'AI creativity (0 = precise, 2 = creative)', 0, 2, 0.1, gs('temperature') || 0.7, '') +
+        textRow('s_systemPrompt', 'System Prompt Override', 'Custom system prompt prepended to all conversations', 'Enter system prompt...', gs('systemPrompt')) +
+        sectionTitle('&#128101;', 'User Controls') +
+        togRow('s_guestAccess', 'Guest Access', 'Allow users to enter as guest without an account', gs('guestAccess') !== 'false') +
+        togRow('s_registration', 'Registration', 'Allow new users to create accounts', gs('registration') !== 'false') +
+        sliderRow('s_sessionDuration', 'Session Duration', 'Session code expiry in minutes', 5, 60, 5, gs('sessionDuration') || 15, ' min') +
+        sliderRow('s_maxSessions', 'Max Concurrent Sessions', 'Max active sessions per user', 1, 10, 1, gs('maxSessions') || 5, '') +
+        sectionTitle('&#127912;', 'Global Appearance') +
+        selectRow('s_forceTheme', 'Force Theme', 'Override theme for all users', [{v:'',t:'None (User Choice)',sel:!forceTheme},{v:'dark',t:'Dark',sel:forceTheme==='dark'},{v:'light',t:'Light',sel:forceTheme==='light'}]) +
+        textRow('s_customTitle', 'Custom App Title', 'Override the browser tab title', 'Math Notes', gs('customTitle')) +
+        '<div style="padding:10px 0;"><div style="font-size:14px;font-weight:600;color:#c8e6c9;">Custom CSS Injection</div><div style="font-size:12px;color:#81c784;margin-top:2px;margin-bottom:6px;">Add custom CSS rules applied globally</div><textarea id="s_customCSS" placeholder="body { ... }" style="width:100%;min-height:60px;padding:8px 12px;background:#0a1f0a;border:1px solid rgba(255,152,0,0.3);color:#c8e6c9;border-radius:8px;font-size:12px;font-family:monospace;resize:vertical;box-sizing:border-box;outline:none;">' + (gs('customCSS')||'').replace(/</g,'&lt;') + '</textarea></div>' +
+        sectionTitle('&#128737;', 'Security') +
+        togRow('s_panicEnabled', 'Panic Key Enabled', 'Allow ? key to activate tab cloak', gs('panicEnabled') !== 'false') +
+        sliderRow('s_autoLogout', 'Auto-Logout Timer', 'Auto logout after inactivity (0 = disabled)', 0, 120, 5, gs('autoLogout') || 0, ' min') +
+        togRow('s_disableRightClick', 'Disable Right-Click', 'Prevent right-click context menu for users', isOn('disableRightClick')) +
+        '<div style="display:flex;gap:10px;margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,152,0,0.2);">' +
+        '<button onclick="staffLogout()" style="flex:1;padding:10px;background:rgba(244,67,54,0.1);border:1.5px solid rgba(244,67,54,0.3);border-radius:10px;color:#f44336;font-size:13px;font-weight:600;cursor:pointer;">Logout Staff</button>' +
+        '<button onclick="saveStaffSettings()" style="flex:1;padding:10px;background:linear-gradient(135deg,#ff9800,#f57c00);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Save &amp; Close</button>' +
+        '</div></div>';
+
+      overlay.appendChild(box);
+      document.body.appendChild(overlay);
+      setTimeout(function() { overlay.style.opacity='1'; box.style.transform='scale(1)'; }, 10);
+    }
+
+    function closeStaffPanel() {
+      var overlay = document.getElementById('staffPanelOverlay');
+      if (overlay) { overlay.style.opacity = '0'; setTimeout(function() { overlay.remove(); }, 200); }
+    }
+
+    function staffLogout() {
+      sessionStorage.removeItem('staffAuthenticated');
+      closeStaffPanel();
+    }
+
+    function saveStaffSettings() {
+      ['maintenanceMode','debugConsole','unlockStaffModels','guestAccess','registration','panicEnabled','disableRightClick'].forEach(function(k) {
+        var el = document.getElementById('s_' + k);
+        if (el) localStorage.setItem('airai_staff_' + k, el.checked ? 'true' : 'false');
+      });
+      ['maxMessages','apiTimeout','maxTokens','temperature','sessionDuration','maxSessions','autoLogout'].forEach(function(k) {
+        var el = document.getElementById('s_' + k);
+        if (el) localStorage.setItem('airai_staff_' + k, el.value);
+      });
+      ['announcement','systemPrompt','customTitle'].forEach(function(k) {
+        var el = document.getElementById('s_' + k);
+        if (el) { if (el.value.trim()) localStorage.setItem('airai_staff_' + k, el.value.trim()); else localStorage.removeItem('airai_staff_' + k); }
+      });
+      ['defaultModel','forceTheme'].forEach(function(k) {
+        var el = document.getElementById('s_' + k);
+        if (el) { if (el.value) localStorage.setItem('airai_staff_' + k, el.value); else localStorage.removeItem('airai_staff_' + k); }
+      });
+      var cssEl = document.getElementById('s_customCSS');
+      if (cssEl) { if (cssEl.value.trim()) localStorage.setItem('airai_staff_customCSS', cssEl.value.trim()); else localStorage.removeItem('airai_staff_customCSS'); }
+      closeStaffPanel();
     }
 
     function openForms() {
