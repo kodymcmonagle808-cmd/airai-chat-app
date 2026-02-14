@@ -8473,23 +8473,30 @@ async function sendMessage(messageText = null, isRegenerate = false) {
       delete window[callbackName];
     };
 
+    // ── AIrai local engine intercept ──
+    if (currentModel === 'airai') {
+      debugConsole.log('AIrai: using local engine', 'api');
+      handleAiraiMessage(callbackName, message, startTime);
+      return;
+    }
+
     const script = document.createElement('script');
-    
+
     // Build parameters
     let params = 'callback=' + callbackName + '&messages=' + encodeURIComponent(JSON.stringify(conversationHistory));
-    
+
     // *** ADD MODEL PARAMETER FOR CEREBRAS MODELS ***
     if (isCerebrasModel) {
       params += '&model=' + encodeURIComponent(currentModel);
       debugConsole.log(`CB Model: ${currentModel}`, 'info');
     }
-    
+
     script.src = getCurrentScriptUrl() + '?' + params;
-    
+
     script.onerror = function() {
       const typingDiv = document.querySelector('.typing-indicator');
       if (typingDiv) typingDiv.remove();
-      
+
       showError('Failed to connect to the server. Please check your connection and try again.');
       debugConsole.log('API connection failed', 'error');
       performanceMetrics.errors++;
@@ -8498,7 +8505,7 @@ async function sendMessage(messageText = null, isRegenerate = false) {
       showRetryOption(message);
       delete window[callbackName];
     };
-    
+
     document.body.appendChild(script);
     debugConsole.log(`API_CALL: ${getCurrentScriptUrl().substring(0, 80)}...`, 'api');
   }
@@ -11634,6 +11641,7 @@ function unblockChatInteraction() {
 
 
 <script src="../config.js"></script>
+<script src="../ai-engine.js"></script>
 </body>
 
 </html>
